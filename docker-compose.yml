@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  web:
+    build: ./
+    command: >
+      sh -c "python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi:application -b 0.0.0.0:8000"
+    ports:
+      - 5432
+    expose:
+      - 8000
+    volumes:
+      - ./:/app
+    env_file:
+      - ./.env
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/app/web/staticfiles
+      - media_volume:/app/web/mediafiles
+      - ./nginx/:/etc/nginx/conf.d/
+    ports:
+      - 8000:80
+
+volumes:
+  static_volume:
+  media_volume:
