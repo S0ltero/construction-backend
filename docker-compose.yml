@@ -5,7 +5,7 @@ services:
     build: ./
     command: >
       sh -c "python manage.py collectstatic --noinput &&
-             gunicorn config.wsgi:application -b 0.0.0.0:8000"
+             gunicorn main.wsgi:application -b 0.0.0.0:8000"
     ports:
       - 5432
     expose:
