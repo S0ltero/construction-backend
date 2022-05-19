@@ -46,3 +46,10 @@ class Construction(models.Model):
 class ConstructionDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
     construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
+
+
+class ConstructionElement(models.Model):
+    title = models.CharField(verbose_name="Название", max_length=60)
+    element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
+    construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
+    consumption = models.FloatField(verbose_name="Итого", default=0)
