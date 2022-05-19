@@ -14,6 +14,8 @@ INSTALLED_APPS = [
 
     # Third party apps
     "rest_framework",
+    "rest_framework.authtoken",
+    "djoser",
 
     # Local apps
     "api",
@@ -107,6 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = "api.User"
 
 # Default primary key field type
 
