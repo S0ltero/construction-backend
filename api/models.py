@@ -71,3 +71,8 @@ class Project(models.Model):
     description = models.TextField(verbose_name="Описание")
     author = models.CharField(verbose_name="Автор", max_length=60)
     status = models.CharField(verbose_name="Статус", max_length=30, choices=Type.choices)
+
+
+class ProjectDocument(models.Model):
+    file = models.FileField(verbose_name="Файл")
+    project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE)
