@@ -82,3 +82,9 @@ class ProjectStage(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE, related_name="stages")
     order = models.IntegerField(verbose_name="Порядковый номер")
+
+
+class ProjectConstruction(models.Model):
+    count = models.PositiveIntegerField(verbose_name="Номер проекта")
+    stage = models.ForeignKey(ProjectStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
+    construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE)
