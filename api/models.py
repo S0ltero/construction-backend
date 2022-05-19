@@ -105,3 +105,7 @@ class TemplateConstruction(models.Model):
     count = models.PositiveIntegerField(verbose_name="Номер проекта")
     stage = models.ForeignKey(TemplateStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
     construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE)
+
+
+class User(AbstractUser):
+    pass
