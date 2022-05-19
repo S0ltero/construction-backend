@@ -35,3 +35,9 @@ class Element(models.Model):
     type = models.CharField(verbose_name="Тип", choices=Type.choices, max_length=30)
     dimension = models.CharField(verbose_name="Размер", max_length=60, blank=True)
     conversion_rate = models.PositiveIntegerField(verbose_name="Коэффициент конверсии")
+
+
+class Construction(models.Model):
+    title = models.CharField(verbose_name="Название", max_length=60)
+    measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
+    category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="constructions")
