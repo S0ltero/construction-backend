@@ -93,3 +93,9 @@ class ProjectConstruction(models.Model):
 class Template(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
+
+
+class TemplateStage(models.Model):
+    title = models.CharField(verbose_name="Название", max_length=60)
+    template = models.ForeignKey(Template, verbose_name="Шаблон", on_delete=models.CASCADE, related_name="stages")
+    order = models.IntegerField(verbose_name="Порядковый номер")
