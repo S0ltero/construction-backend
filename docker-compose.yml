@@ -11,7 +11,9 @@ services:
     expose:
       - 8000
     volumes:
-      - ./:/app
+      - ./:/home/app
+      - static_volume:/home/app/staticfiles
+      - media_volume:/home/app/mediafiles
     env_file:
       - ./.env
     extra_hosts:
