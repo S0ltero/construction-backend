@@ -76,3 +76,9 @@ class Project(models.Model):
 class ProjectDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
     project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE)
+
+
+class ProjectStage(models.Model):
+    title = models.CharField(verbose_name="Название", max_length=60)
+    project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE, related_name="stages")
+    order = models.IntegerField(verbose_name="Порядковый номер")
