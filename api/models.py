@@ -58,3 +58,16 @@ class ConstructionElement(models.Model):
 class Client(models.Model):
     name = models.CharField(verbose_name="Имя", max_length=60)
     url = models.TextField(verbose_name="Ссылка")
+
+
+class Project(models.Model):
+    class Type(models.TextChoices):
+        FINISH = "Finish", "Закончен"
+        WORK = "Work ", "В работе"
+        NOT_START = "Not start ", "Не начат"
+
+    title = models.CharField(verbose_name="Название", max_length=60)
+    client = models.ForeignKey(Client, verbose_name="Клиент", on_delete=models.CASCADE, related_name="projects")
+    description = models.TextField(verbose_name="Описание")
+    author = models.CharField(verbose_name="Автор", max_length=60)
+    status = models.CharField(verbose_name="Статус", max_length=30, choices=Type.choices)
