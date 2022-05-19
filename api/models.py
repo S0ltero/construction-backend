@@ -53,3 +53,8 @@ class ConstructionElement(models.Model):
     element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
     construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Итого", default=0)
+
+
+class Client(models.Model):
+    name = models.CharField(verbose_name="Имя", max_length=60)
+    url = models.TextField(verbose_name="Ссылка")
