@@ -41,3 +41,8 @@ class Construction(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
     category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="constructions")
+
+
+class ConstructionDocument(models.Model):
+    file = models.FileField(verbose_name="Файл")
+    construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
