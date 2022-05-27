@@ -65,3 +65,9 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = "__all__"
+
+
+class ProjectConstructionSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectConstruction
+        fields = "__all__"
