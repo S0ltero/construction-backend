@@ -37,6 +37,11 @@ class Element(models.Model):
     conversion_rate = models.PositiveIntegerField(verbose_name="Коэффициент конверсии")
 
 
+class ElementDocument(models.Model):
+    file = models.FileField(verbose_name="Файл")
+    Element = models.ForeignKey(Element, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
+
+
 class Construction(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
