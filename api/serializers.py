@@ -135,3 +135,9 @@ class TemplateStageSerializer(serializers.ModelSerializer):
 
         TemplateConstruction.objects.bulk_create(bulk_create)
         return instance
+
+
+class ClientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Client
+        fields = "__all__"
