@@ -97,3 +97,9 @@ class ProjectStageSerializer(serializers.ModelSerializer):
 
         ProjectConstruction.objects.bulk_create(bulk_create)
         return instance
+
+
+class TemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Template
+        fields = "__all__"
