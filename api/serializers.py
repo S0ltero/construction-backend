@@ -109,3 +109,29 @@ class TemplateConstructionSerializers(serializers.ModelSerializer):
     class Meta:
         model = TemplateConstruction
         fields = "__all__"
+
+
+class TemplateStageSerializer(serializers.ModelSerializer):
+    constructions = TemplateConstructionSerializers
+
+    class Meta:
+        model = TemplateStage
+        fields = "__all__"
+
+    def update(self, instance, validated_data):
+        constructions = validated_data.pop("constructions")
+        instance.title = validated_data.get("title", instance.title)
+        instance.project = validated_data.get("project", instance.project)
+        instance.order = validated_data.get("order", instance.order)
+        instance.save()
+
+        bulk_create = []
+
+        if constructions:
+            instance.constructions.all().delete()
+
+        for construction in constructions:
+            bulk_create.append(TemplateConstruction(project_id=instance.id, **construction))
+
+        TemplateConstruction.objects.bulk_create(bulk_create)
+        return instance
