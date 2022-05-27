@@ -7,3 +7,9 @@ from .models import (
     ConstructionElement,
     ProjectConstruction, TemplateConstruction,
 )
+
+
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = "__all__"
