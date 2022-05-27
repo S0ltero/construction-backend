@@ -89,3 +89,40 @@ class ElementViewSet(viewsets.GenericViewSet):
         element = self.get_object()
         element.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ConstructionViewset(viewsets.GenericViewSet):
+    queryset = Construction.objects.all()
+    serializer_class = ConstructionSerializer
+
+    def list(self, request):
+        # Получение списка конструкций
+        serializer = self.serializer_class(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        # Создание конструкции
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, pk=None):
+        # Редактирование конструкции и обновление списка элементов конструкции
+        construction = self.get_object()
+        serializer = self.serializer_class(construction, data=request.data, partial=True)
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.update(construction, serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        # Удаление конструкции
+        construction = self.get_object()
+        construction.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
