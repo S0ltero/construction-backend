@@ -191,3 +191,73 @@ class ProjectViewset(viewsets.GenericViewSet):
                 return Response(serializer.data, status=status.HTTP_200_OK)
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TemplateViewset(viewsets.GenericViewSet):
+    queryset = Template.objects.all()
+    serializer_class = TemplateSerializer
+
+    def list(self, request):
+        # Получение списка шаблонов
+        serializer = self.serializer_class(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        # Добавление шаблона
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, pk=None):
+        # Редактирование шаблона
+        template = self.get_object()
+        serializer = self.serializer_class(template, data=request.data, partial=True)
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.update(template, serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        # Удаление шаблона
+        template = self.get_object()
+        template.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    @action(detail=True, methods=["post"], url_name="stages", url_path="stages", serializer_class=TemplateStageSerializer, queryset=TemplateStage.objects.all())
+    def add_stages(self, request, pk=None):
+        # Добавление этапа шаблона
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    @action(detail=True, methods=["delete", "patch"], url_name="stages", url_path=r"stages/(?P<stage_id>[^/.]+)", serializer_class=TemplateStageSerializer)
+    def edit_stages(self, request, pk=None, stage_id=None):
+        if request.method == "DELETE":
+            # Удаление этапа шаблона
+            template = self.get_object()
+            stage = template.stages.get(id=stage_id)
+            stage.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        elif request.method == "PATCH":
+            # Добавление конструкций к этапу шаблона
+            template = self.get_object()
+            stage = template.stages.get(id=stage_id)
+            serializer = self.serializer_class(stage, data=request.data, partial=True)
+
+            if serializer.is_valid(raise_exception=False):
+                serializer.update(stage, serializer.validated_data)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
