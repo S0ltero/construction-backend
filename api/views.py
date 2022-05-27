@@ -126,3 +126,68 @@ class ConstructionViewset(viewsets.GenericViewSet):
         construction = self.get_object()
         construction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ProjectViewset(viewsets.GenericViewSet):
+    queryset = Project.objects.all()
+    serializer_class = ProjectSerializer
+
+    def create(self, request):
+        # Создание проекта
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, pk=None):
+        # Редактирование проекта
+        project = self.get_object()
+        serializer = self.serializer_class(project, data=request.data, partial=True)
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.update(project, serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        # Удаление проекта
+        project = self.get_object()
+        project.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+    @action(detail=True, methods=["post"], url_name="stages", url_path="stages", serializer_class=ProjectStageSerializer, queryset=ProjectStage.objects.all())
+    def add_stages(self, request, pk=None):
+        # Добавление этапа проекта
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    @action(detail=True, methods=["delete"], url_name="stages", url_path=r"stages/(?P<stage_id>[^/.]+)", serializer_class=ProjectStageSerializer)
+    def edit_stages(self, request, pk=None, stage_id=None):
+        if request.method == "DELETE":
+            # Удаление этапа проекта
+            project = self.get_object()
+            stage = project.stages.get(id=stage_id)
+            stage.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        elif request.method == "PATCH":
+            # Добавление конструкций к этапу проекта
+            project = self.get_object()
+            stage = project.stages.get(id=stage_id)
+            serializer = self.serializer_class(stage, data=request.data, partial=True)
+
+            if serializer.is_valid(raise_exception=False):
+                serializer.update(stage, serializer.validated_data)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
