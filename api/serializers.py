@@ -25,3 +25,9 @@ class ElementSerializer(serializers.ModelSerializer):
     class Meta:
         model = Element
         fields = "__all__"
+
+
+class ConstructionElementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ConstructionElement
+        fields = "__all__"
