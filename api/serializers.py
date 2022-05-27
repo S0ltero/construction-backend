@@ -103,3 +103,9 @@ class TemplateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Template
         fields = "__all__"
+
+
+class TemplateConstructionSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = TemplateConstruction
+        fields = "__all__"
