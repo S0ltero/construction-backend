@@ -57,7 +57,7 @@ class ConstructionElement(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
     construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
-    consumption = models.FloatField(verbose_name="Итого", default=0)
+    consumption = models.FloatField(verbose_name="Норма расхода", default=0)
 
 
 class Client(models.Model):
