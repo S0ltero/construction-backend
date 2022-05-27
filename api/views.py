@@ -261,3 +261,29 @@ class TemplateViewset(viewsets.GenericViewSet):
                 return Response(serializer.data, status=status.HTTP_200_OK)
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ClientViewSet(viewsets.GenericViewSet):
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
+
+    def list(self, request):
+        # Получение списка клиентов
+        serializer = self.serializer_class(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        # Добавление клиента
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def destroy(self, request, pk=None):
+        # Удаление клиента
+        client = self.get_object()
+        client.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
