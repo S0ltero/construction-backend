@@ -59,3 +59,9 @@ class ConstructionSerializer(serializers.ModelSerializer):
 
         ConstructionElement.objects.bulk_create(bulk_create)
         return instance
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = "__all__"
