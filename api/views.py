@@ -4,17 +4,18 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from .models import (
-    Category, SubCategory, Element,
-    Construction, Project, ProjectStage,
-    Template, TemplateStage, Client,
-    ProjectDocument
+    Category, SubCategory,
+    Element, ElementDocument,
+    Construction, ConstructionDocument,
+    Project, ProjectStage, ProjectDocument,
+    Template, TemplateStage,
+    Client,
 )
 
 from . serializers import (
     CategorySerializer, SubCategorySerializer, ElementSerializer,
     ConstructionSerializer, ProjectSerializer, ProjectStageSerializer,
-    TemplateSerializer, TemplateStageSerializer, ClientSerializer,
-    ProjectDocumentSerializers
+    TemplateSerializer, TemplateStageSerializer, ClientSerializer
 )
 
 
