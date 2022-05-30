@@ -70,6 +70,12 @@ class ElementViewSet(viewsets.GenericViewSet):
 
         if serializer.is_valid(raise_exception=False):
             serializer.save()
+
+            bulk_inserts = []
+            for file in request.FILES.getlist("documents"):
+                bulk_inserts.append(ElementDocument(file=file, element=serializer.instance))
+            ElementDocument.objects.bulk_create(bulk_inserts)
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
