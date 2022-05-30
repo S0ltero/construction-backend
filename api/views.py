@@ -172,7 +172,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    @action(detail=True, methods=["delete"], url_name="stages", url_path=r"stages/(?P<stage_id>[^/.]+)", serializer_class=ProjectStageSerializer)
+    @action(detail=True, methods=["delete", "patch"], url_name="stages", url_path=r"stages/(?P<stage_id>[^/.]+)", serializer_class=ProjectStageSerializer)
     def edit_stages(self, request, pk=None, stage_id=None):
         if request.method == "DELETE":
             # Удаление этапа проекта
