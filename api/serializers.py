@@ -5,7 +5,7 @@ from .models import (
     Construction, Project, ProjectStage,
     Template, TemplateStage, Client,
     ConstructionElement,
-    ProjectConstruction, TemplateConstruction,
+    ProjectConstruction, TemplateConstruction
 )
 
 
