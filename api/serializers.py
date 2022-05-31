@@ -73,11 +73,11 @@ class ProjectConstructionSerializers(serializers.ModelSerializer):
 
 
 class ProjectStageSerializer(serializers.ModelSerializer):
-    constructions = ProjectConstructionSerializers
+    constructions = ProjectConstructionSerializers(many=True, required=False, allow_null=True)
 
     class Meta:
         model = ProjectStage
-        fields = "__all__"
+        fields = ("id", "title", "project", "order", "constructions")
 
     def update(self, instance, validated_data):
         constructions = validated_data.pop("constructions")
@@ -92,7 +92,7 @@ class ProjectStageSerializer(serializers.ModelSerializer):
             instance.constructions.all().delete()
 
         for construction in constructions:
-            bulk_create.append(ProjectConstruction(project_id=instance.id, **construction))
+            bulk_create.append(ProjectConstruction(stage_id=instance.id, **construction))
 
         ProjectConstruction.objects.bulk_create(bulk_create)
         return instance
