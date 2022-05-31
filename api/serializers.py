@@ -111,16 +111,16 @@ class TemplateConstructionSerializers(serializers.ModelSerializer):
 
 
 class TemplateStageSerializer(serializers.ModelSerializer):
-    constructions = TemplateConstructionSerializers
+    constructions = TemplateConstructionSerializers(many=True, required=False, allow_null=True)
 
     class Meta:
         model = TemplateStage
-        fields = "__all__"
+        fields = ("id", "title", "template", "order", "constructions")
 
     def update(self, instance, validated_data):
         constructions = validated_data.pop("constructions")
         instance.title = validated_data.get("title", instance.title)
-        instance.project = validated_data.get("project", instance.project)
+        instance.template = validated_data.get("template", instance.template)
         instance.order = validated_data.get("order", instance.order)
         instance.save()
 
@@ -130,7 +130,7 @@ class TemplateStageSerializer(serializers.ModelSerializer):
             instance.constructions.all().delete()
 
         for construction in constructions:
-            bulk_create.append(TemplateConstruction(project_id=instance.id, **construction))
+            bulk_create.append(TemplateConstruction(stage_id=instance.id, **construction))
 
         TemplateConstruction.objects.bulk_create(bulk_create)
         return instance
