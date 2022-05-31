@@ -79,6 +79,7 @@ class ProjectStageSerializer(serializers.ModelSerializer):
         model = ProjectStage
         fields = ("id", "title", "project", "order", "constructions")
 
+
     def update(self, instance, validated_data):
         constructions = validated_data.pop("constructions")
         instance.title = validated_data.get("title", instance.title)
@@ -116,6 +117,7 @@ class TemplateStageSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemplateStage
         fields = ("id", "title", "template", "order", "constructions")
+
 
     def update(self, instance, validated_data):
         constructions = validated_data.pop("constructions")
