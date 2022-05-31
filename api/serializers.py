@@ -39,7 +39,6 @@ class ConstructionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Construction
         fields = ("id", "title", "measure", "category", "elements")
-        extra_kwargs = {"elements": {"required": False}}
 
 
     def update(self, instance, validated_data):
