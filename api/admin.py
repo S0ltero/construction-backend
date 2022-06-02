@@ -61,3 +61,9 @@ class NestedProjectnDocumentsInline(nested_admin.NestedStackedInline):
     model = ProjectDocument
     extra = 0
     classes = ["collapse"]
+
+
+class NestedProjectElementInline(nested_admin.NestedStackedInline):
+    model = ProjectConstructionElement
+    extra = 0
+    classes = ["collapse"]
