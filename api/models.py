@@ -96,6 +96,13 @@ class ProjectConstruction(models.Model):
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
 
 
+class ProjectConstructionElement(models.Model):
+    title = models.CharField(verbose_name="Название", max_length=60)
+    element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
+    construction = models.ForeignKey(ProjectConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
+    consumption = models.FloatField(verbose_name="Норма расхода", default=0)
+
+
 class Template(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
