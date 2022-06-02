@@ -1,0 +1,1709 @@
+openapi: 3.0.3
+info:
+  title: 'Construction API'
+  version: 0.0.0
+paths:
+  /api/auth/token/login/:
+    post:
+      operationId: TokenLogin
+      description: Use this endpoint to obtain user authentication token.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenCreate'
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenCreate'
+          description: ''
+  /api/auth/token/logout/:
+    post:
+      operationId: TokenLogout
+      description: Use this endpoint to logout user (remove user authentication token).
+      tags:
+      - auth
+      security:
+      - cookieAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/auth/users/:
+    post:
+      operationId: CreateUser
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCreate'
+          description: ''
+  /api/categories/:
+    get:
+      operationId: GetCategoriesList
+      description: Получение списка категорий
+      tags:
+      - categories
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+          description: ''
+    post:
+      operationId: CreateCategory
+      description: Создание категории
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/categories/{id}/:
+    get:
+      operationId: GetCategory
+      description: Получение категории по pk
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Категория.
+        required: true
+      tags:
+      - categories
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDetail'
+          description: ''
+  /api/clients/:
+    get:
+      operationId: GetClientsList
+      description: Получение списка клиентов
+      tags:
+      - clients
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Client'
+          description: ''
+    post:
+      operationId: CreateClient
+      description: Добавление клиента
+      tags:
+      - clients
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Client'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Client'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Client'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Client'
+          description: ''
+  /api/clients/{id}/:
+    get:
+      operationId: GetClient
+      description: Получение клиента по pk
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Клиент.
+        required: true
+      tags:
+      - clients
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClientDetail'
+          description: ''
+    delete:
+      operationId: DeleteClient
+      description: Удаление клиента
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Клиент.
+        required: true
+      tags:
+      - clients
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/constructions/:
+    get:
+      operationId: GetConstructionsList
+      description: Получение списка конструкций
+      tags:
+      - constructions
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConstructionDetail'
+          description: ''
+    post:
+      operationId: CreateConstruction
+      description: Создание конструкции
+      tags:
+      - constructions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConstructionDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ConstructionDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ConstructionDetail'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstructionDetail'
+          description: ''
+  /api/constructions/{id}/:
+    patch:
+      operationId: UpdateConstruction
+      description: Редактирование конструкции и обновление списка элементов конструкции
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Контсрукция.
+        required: true
+      tags:
+      - constructions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedConstructionDetail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedConstructionDetail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedConstructionDetail'
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstructionDetail'
+          description: ''
+    delete:
+      operationId: DeleteConstruction
+      description: Удаление конструкции
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Контсрукция.
+        required: true
+      tags:
+      - constructions
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/elements/:
+    get:
+      operationId: GetElementsList
+      description: Получение списка элементов
+      tags:
+      - elements
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Element'
+          description: ''
+    post:
+      operationId: CreateElement
+      description: Создание элемента
+      tags:
+      - elements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Element'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Element'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Element'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Element'
+          description: ''
+  /api/elements/{id}/:
+    patch:
+      operationId: UpdateElement
+      description: Редактирование элемента
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Элемент.
+        required: true
+      tags:
+      - elements
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedElement'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedElement'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedElement'
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Element'
+          description: ''
+    delete:
+      operationId: DeleteElement
+      description: Удаление элемента
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Элемент.
+        required: true
+      tags:
+      - elements
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/projects/:
+    get:
+      operationId: GetProjectsList
+      description: Получение списка проектов
+      tags:
+      - projects
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+          description: ''
+    post:
+      operationId: CreateProject
+      description: Создание проекта
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Project'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Project'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Project'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+  /api/projects/{id}/:
+    get:
+      operationId: GetProject
+      description: Получение проекта по pk
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Проект.
+        required: true
+      tags:
+      - projects
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    patch:
+      operationId: UpdateProject
+      description: Редактирование проекта
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Проект.
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProject'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProject'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProject'
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    delete:
+      operationId: DeleteProject
+      description: Удаление проекта
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Проект.
+        required: true
+      tags:
+      - projects
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/projects/{id}/stages/:
+    post:
+      operationId: CreateProjectStage
+      description: Добавление этапа проекта
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Стадия проекта.
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectStageCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectStageCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectStageCreate'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectStageCreate'
+          description: ''
+  /api/projects/{id}/stages/{stage_id}/:
+    patch:
+      operationId: UpdateProjectStage
+      description: Добавление конструкций к этапу проекта
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Проект.
+        required: true
+      - in: path
+        name: stage_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectStage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectStage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectStage'
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectStagePatch'
+          description: ''
+    delete:
+      operationId: DeleteProjectStage
+      description: Удаление этапа проекта
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Проект.
+        required: true
+      - in: path
+        name: stage_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - projects
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/subcategories/:
+    post:
+      operationId: CreateSubCategory
+      description: Создание подкатегории
+      tags:
+      - subcategories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubCategory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubCategory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubCategory'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubCategory'
+          description: ''
+  /api/subcategories/{id}/:
+    get:
+      operationId: GetSubCategory
+      description: Получение подкатегории по pk
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Подкатегория.
+        required: true
+      tags:
+      - subcategories
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubCategoryDetail'
+          description: ''
+  /api/templates/:
+    get:
+      operationId: GetTemplatesList
+      description: Получение списка шаблонов
+      tags:
+      - templates
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Template'
+          description: ''
+    post:
+      operationId: CreateTemplate
+      description: Добавление шаблона
+      tags:
+      - templates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Template'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Template'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Template'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+          description: ''
+  /api/templates/{id}/:
+    get:
+      operationId: GetTemplate
+      description: Получение шаблона по pk
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Шаблон.
+        required: true
+      tags:
+      - templates
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+          description: ''
+    patch:
+      operationId: UpdateTemplate
+      description: Редактирование шаблона
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Шаблон.
+        required: true
+      tags:
+      - templates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTemplate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTemplate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTemplate'
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Template'
+          description: ''
+    delete:
+      operationId: DeleteTemplate
+      description: Удаление шаблона
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Шаблон.
+        required: true
+      tags:
+      - templates
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/templates/{id}/stages/:
+    post:
+      operationId: CreateTemplateStage
+      description: Добавление этапа шаблона
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Стадия шаблона.
+        required: true
+      tags:
+      - templates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateStageCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TemplateStageCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TemplateStageCreate'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateStageCreate'
+          description: ''
+  /api/templates/{id}/stages/{stage_id}/:
+    patch:
+      operationId: UpdateTemplateStage
+      description: Добавление конструкций к этапу шаблона
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Шаблон.
+        required: true
+      - in: path
+        name: stage_id
+        schema:
+          type: string
+        required: true
+      tags:
+      - templates
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TemplateStagePatch'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TemplateStagePatch'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TemplateStagePatch'
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TemplateStagePatch'
+          description: ''
+    delete:
+      operationId: DeleteTemplateStage
+      description: Удаление этапа шаблона
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Шаблона.
+        required: true
+      - in: path
+        name: stage_id
+        schema:
+          type: string
+        description: Уникальный индентификатор для `Стадии шаблона`.
+        required: true
+      tags:
+      - templates
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        subcategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubCategory'
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        description:
+          type: string
+          title: Описание
+        image:
+          type: string
+          format: uri
+          title: Фото
+        type:
+          allOf:
+          - $ref: '#/components/schemas/CategoryTypeEnum'
+          title: Тип
+      required:
+      - description
+      - id
+      - subcategories
+      - title
+      - type
+    CategoryDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        subcategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubCategory'
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        description:
+          type: string
+          title: Описание
+        image:
+          type: string
+          format: uri
+          title: Фото
+        type:
+          allOf:
+          - $ref: '#/components/schemas/CategoryTypeEnum'
+          title: Тип
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Element'
+          readOnly: true
+        constructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Construction'
+          readOnly: true
+      required:
+      - description
+      - id
+      - subcategories
+      - title
+      - type
+    CategoryTypeEnum:
+      enum:
+      - CONSTRUCTION
+      - ELEMENT
+      type: string
+    Client:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Имя
+          maxLength: 60
+        url:
+          type: string
+          title: Ссылка
+      required:
+      - id
+      - name
+      - url
+    ClientDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          title: Имя
+          maxLength: 60
+        url:
+          type: string
+          title: Ссылка
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+          readOnly: true
+    Construction:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        measure:
+          type: string
+          title: Единицы измерения
+          maxLength: 30
+        category:
+          type: integer
+          title: Категория
+        documents:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - category
+      - id
+      - measure
+      - title
+    ConstructionDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        measure:
+          type: string
+          title: Единицы измерения
+          maxLength: 30
+        category:
+          type: integer
+          title: Категория
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstructionElement'
+        documents:
+          type: array
+          items:
+            type: string
+          readOnly: true
+      required:
+      - category
+      - documents
+      - id
+      - measure
+      - title
+    ConstructionElement:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        consumption:
+          type: number
+          format: double
+          title: Норма расхода
+        element:
+          type: integer
+          title: Элемент
+        construction:
+          type: integer
+          title: Конструкция
+      required:
+      - construction
+      - element
+      - id
+      - title
+    Element:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        documents:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        measure:
+          type: string
+          title: Единицы измерения
+          maxLength: 30
+        second_measure:
+          type: string
+          title: Вторая единица измерения
+          maxLength: 30
+        cost:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Цена
+        price:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Сумма
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ElementTypeEnum'
+          title: Тип
+        dimension:
+          type: string
+          title: Размер
+          maxLength: 60
+        conversion_rate:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Коэффициент конверсии
+        category:
+          type: integer
+          title: Категория
+        subcategory:
+          type: integer
+          nullable: true
+          title: Подкатегория
+      required:
+      - category
+      - conversion_rate
+      - documents
+      - id
+      - measure
+      - second_measure
+      - title
+      - type
+    ElementTypeEnum:
+      type: string
+      enum:
+      - MATERIAL
+      - JOB
+      type: string
+    PatchedConstructionDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        measure:
+          type: string
+          title: Единицы измерения
+          maxLength: 30
+        category:
+          type: integer
+          title: Категория
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstructionElement'
+        documents:
+          type: array
+          items:
+            type: string
+          readOnly: true
+    PatchedElement:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        documents:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        measure:
+          type: string
+          title: Единицы измерения
+          maxLength: 30
+        second_measure:
+          type: string
+          title: Вторая единица измерения
+          maxLength: 30
+        cost:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Цена
+        price:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Сумма
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ElementTypeEnum'
+          title: Тип
+        dimension:
+          type: string
+          title: Размер
+          maxLength: 60
+        conversion_rate:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Коэффициент конверсии
+        category:
+          type: integer
+          title: Категория
+        subcategory:
+          type: integer
+          nullable: true
+          title: Подкатегория
+    PatchedProject:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        description:
+          type: string
+          title: Описание
+        author:
+          type: string
+          title: Автор
+          maxLength: 60
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Статус
+        client:
+          type: integer
+          title: Клиент
+    PatchedProjectStage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        project:
+          type: integer
+          title: Проект
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          title: Порядковый номер
+        constructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectConstruction'
+    PatchedTemplate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        description:
+          type: string
+          title: Описание
+    PatchedUser:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          title: Адрес электронной почты
+          maxLength: 254
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          title: Имя пользователя
+          description: Обязательное поле. Не более 150 символов. Только буквы, цифры
+            и символы @/./+/-/_.
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        description:
+          type: string
+          title: Описание
+        author:
+          type: string
+          title: Автор
+          maxLength: 60
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          title: Статус
+        client:
+          type: integer
+          title: Клиент
+      required:
+      - author
+      - client
+      - description
+      - id
+      - status
+      - title
+    ProjectConstruction:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Номер проекта
+        stage:
+          type: integer
+          title: Стадия
+        measure:
+          type: string
+          title: Единицы измерения
+          maxLength: 30
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectConstructionElement'
+      required:
+      - count
+      - elements
+      - id
+      - measure
+      - title
+    ProjectConstructionElement:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        consumption:
+          type: number
+          format: double
+          title: Норма расхода
+        element:
+          type: integer
+          title: Элемент
+        construction:
+          type: integer
+          title: Конструкция
+      required:
+      - element
+      - id
+      - title
+    ProjectStageCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        project:
+          type: integer
+          title: Проект
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          title: Порядковый номер
+    ProjectStagePatch:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        project:
+          type: integer
+          title: Проект
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          title: Порядковый номер
+        constructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectConstruction'
+      required:
+      - id
+      - order
+      - project
+      - title
+    StatusEnum:
+      oneOf:
+      - title: FINISH
+        description: Проект закончен
+      - title: WORK
+        description: Проект в работе
+      - title: NOT_START
+        description: Проект не начат
+      type: string
+    SubCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        description:
+          type: string
+          title: Описание
+        image:
+          type: string
+          format: uri
+          title: Фото
+        parent_category:
+          type: integer
+          title: Категория
+      required:
+      - description
+      - id
+      - parent_category
+      - title
+    SubCategoryDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        description:
+          type: string
+          title: Описание
+        image:
+          type: string
+          format: uri
+          title: Фото
+        parent_category:
+          type: integer
+          title: Категория
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Element'
+          readOnly: true
+        constructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Construction'
+          readOnly: true
+      required:
+      - description
+      - id
+      - parent_category
+      - title
+    Template:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        description:
+          type: string
+          title: Описание
+      required:
+      - description
+      - id
+      - title
+    TemplateConstruction:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Номер проекта
+        stage:
+          type: integer
+          title: Стадия
+        measure:
+          type: string
+          title: Единицы измерения
+          maxLength: 30
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateConstructionElement'
+      required:
+      - count
+      - elements
+      - id
+      - measure
+      - title
+    TemplateConstructionElement:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        consumption:
+          type: number
+          format: double
+          title: Норма расхода
+        element:
+          type: integer
+          title: Элемент
+        construction:
+          type: integer
+          title: Конструкция
+      required:
+      - element
+      - id
+      - title
+    TemplateStageCreate:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        template:
+          type: integer
+          title: Шаблон
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          title: Порядковый номер
+      required:
+      - id
+      - order
+      - template
+      - title
+    TemplateStagePatch:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          title: Название
+          maxLength: 60
+        template:
+          type: integer
+          title: Шаблон
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          title: Порядковый номер
+        constructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateConstruction'
+      required:
+      - constructions
+      - id
+      - order
+      - template
+      - title
+    TokenCreate:
+      type: object
+      properties:
+        password:
+          type: string
+        username:
+          type: string
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          title: Адрес электронной почты
+          maxLength: 254
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          title: Имя пользователя
+          description: Обязательное поле. Не более 150 символов. Только буквы, цифры
+            и символы @/./+/-/_.
+      required:
+      - id
+      - username
+    UserCreate:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          title: Адрес электронной почты
+          maxLength: 254
+        username:
+          type: string
+          title: Имя пользователя
+          description: Обязательное поле. Не более 150 символов. Только буквы, цифры
+            и символы @/./+/-/_.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        id:
+          type: integer
+          readOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - id
+      - password
+      - username
+  securitySchemes:
+    tokenAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: Token-based authentication with required prefix "Token"
