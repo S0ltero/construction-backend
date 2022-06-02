@@ -16,6 +16,9 @@ class Category(models.Model):
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
 
+    def __str__(self):
+        return self.title
+
 
 class SubCategory(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
@@ -26,6 +29,9 @@ class SubCategory(models.Model):
     class Meta:
         verbose_name = "Подкатегория"
         verbose_name_plural = "Подкатегории"
+
+    def __str__(self):
+        return self.title
 
 
 class Element(models.Model):
@@ -54,6 +60,9 @@ class Element(models.Model):
         verbose_name = "Элемент"
         verbose_name_plural = "Элемены"
 
+    def __str__(self):
+        return self.title
+
 
 class ElementDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
@@ -62,6 +71,9 @@ class ElementDocument(models.Model):
     class Meta:
         verbose_name = "Документ"
         verbose_name_plural = "Документы"
+
+    def __str__(self):
+        return self.file.name
 
 
 class Construction(models.Model):
@@ -80,6 +92,9 @@ class Construction(models.Model):
         verbose_name = "Контсрукция"
         verbose_name_plural = "Контсрукции"
 
+    def __str__(self):
+        return self.title
+
 
 class ConstructionDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
@@ -88,6 +103,9 @@ class ConstructionDocument(models.Model):
     class Meta:
         verbose_name = "Документ"
         verbose_name_plural = "Документы"
+
+    def __str__(self):
+        return self.file.name
 
 
 class ConstructionElement(models.Model):
@@ -100,6 +118,9 @@ class ConstructionElement(models.Model):
         verbose_name = "Элемент конструкции"
         verbose_name_plural = "Элементы конструкции"
 
+    def __str__(self):
+        return self.title
+
 
 class Client(models.Model):
     name = models.CharField(verbose_name="Имя", max_length=60)
@@ -108,6 +129,9 @@ class Client(models.Model):
     class Meta:
         verbose_name = "Клиент"
         verbose_name_plural = "Клиенты"
+
+    def __str__(self):
+        return self.name
 
 
 class Project(models.Model):
@@ -126,6 +150,9 @@ class Project(models.Model):
         verbose_name = "Проект"
         verbose_name_plural = "Проекты"
 
+    def __str__(self):
+        return self.title
+
 
 class ProjectDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
@@ -134,6 +161,9 @@ class ProjectDocument(models.Model):
     class Meta:
         verbose_name = "Документ"
         verbose_name_plural = "Документы"
+
+    def __str__(self):
+        return self.file.name
 
 
 class ProjectStage(models.Model):
@@ -144,6 +174,9 @@ class ProjectStage(models.Model):
     class Meta:
         verbose_name = "Стадия проекта"
         verbose_name_plural = "Стадии проекта"
+
+    def __str__(self):
+        return self.title
 
 
 class ProjectConstruction(models.Model):
@@ -156,6 +189,9 @@ class ProjectConstruction(models.Model):
         verbose_name = "Конструкция проекта"
         verbose_name_plural = "Конструкции проекта"
 
+    def __str__(self):
+        return self.title
+
 
 class ProjectConstructionElement(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
@@ -167,6 +203,9 @@ class ProjectConstructionElement(models.Model):
         verbose_name = "Элемент проекта"
         verbose_name_plural = "Элементы проекта"
 
+    def __str__(self):
+        return self.title
+
 
 class Template(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
@@ -175,6 +214,9 @@ class Template(models.Model):
     class Meta:
         verbose_name = "Шаблон"
         verbose_name_plural = "Шаблоны"
+
+    def __str__(self):
+        return self.title
 
 
 class TemplateStage(models.Model):
@@ -185,6 +227,9 @@ class TemplateStage(models.Model):
     class Meta:
         verbose_name = "Стадия шаблона"
         verbose_name_plural = "Стадии шаблона"
+
+    def __str__(self):
+        return self.title
 
 
 class TemplateConstruction(models.Model):
@@ -197,6 +242,9 @@ class TemplateConstruction(models.Model):
         verbose_name = "Конструкция шаблона"
         verbose_name_plural = "Конструкции шаблона"
 
+    def __str__(self):
+        return self.title
+
 
 class TemplateConstructionElement(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
@@ -207,3 +255,6 @@ class TemplateConstructionElement(models.Model):
     class Meta:
         verbose_name = "Элемент шаблона"
         verbose_name_plural = "Элементы шаблона"
+
+    def __str__(self):
+        return self.title
