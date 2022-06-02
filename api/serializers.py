@@ -142,30 +142,38 @@ class TemplateConstructionSerializer(serializers.ModelSerializer):
 
 
 class TemplateStageSerializer(serializers.ModelSerializer):
-    constructions = TemplateConstructionSerializers(many=True, required=False, allow_null=True)
+    constructions = TemplateConstructionSerializer(many=True, read_only=False)
 
     class Meta:
         model = TemplateStage
         fields = ("id", "title", "template", "order", "constructions")
 
-
     def update(self, instance, validated_data):
-        constructions = validated_data.pop("constructions")
-        instance.title = validated_data.get("title", instance.title)
-        instance.template = validated_data.get("template", instance.template)
-        instance.order = validated_data.get("order", instance.order)
-        instance.save()
-
-        bulk_create = []
+        constructions = validated_data.pop("constructions", [])
+        stage = super().update(instance, validated_data)
 
         if constructions:
-            instance.constructions.all().delete()
+            stage.constructions.all().delete()
+
+        bulk_insert_constructions = []
+        bulk_insert_elements = []
 
         for construction in constructions:
-            bulk_create.append(TemplateConstruction(stage_id=instance.id, **construction))
+            elements = construction.pop("elements", [])
+            construction = TemplateConstruction(**construction, stage=instance)
+            bulk_insert_constructions.append(construction)
+            for element in elements:
+                bulk_insert_elements.append(
+                    TemplateConstructionElement(
+                        **element, construction=construction
+                    )
+                )
 
-        TemplateConstruction.objects.bulk_create(bulk_create)
-        return instance
+        TemplateConstruction.objects.bulk_create(bulk_insert_constructions)
+        TemplateConstructionElement.objects.bulk_create(bulk_insert_elements)
+
+        stage = TemplateStage.objects.get(id=instance.id)
+        return TemplateStageSerializer(instance=stage).data
 
 
 class ClientSerializer(serializers.ModelSerializer):
