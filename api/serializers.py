@@ -133,6 +133,8 @@ class TemplateConstructionElementSerializer(serializers.ModelSerializer):
 
 
 class TemplateConstructionSerializer(serializers.ModelSerializer):
+    elements = TemplateConstructionElementSerializer(many=True, read_only=False)
+
     class Meta:
         model = TemplateConstruction
         fields = ("id", "title", "count", "stage", "measure", "elements")
