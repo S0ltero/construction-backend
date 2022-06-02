@@ -26,6 +26,8 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class ElementSerializer(serializers.ModelSerializer):
+    documents = serializers.SlugRelatedField(slug_field="file_url", many=True, read_only=True)
+
     class Meta:
         model = Element
         fields = "__all__"
