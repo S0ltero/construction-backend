@@ -198,6 +198,10 @@ class TemplateStageSerializer(serializers.ModelSerializer):
         return TemplateStageSerializer(instance=stage).data
 
 
+class TemplateDetailSerilaizer(TemplateSerializer):
+    stages = TemplateStageSerializer(many=True)
+
+
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
