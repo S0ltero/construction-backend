@@ -4,7 +4,9 @@ from .models import (
     Category, SubCategory, Element,
     Construction, ConstructionElement,
     Project, ProjectStage, ProjectConstruction,
+    ProjectConstructionElement,
     Template, TemplateStage, TemplateConstruction,
+    TemplateConstructionElement,
     Client
 )
 
