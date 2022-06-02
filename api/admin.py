@@ -131,3 +131,8 @@ class AdminCategory(admin.ModelAdmin):
 @admin.register(Project)
 class AdminProject(nested_admin.NestedModelAdmin):
     inlines = (NestedProjectStageInline, NestedProjectnDocumentsInline)
+
+
+@admin.register(Template)
+class AdminTemplate(nested_admin.NestedModelAdmin):
+    inlines = [NestedTemplateStageInline,]
