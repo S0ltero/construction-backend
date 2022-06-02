@@ -45,7 +45,7 @@ class Element(models.Model):
 
 class ElementDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
-    Element = models.ForeignKey(Element, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
+    element = models.ForeignKey(Element, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
 
 
 class Construction(models.Model):
