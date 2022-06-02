@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 
 
 # Create your models here.
@@ -140,7 +139,3 @@ class TemplateConstructionElement(models.Model):
     element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
     construction = models.ForeignKey(TemplateConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
-
-
-class User(AbstractUser):
-    pass
