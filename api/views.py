@@ -194,6 +194,13 @@ class ProjectViewset(viewsets.GenericViewSet):
         serializer = ProjectDetailSerializer(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    def list(self, request):
+        """
+        Получение списка проектов
+        """
+        serializer = self.serializer_class(self.queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def create(self, request):
         """
         Создание проекта
