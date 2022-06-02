@@ -15,3 +15,7 @@ from .models import (
 
 
 # Register your models here.
+class ElementDocumentsInline(admin.StackedInline):
+    model = ElementDocument
+    extra = 0
+    classes = ["collapse"]
