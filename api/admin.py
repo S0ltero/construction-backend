@@ -1,3 +1,17 @@
 from django.contrib import admin
 
+import nested_admin
+
+from .models import (
+    ElementDocument, ConstructionDocument, ProjectDocument,
+    Category, SubCategory, Element,
+    Construction, ConstructionElement,
+    Project, ProjectStage, ProjectConstruction,
+    ProjectConstructionElement,
+    Template, TemplateStage, TemplateConstruction,
+    TemplateConstructionElement,
+    Client
+)
+
+
 # Register your models here.
