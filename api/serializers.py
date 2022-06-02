@@ -76,6 +76,8 @@ class ProjectConstructionElementSerializer(serializers.ModelSerializer):
 
 
 class ProjectConstructionSerializer(serializers.ModelSerializer):
+    elements = ProjectConstructionElementSerializer(many=True, read_only=False)
+
     class Meta:
         model = ProjectConstruction
         fields = ("id", "title", "count", "stage", "measure", "elements")
