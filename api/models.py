@@ -58,7 +58,7 @@ class Element(models.Model):
 
     class Meta:
         verbose_name = "Элемент"
-        verbose_name_plural = "Элемены"
+        verbose_name_plural = "Элементы"
 
     def __str__(self):
         return self.title
@@ -93,8 +93,8 @@ class Construction(models.Model):
     )
 
     class Meta:
-        verbose_name = "Контсрукция"
-        verbose_name_plural = "Контсрукции"
+        verbose_name = "Конструкция"
+        verbose_name_plural = "Конструкции"
 
     def __str__(self):
         return self.title
