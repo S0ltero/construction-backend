@@ -283,6 +283,14 @@ class TemplateViewset(viewsets.GenericViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
 
+    def retrieve(self, request, pk=None):
+        """
+        Получение шаблона по pk
+        """
+        template = self.get_object()
+        serializer = TemplateDetailSerilaizer(template)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def list(self, request):
         """
         Получение списка шаблонов
