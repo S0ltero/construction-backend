@@ -74,3 +74,10 @@ class NestedConstructionInline(nested_admin.NestedStackedInline):
     extra = 0
     classes = ["collapse"]
     inlines = (NestedProjectElementInline, )
+
+
+class NestedProjectStageInline(nested_admin.NestedStackedInline):
+    model = ProjectStage
+    extra = 0
+    classes = ["collapse"]
+    inlines = (NestedConstructionInline, )
