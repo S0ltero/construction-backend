@@ -121,3 +121,8 @@ class AdminConstruction(admin.ModelAdmin):
 @admin.register(SubCategory)
 class AdminSubCategory(admin.ModelAdmin):
     inlines = [ConstructionImline, ElementInline, ]
+
+
+@admin.register(Category)
+class AdminCategory(admin.ModelAdmin):
+    inlines = [ConstructionImline, ElementInline, SubCategoryInline]
