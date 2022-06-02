@@ -37,6 +37,12 @@ class ConstructionElementSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ConstructionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Construction
+        fields = "__all__"
+
+
 class ConstructionDetailSerializer(serializers.ModelSerializer):
     elements = ConstructionElementSerializer(many=True, required=False, allow_null=True)
 
