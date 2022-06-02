@@ -70,6 +70,11 @@ class ConstructionDetailSerializer(serializers.ModelSerializer):
         return instance
 
 
+class CategoryDetailSerializer(CategorySerializer):
+    elements = ElementSerializer(many=True)
+    constructions = ConstructionSerializer(many=True)
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
