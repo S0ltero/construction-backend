@@ -186,6 +186,14 @@ class ProjectViewset(viewsets.GenericViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
+    def retrieve(self, request, pk=None):
+        """
+        Получение проекта по pk
+        """
+        project = self.get_object()
+        serializer = ProjectDetailSerializer(project)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def create(self, request):
         """
         Создание проекта
