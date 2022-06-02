@@ -125,10 +125,11 @@ class TemplateSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TemplateConstructionSerializers(serializers.ModelSerializer):
+class TemplateConstructionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemplateConstruction
-        fields = "__all__"
+        fields = ("id", "title", "count", "stage", "measure", "elements")
+        extra_kwargs = {"stage": {"required": False}}
 
 
 class TemplateStageSerializer(serializers.ModelSerializer):
