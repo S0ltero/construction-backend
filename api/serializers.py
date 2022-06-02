@@ -125,6 +125,13 @@ class TemplateSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class TemplateConstructionElementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectConstructionElement
+        fields = "__all__"
+        extra_kwargs = {"construction": {"required": False}}
+
+
 class TemplateConstructionSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemplateConstruction
