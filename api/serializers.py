@@ -206,3 +206,7 @@ class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields = "__all__"
+
+
+class ClientDetailSerializer(ClientSerializer):
+    projects = ProjectSerializer(many=True)
