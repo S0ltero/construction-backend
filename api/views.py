@@ -13,9 +13,12 @@ from .models import (
 )
 
 from . serializers import (
-    CategorySerializer, SubCategorySerializer, ElementSerializer,
-    ConstructionDetailSerializer, ProjectSerializer, ProjectStageSerializer,
-    TemplateSerializer, TemplateStageSerializer, ClientSerializer
+    CategorySerializer, CategoryDetailSerializer,
+    SubCategorySerializer, SubCategoryDetailSerializer,
+    ElementSerializer, ConstructionDetailSerializer,
+    ProjectSerializer, ProjectStageSerializer, ProjectDetailSerializer,
+    TemplateSerializer, TemplateStageSerializer, TemplateDetailSerilaizer,
+    ClientSerializer, ClientDetailSerializer
 )
 
 
