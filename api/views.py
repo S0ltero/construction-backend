@@ -27,6 +27,14 @@ class CategoryViewSet(viewsets.GenericViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+    def retrieve(self, request, pk=None):
+        """
+        Получение категории по pk
+        """
+        category = self.get_object()
+        serializer = CategoryDetailSerializer(category)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def list(self, request):
         """
         Получение списка категорий
