@@ -25,3 +25,9 @@ class ProjectInline(admin.StackedInline):
     model = Project
     extra = 0
     classes = ["collapse"]
+
+
+class ElementInline(admin.StackedInline):
+    model = Element
+    extra = 0
+    classes = ["collapse"]
