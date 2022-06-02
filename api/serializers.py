@@ -44,7 +44,7 @@ class ConstructionSerializer(serializers.ModelSerializer):
 
 
 class ConstructionDetailSerializer(serializers.ModelSerializer):
-    elements = ConstructionElementSerializer(many=True, required=False, allow_null=True)
+    elements = ConstructionElementSerializer(many=True, required=False)
 
     class Meta:
         model = Construction
