@@ -5,7 +5,7 @@ from django.db import models
 class Category(models.Model):
     class Type(models.TextChoices):
         CONSTRUCTION = "CONSTRUCTION", "Конструкция"
-        ELEMENT = "ELEMENT ", "Элемент"
+        ELEMENT = "ELEMENT", "Элемент"
 
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
