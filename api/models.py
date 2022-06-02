@@ -12,12 +12,20 @@ class Category(models.Model):
     image = models.ImageField(verbose_name="Фото", blank=True)
     type = models.CharField(verbose_name="Тип", choices=Type.choices, max_length=30)
 
+    class Meta:
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
+
 
 class SubCategory(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
     image = models.ImageField(verbose_name="Фото", blank=True)
     parent_category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="subcategories")
+
+    class Meta:
+        verbose_name = "Подкатегория"
+        verbose_name_plural = "Подкатегории"
 
 
 class Element(models.Model):
@@ -42,10 +50,18 @@ class Element(models.Model):
     dimension = models.CharField(verbose_name="Размер", max_length=60, blank=True)
     conversion_rate = models.PositiveIntegerField(verbose_name="Коэффициент конверсии")
 
+    class Meta:
+        verbose_name = "Элемент"
+        verbose_name_plural = "Элемены"
+
 
 class ElementDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
     element = models.ForeignKey(Element, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
+
+    class Meta:
+        verbose_name = "Документ"
+        verbose_name_plural = "Документы"
 
 
 class Construction(models.Model):
@@ -60,10 +76,18 @@ class Construction(models.Model):
         null=True
     )
 
+    class Meta:
+        verbose_name = "Контсрукция"
+        verbose_name_plural = "Контсрукции"
+
 
 class ConstructionDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
     construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
+
+    class Meta:
+        verbose_name = "Документ"
+        verbose_name_plural = "Документы"
 
 
 class ConstructionElement(models.Model):
@@ -72,10 +96,18 @@ class ConstructionElement(models.Model):
     construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
 
+    class Meta:
+        verbose_name = "Элемент конструкции"
+        verbose_name_plural = "Элементы конструкции"
+
 
 class Client(models.Model):
     name = models.CharField(verbose_name="Имя", max_length=60)
     url = models.TextField(verbose_name="Ссылка")
+
+    class Meta:
+        verbose_name = "Клиент"
+        verbose_name_plural = "Клиенты"
 
 
 class Project(models.Model):
@@ -90,16 +122,28 @@ class Project(models.Model):
     author = models.CharField(verbose_name="Автор", max_length=60)
     status = models.CharField(verbose_name="Статус", max_length=30, choices=Type.choices)
 
+    class Meta:
+        verbose_name = "Проект"
+        verbose_name_plural = "Проекты"
+
 
 class ProjectDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
     project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name = "Документ"
+        verbose_name_plural = "Документы"
 
 
 class ProjectStage(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE, related_name="stages")
     order = models.IntegerField(verbose_name="Порядковый номер")
+
+    class Meta:
+        verbose_name = "Стадия проекта"
+        verbose_name_plural = "Стадии проекта"
 
 
 class ProjectConstruction(models.Model):
@@ -108,6 +152,10 @@ class ProjectConstruction(models.Model):
     stage = models.ForeignKey(ProjectStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
 
+    class Meta:
+        verbose_name = "Конструкция проекта"
+        verbose_name_plural = "Конструкции проекта"
+
 
 class ProjectConstructionElement(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
@@ -115,16 +163,28 @@ class ProjectConstructionElement(models.Model):
     construction = models.ForeignKey(ProjectConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
 
+    class Meta:
+        verbose_name = "Элемент проекта"
+        verbose_name_plural = "Элементы проекта"
+
 
 class Template(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
+
+    class Meta:
+        verbose_name = "Шаблон"
+        verbose_name_plural = "Шаблоны"
 
 
 class TemplateStage(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     template = models.ForeignKey(Template, verbose_name="Шаблон", on_delete=models.CASCADE, related_name="stages")
     order = models.IntegerField(verbose_name="Порядковый номер")
+
+    class Meta:
+        verbose_name = "Стадия шаблона"
+        verbose_name_plural = "Стадии шаблона"
 
 
 class TemplateConstruction(models.Model):
@@ -133,9 +193,17 @@ class TemplateConstruction(models.Model):
     stage = models.ForeignKey(TemplateStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
 
+    class Meta:
+        verbose_name = "Конструкция шаблона"
+        verbose_name_plural = "Конструкции шаблона"
+
 
 class TemplateConstructionElement(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
     construction = models.ForeignKey(TemplateConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
+
+    class Meta:
+        verbose_name = "Элемент шаблона"
+        verbose_name_plural = "Элементы шаблона"
