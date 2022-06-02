@@ -47,11 +47,11 @@ class ConstructionSerializer(serializers.ModelSerializer):
 
 class ConstructionDetailSerializer(serializers.ModelSerializer):
     elements = ConstructionElementSerializer(many=True, required=False)
+    documents = serializers.SlugRelatedField(slug_field="file_url", many=True, read_only=True)
 
     class Meta:
         model = Construction
-        fields = ("id", "title", "measure", "category", "elements")
-        extra_kwargs = {"elements": {"required": False}}
+        fields = ("id", "title", "measure", "category", "elements", "documents")
 
     def update(self, instance, validated_data):
         elements = validated_data.pop("elements")
