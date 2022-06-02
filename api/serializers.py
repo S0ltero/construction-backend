@@ -68,6 +68,13 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ProjectConstructionElementSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProjectConstructionElement
+        fields = "__all__"
+        extra_kwargs = {"construction": {"required": False}}
+
+
 class ProjectConstructionSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectConstruction
