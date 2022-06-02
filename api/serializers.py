@@ -137,6 +137,10 @@ class ProjectStageSerializer(serializers.ModelSerializer):
         return ProjectStageSerializer(instance=stage).data
 
 
+class ProjectDetailSerializer(ProjectSerializer):
+    stages = ProjectStageSerializer(many=True)
+
+
 class TemplateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Template
