@@ -103,7 +103,7 @@ class ProjectConstructionSerializer(serializers.ModelSerializer):
 
 
 class ProjectStageSerializer(serializers.ModelSerializer):
-    constructions = ProjectConstructionSerializer(many=True, read_only=False)
+    constructions = ProjectConstructionSerializer(many=True, read_only=False, required=False)
 
     class Meta:
         model = ProjectStage
