@@ -55,3 +55,9 @@ class SubCategoryInline(admin.StackedInline):
     model = SubCategory
     extra = 0
     classes = ["collapse"]
+
+
+class NestedProjectnDocumentsInline(nested_admin.NestedStackedInline):
+    model = ProjectDocument
+    extra = 0
+    classes = ["collapse"]
