@@ -28,6 +28,13 @@ class Element(models.Model):
 
     title = models.CharField(verbose_name="Название", max_length=60)
     category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="elements")
+    subcategory = models.ForeignKey(
+        SubCategory,
+        verbose_name="Подкатегория",
+        on_delete=models.CASCADE,
+        related_name="elements",
+        null=True
+    )
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
     second_measure = models.CharField(verbose_name="Вторая единица измерения", max_length=30)
     cost = models.PositiveIntegerField(verbose_name="Цена", default=0)
