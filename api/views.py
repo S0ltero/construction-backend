@@ -374,6 +374,14 @@ class ClientViewSet(viewsets.GenericViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
 
+    def retrieve(self, request, pk=None):
+        """
+        Получение клиента по pk
+        """
+        client = self.get_object()
+        serializer = ClientDetailSerializer(client)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def list(self, request):
         """
         Получение списка клиентов
