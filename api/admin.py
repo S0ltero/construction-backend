@@ -101,3 +101,8 @@ class NestedTemplateStageInline(nested_admin.NestedStackedInline):
     extra = 0
     classes = ["collapse"]
     inlines = (NestedTemplateConstructionInline, )
+
+
+@admin.register(Client)
+class AdminClient(admin.ModelAdmin):
+    inlines = (ProjectInline,)
