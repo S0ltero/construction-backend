@@ -14,7 +14,7 @@ from .models import (
 
 from . serializers import (
     CategorySerializer, SubCategorySerializer, ElementSerializer,
-    ConstructionSerializer, ProjectSerializer, ProjectStageSerializer,
+    ConstructionDetailSerializer, ProjectSerializer, ProjectStageSerializer,
     TemplateSerializer, TemplateStageSerializer, ClientSerializer
 )
 
@@ -114,7 +114,7 @@ class ElementViewSet(viewsets.GenericViewSet):
 
 class ConstructionViewset(viewsets.GenericViewSet):
     queryset = Construction.objects.all()
-    serializer_class = ConstructionSerializer
+    serializer_class = ConstructionDetailSerializer
 
     def list(self, request):
         """
