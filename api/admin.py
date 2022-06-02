@@ -37,3 +37,9 @@ class ConstructionDocumentInline(admin.StackedInline):
     model = ConstructionDocument
     extra = 0
     classes = ["collapse"]
+
+
+class ConstructionElementInline(admin.StackedInline):
+    model = ConstructionElement
+    extra = 0
+    classes = ["collapse"]
