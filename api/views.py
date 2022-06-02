@@ -59,6 +59,14 @@ class SubCategoryViewSet(viewsets.GenericViewSet):
     queryset = SubCategory.objects.all()
     serializer_class = SubCategorySerializer
 
+    def retrieve(self, request, pk=None):
+        """
+        Получение подкатегории по pk
+        """
+        category = self.get_object()
+        serializer = SubCategoryDetailSerializer(category)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def create(self, request):
         """
         Создание подкатегории
