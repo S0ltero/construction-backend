@@ -87,3 +87,10 @@ class NestedTemplateElementInline(nested_admin.NestedStackedInline):
     model = TemplateConstructionElement
     extra = 0
     classes = ["collapse"]
+
+
+class NestedTemplateConstructionInline(nested_admin.NestedStackedInline):
+    model = TemplateConstruction
+    extra = 0
+    classes = ["collapse"]
+    inlines = (NestedTemplateElementInline, )
