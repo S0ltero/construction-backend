@@ -49,3 +49,9 @@ class ConstructionImline(admin.StackedInline):
     model = Construction
     extra = 0
     classes = ["collapse"]
+
+
+class SubCategoryInline(admin.StackedInline):
+    model = SubCategory
+    extra = 0
+    classes = ["collapse"]
