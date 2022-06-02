@@ -81,3 +81,9 @@ class NestedProjectStageInline(nested_admin.NestedStackedInline):
     extra = 0
     classes = ["collapse"]
     inlines = (NestedConstructionInline, )
+
+
+class NestedTemplateElementInline(nested_admin.NestedStackedInline):
+    model = TemplateConstructionElement
+    extra = 0
+    classes = ["collapse"]
