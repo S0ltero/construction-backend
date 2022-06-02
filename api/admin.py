@@ -111,3 +111,8 @@ class AdminClient(admin.ModelAdmin):
 @admin.register(Element)
 class AdminElement(admin.ModelAdmin):
     inlines = [ElementDocumentsInline,]
+
+
+@admin.register(Construction)
+class AdminConstruction(admin.ModelAdmin):
+    inlines = [ConstructionElementInline, ConstructionDocumentInline]
