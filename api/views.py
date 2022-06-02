@@ -25,12 +25,16 @@ class CategoryViewSet(viewsets.GenericViewSet):
     serializer_class = CategorySerializer
 
     def list(self, request):
-        # Получение списка категорий
+        """
+        Получение списка категорий
+        """
         serializer = self.serializer_class(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def create(self, request):
-        # Создание категории
+        """
+        Создание категории
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -45,7 +49,9 @@ class SubCategoryViewSet(viewsets.GenericViewSet):
     serializer_class = SubCategorySerializer
 
     def create(self, request):
-        # Создание подкатегории
+        """
+        Создание подкатегории
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -60,12 +66,16 @@ class ElementViewSet(viewsets.GenericViewSet):
     serializer_class = ElementSerializer
 
     def list(self, request):
-        # Получение списка элементов
+        """
+        Получение списка элементов
+        """
         serializer = self.serializer_class(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        # Создание элемента
+        """
+        Создание элемента
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -81,7 +91,9 @@ class ElementViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        # Редактирование элемента
+        """
+        Редактирование элемента
+        """
         element = self.get_object()
         serializer = self.serializer_class(element, data=request.data, partial=True)
 
@@ -92,7 +104,9 @@ class ElementViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        # Удаление элемента
+        """
+        Удаление элемента
+        """
         element = self.get_object()
         element.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -103,12 +117,16 @@ class ConstructionViewset(viewsets.GenericViewSet):
     serializer_class = ConstructionSerializer
 
     def list(self, request):
-        # Получение списка конструкций
+        """
+        Получение списка конструкций
+        """
         serializer = self.serializer_class(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        # Создание конструкции
+        """
+        Создание конструкции
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -124,7 +142,9 @@ class ConstructionViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        # Редактирование конструкции и обновление списка элементов конструкции
+        """
+        Редактирование конструкции и обновление списка элементов конструкции
+        """
         construction = self.get_object()
         serializer = self.serializer_class(construction, data=request.data, partial=True)
 
@@ -135,7 +155,9 @@ class ConstructionViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        # Удаление конструкции
+        """
+        Удаление конструкции
+        """
         construction = self.get_object()
         construction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -146,7 +168,9 @@ class ProjectViewset(viewsets.GenericViewSet):
     serializer_class = ProjectSerializer
 
     def create(self, request):
-        # Создание проекта
+        """
+        Создание проекта
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -162,7 +186,9 @@ class ProjectViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        # Редактирование проекта
+        """
+        Редактирование проекта
+        """
         project = self.get_object()
         serializer = self.serializer_class(project, data=request.data, partial=True)
 
@@ -173,7 +199,9 @@ class ProjectViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        # Удаление проекта
+        """
+        Удаление проекта
+        """
         project = self.get_object()
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -181,7 +209,9 @@ class ProjectViewset(viewsets.GenericViewSet):
 
     @action(detail=True, methods=["post"], url_name="stages", url_path="stages", serializer_class=ProjectStageSerializer, queryset=ProjectStage.objects.all())
     def add_stages(self, request, pk=None):
-        # Добавление этапа проекта
+        """
+        Добавление этапа проекта
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -193,14 +223,17 @@ class ProjectViewset(viewsets.GenericViewSet):
 
     @action(detail=True, methods=["delete", "patch"], url_name="stages", url_path=r"stages/(?P<stage_id>[^/.]+)", serializer_class=ProjectStageSerializer)
     def edit_stages(self, request, pk=None, stage_id=None):
+        """
+        DELETE: Удаление этапа проекта
+
+        PATCH: Добавление конструкций к этапу проекта
+        """
         if request.method == "DELETE":
-            # Удаление этапа проекта
             project = self.get_object()
             stage = project.stages.get(id=stage_id)
             stage.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         elif request.method == "PATCH":
-            # Добавление конструкций к этапу проекта
             project = self.get_object()
             stage = project.stages.get(id=stage_id)
             serializer = self.serializer_class(stage, data=request.data, partial=True)
@@ -217,12 +250,16 @@ class TemplateViewset(viewsets.GenericViewSet):
     serializer_class = TemplateSerializer
 
     def list(self, request):
-        # Получение списка шаблонов
+        """
+        Получение списка шаблонов
+        """
         serializer = self.serializer_class(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        # Добавление шаблона
+        """
+        Добавление шаблона
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -232,7 +269,9 @@ class TemplateViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        # Редактирование шаблона
+        """
+        Редактирование шаблона
+        """
         template = self.get_object()
         serializer = self.serializer_class(template, data=request.data, partial=True)
 
@@ -243,7 +282,9 @@ class TemplateViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        # Удаление шаблона
+        """
+        Удаление шаблона
+        """
         template = self.get_object()
         template.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -251,7 +292,9 @@ class TemplateViewset(viewsets.GenericViewSet):
 
     @action(detail=True, methods=["post"], url_name="stages", url_path="stages", serializer_class=TemplateStageSerializer, queryset=TemplateStage.objects.all())
     def add_stages(self, request, pk=None):
-        # Добавление этапа шаблона
+        """
+        Добавление этапа шаблона
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -263,14 +306,17 @@ class TemplateViewset(viewsets.GenericViewSet):
 
     @action(detail=True, methods=["delete", "patch"], url_name="stages", url_path=r"stages/(?P<stage_id>[^/.]+)", serializer_class=TemplateStageSerializer)
     def edit_stages(self, request, pk=None, stage_id=None):
+        """
+        DELETE: Удаление этапа шаблона
+
+        PATCH: Добавление конструкций к этапу шаблона
+        """
         if request.method == "DELETE":
-            # Удаление этапа шаблона
             template = self.get_object()
             stage = template.stages.get(id=stage_id)
             stage.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         elif request.method == "PATCH":
-            # Добавление конструкций к этапу шаблона
             template = self.get_object()
             stage = template.stages.get(id=stage_id)
             serializer = self.serializer_class(stage, data=request.data, partial=True)
@@ -287,12 +333,16 @@ class ClientViewSet(viewsets.GenericViewSet):
     serializer_class = ClientSerializer
 
     def list(self, request):
-        # Получение списка клиентов
+        """
+        Получение списка клиентов
+        """
         serializer = self.serializer_class(self.queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        # Добавление клиента
+        """
+        Добавление клиента
+        """
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -302,7 +352,9 @@ class ClientViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        # Удаление клиента
+        """
+        Удаление клиента
+        """
         client = self.get_object()
         client.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
