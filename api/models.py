@@ -75,6 +75,10 @@ class ElementDocument(models.Model):
     def __str__(self):
         return self.file.name
 
+    @property
+    def file_url(self):
+        return self.file.url
+
 
 class Construction(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
@@ -106,6 +110,10 @@ class ConstructionDocument(models.Model):
 
     def __str__(self):
         return self.file.name
+
+    @property
+    def file_url(self):
+        return self.file.url
 
 
 class ConstructionElement(models.Model):
@@ -164,6 +172,10 @@ class ProjectDocument(models.Model):
 
     def __str__(self):
         return self.file.name
+
+    @property
+    def file_url(self):
+        return self.file.url
 
 
 class ProjectStage(models.Model):
