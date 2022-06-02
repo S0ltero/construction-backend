@@ -141,6 +141,7 @@ class ProjectStageSerializer(serializers.ModelSerializer):
 
 class ProjectDetailSerializer(ProjectSerializer):
     stages = ProjectStageSerializer(many=True)
+    documents = serializers.SlugRelatedField(slug_field="file_url", many=True, read_only=True)
 
 
 class TemplateSerializer(serializers.ModelSerializer):
