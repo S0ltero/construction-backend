@@ -4,8 +4,8 @@ from django.db import models
 # Create your models here.
 class Category(models.Model):
     class Type(models.TextChoices):
-        CONSTRUCTION = "Construction", "Конструкция"
-        ELEMENT = "Element ", "Элемент"
+        CONSTRUCTION = "CONSTRUCTION", "Конструкция"
+        ELEMENT = "ELEMENT ", "Элемент"
 
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
@@ -36,8 +36,8 @@ class SubCategory(models.Model):
 
 class Element(models.Model):
     class Type(models.TextChoices):
-        MATERIAL = "Material", "Материал"
-        JOB = "Job ", "Работа"
+        MATERIAL = "MATERIAL", "Материал"
+        JOB = "JOB", "Работа"
 
     title = models.CharField(verbose_name="Название", max_length=60)
     category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="elements")
@@ -136,9 +136,9 @@ class Client(models.Model):
 
 class Project(models.Model):
     class Type(models.TextChoices):
-        FINISH = "Finish", "Закончен"
-        WORK = "Work ", "В работе"
-        NOT_START = "Not start ", "Не начат"
+        FINISH = "FINISH", "Закончен"
+        WORK = "WORK", "В работе"
+        NOT_START = "NOT_START", "Не начат"
 
     title = models.CharField(verbose_name="Название", max_length=60)
     client = models.ForeignKey(Client, verbose_name="Клиент", on_delete=models.CASCADE, related_name="projects")
