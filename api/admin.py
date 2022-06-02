@@ -106,3 +106,8 @@ class NestedTemplateStageInline(nested_admin.NestedStackedInline):
 @admin.register(Client)
 class AdminClient(admin.ModelAdmin):
     inlines = (ProjectInline,)
+
+
+@admin.register(Element)
+class AdminElement(admin.ModelAdmin):
+    inlines = [ElementDocumentsInline,]
