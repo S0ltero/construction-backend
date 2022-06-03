@@ -23,7 +23,7 @@ class ParentCategory(models.Model):
         return self.title
 
 
-class SubCategory(models.Model):
+class Category(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
     image = models.ImageField(verbose_name="Фото", blank=True)
@@ -44,9 +44,9 @@ class Element(models.Model):
 
     title = models.CharField(verbose_name="Название", max_length=60)
     parent_category = models.ForeignKey(ParentCategory, verbose_name="Родительская категория", on_delete=models.CASCADE, related_name="elements")
-    subcategory = models.ForeignKey(
-        SubCategory,
-        verbose_name="Подкатегория",
+    category = models.ForeignKey(
+        Category,
+        verbose_name="Категория",
         on_delete=models.CASCADE,
         related_name="elements",
         null=True
@@ -87,9 +87,9 @@ class Construction(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
     parent_category = models.ForeignKey(ParentCategory, verbose_name="Родительская категория", on_delete=models.CASCADE, related_name="constructions")
-    subcategory = models.ForeignKey(
-        SubCategory,
-        verbose_name="Подкатегория",
+    category = models.ForeignKey(
+        Category,
+        verbose_name="Категория",
         on_delete=models.CASCADE,
         related_name="constructions",
         null=True

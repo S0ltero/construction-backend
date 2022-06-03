@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from .models import (
-    Category, SubCategory,
+    Category, Category,
     Element, ElementDocument,
     Construction, ConstructionDocument,
     Project, ProjectStage, ProjectDocument,
@@ -14,7 +14,7 @@ from .models import (
 
 from . serializers import (
     ParentCategorySerializer, ParentCategoryDetailSerializer,
-    SubCategorySerializer, SubCategoryDetailSerializer,
+    CategorySerializer, CategoryDetailSerializer,
     ElementSerializer, ConstructionDetailSerializer,
     ProjectSerializer, ProjectStageSerializer, ProjectDetailSerializer,
     TemplateSerializer, TemplateStageSerializer, TemplateDetailSerilaizer,
@@ -56,15 +56,15 @@ class CategoryViewSet(viewsets.GenericViewSet):
 
 
 class SubCategoryViewSet(viewsets.GenericViewSet):
-    queryset = SubCategory.objects.all()
-    serializer_class = SubCategorySerializer
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
 
     def retrieve(self, request, pk=None):
         """
         Получение подкатегории по pk
         """
         category = self.get_object()
-        serializer = SubCategoryDetailSerializer(category)
+        serializer = CategoryDetailSerializer(category)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):

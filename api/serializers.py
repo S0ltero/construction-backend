@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from .models import (
-    ParentCategory, SubCategory, Element,
+    ParentCategory, Category, Element,
     Construction, ConstructionElement,
     Project, ProjectStage, ProjectConstruction,
     ProjectConstructionElement,
@@ -11,14 +11,14 @@ from .models import (
 )
 
 
-class SubCategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = SubCategory
+        model = Category
         fields = "__all__"
 
 
 class ParentCategorySerializer(serializers.ModelSerializer):
-    subcategories = SubCategorySerializer(many=True, read_only=True)
+    categories = CategorySerializer(many=True, read_only=True)
 
     class Meta:
         model = ParentCategory
@@ -77,7 +77,7 @@ class ParentCategoryDetailSerializer(ParentCategorySerializer):
     constructions = ConstructionSerializer(many=True)
 
 
-class SubCategoryDetailSerializer(SubCategorySerializer):
+class CategoryDetailSerializer(CategorySerializer):
     elements = ElementSerializer(many=True)
     constructions = ConstructionSerializer(many=True)
 
