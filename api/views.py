@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from .models import (
-    Category, Category,
+    ParentCategory, Category,
     Element, ElementDocument,
     Construction, ConstructionDocument,
     Project, ProjectStage, ProjectDocument,
@@ -24,7 +24,7 @@ from . serializers import (
 
 # Create your views here.
 class ParentCategoryViewSet(viewsets.GenericViewSet):
-    queryset = Category.objects.all()
+    queryset = ParentCategory.objects.all()
     serializer_class = ParentCategorySerializer
 
     def retrieve(self, request, pk=None):
