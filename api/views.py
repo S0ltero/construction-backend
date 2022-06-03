@@ -13,7 +13,7 @@ from .models import (
 )
 
 from . serializers import (
-    CategorySerializer, CategoryDetailSerializer,
+    ParentCategorySerializer, ParentCategoryDetailSerializer,
     SubCategorySerializer, SubCategoryDetailSerializer,
     ElementSerializer, ConstructionDetailSerializer,
     ProjectSerializer, ProjectStageSerializer, ProjectDetailSerializer,
@@ -25,14 +25,14 @@ from . serializers import (
 # Create your views here.
 class CategoryViewSet(viewsets.GenericViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = ParentCategorySerializer
 
     def retrieve(self, request, pk=None):
         """
         Получение категории по pk
         """
         category = self.get_object()
-        serializer = CategoryDetailSerializer(category)
+        serializer = ParentCategoryDetailSerializer(category)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request):

@@ -2,7 +2,10 @@ from django.db import models
 
 
 # Create your models here.
-class Category(models.Model):
+class ParentCategory(models.Model):
+    """
+    Родительская категория
+    """
     class Type(models.TextChoices):
         CONSTRUCTION = "CONSTRUCTION", "Конструкция"
         ELEMENT = "ELEMENT", "Элемент"
@@ -24,7 +27,7 @@ class SubCategory(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
     image = models.ImageField(verbose_name="Фото", blank=True)
-    parent_category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="subcategories")
+    parent_category = models.ForeignKey(ParentCategory, verbose_name="Родительская категория", on_delete=models.CASCADE, related_name="subcategories")
 
     class Meta:
         verbose_name = "Подкатегория"
@@ -40,7 +43,7 @@ class Element(models.Model):
         JOB = "JOB", "Работа"
 
     title = models.CharField(verbose_name="Название", max_length=60)
-    category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="elements")
+    parent_category = models.ForeignKey(ParentCategory, verbose_name="Родительская категория", on_delete=models.CASCADE, related_name="elements")
     subcategory = models.ForeignKey(
         SubCategory,
         verbose_name="Подкатегория",
@@ -83,7 +86,7 @@ class ElementDocument(models.Model):
 class Construction(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
-    category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="constructions")
+    parent_category = models.ForeignKey(ParentCategory, verbose_name="Родительская категория", on_delete=models.CASCADE, related_name="constructions")
     subcategory = models.ForeignKey(
         SubCategory,
         verbose_name="Подкатегория",
