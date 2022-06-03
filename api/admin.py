@@ -4,7 +4,7 @@ import nested_admin
 
 from .models import (
     ElementDocument, ConstructionDocument, ProjectDocument,
-    Category, SubCategory, Element,
+    ParentCategory, Category, SubCategory, Element,
     Construction, ConstructionElement,
     Project, ProjectStage, ProjectConstruction,
     ProjectConstructionElement,
@@ -132,6 +132,11 @@ class AdminSubCategory(admin.ModelAdmin):
 @admin.register(Category)
 class AdminCategory(admin.ModelAdmin):
     inlines = [ConstructionImline, ElementInline, SubCategoryInline]
+
+
+@admin.register(ParentCategory)
+class AdminParentCategory(admin.ModelAdmin):
+    inlines = [ConstructionImline, ElementInline, CategoryInline]
 
 
 @admin.register(Project)
