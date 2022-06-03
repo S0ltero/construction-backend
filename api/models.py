@@ -37,6 +37,20 @@ class Category(models.Model):
         return self.title
 
 
+class SubCategory(models.Model):
+    title = models.CharField(verbose_name="Название", max_length=60)
+    description = models.TextField(verbose_name="Описание")
+    image = models.ImageField(verbose_name="Фото", blank=True)
+    category = models.ForeignKey(ParentCategory, verbose_name="Категория", on_delete=models.CASCADE, related_name="subcategories")
+
+    class Meta:
+        verbose_name = "Подкатегория"
+        verbose_name_plural = "Подкатегории"
+
+    def __str__(self):
+        return self.title
+
+
 class Element(models.Model):
     class Type(models.TextChoices):
         MATERIAL = "MATERIAL", "Материал"
