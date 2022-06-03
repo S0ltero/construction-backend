@@ -55,7 +55,7 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class SubCategoryViewSet(viewsets.GenericViewSet):
+class CategoryViewSet(viewsets.GenericViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
