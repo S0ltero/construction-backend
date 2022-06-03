@@ -28,6 +28,14 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
     queryset = ParentCategory.objects.all()
     serializer_class = ParentCategorySerializer
 
+    def get_queryset(self):
+        queryset = ParentCategory.objects.all()
+        type = self.request.query_params.get("type")
+        if type:
+            queryset = queryset.filter(type=type)
+
+        return queryset
+
     def retrieve(self, request, pk=None):
         """
         Получение категории по pk
@@ -40,7 +48,8 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
         """
         Получение списка категорий
         """
-        serializer = self.serializer_class(self.queryset, many=True)
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
