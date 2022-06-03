@@ -23,7 +23,7 @@ from . serializers import (
 
 
 # Create your views here.
-class CategoryViewSet(viewsets.GenericViewSet):
+class ParentCategoryViewSet(viewsets.GenericViewSet):
     queryset = Category.objects.all()
     serializer_class = ParentCategorySerializer
 

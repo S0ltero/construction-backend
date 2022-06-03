@@ -1,7 +1,7 @@
 from rest_framework.routers import DefaultRouter
 
 from .views import (
-    CategoryViewSet, SubCategoryViewSet, ElementViewSet,
+    ParentCategoryViewSet, SubCategoryViewSet, ElementViewSet,
     ConstructionViewset, ProjectViewset, TemplateViewset,
     ClientViewSet
 )
@@ -10,6 +10,7 @@ from .views import (
 app_name = 'api'
 
 router = DefaultRouter()
+router.register(r"parent-categories", ParentCategoryViewSet, basename="parent-categories")
 router.register(r"categories", CategoryViewSet, basename="categories")
 router.register(r"subcategories", SubCategoryViewSet, basename="subcategories")
 router.register(r"elements", ElementViewSet, basename="elements")
