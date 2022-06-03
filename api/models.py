@@ -16,8 +16,8 @@ class ParentCategory(models.Model):
     type = models.CharField(verbose_name="Тип", choices=Type.choices, max_length=30)
 
     class Meta:
-        verbose_name = "Категория"
-        verbose_name_plural = "Категории"
+        verbose_name = "Родительская категория"
+        verbose_name_plural = "Родительские категории"
 
     def __str__(self):
         return self.title
