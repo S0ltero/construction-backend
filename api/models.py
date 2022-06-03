@@ -119,7 +119,7 @@ class Construction(models.Model):
         SubCategory,
         verbose_name="Подкатегория",
         on_delete=models.CASCADE,
-        related_name="elements",
+        related_name="constructions",
         null=True
     )
 
