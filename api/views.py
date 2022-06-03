@@ -110,11 +110,21 @@ class ElementViewSet(viewsets.GenericViewSet):
     queryset = Element.objects.all()
     serializer_class = ElementSerializer
 
+    def get_queryset(self):
+        queryset = Element.objects.all()
+        title = self.request.query_params.get("title")
+        if title:
+            queryset = queryset.filter(title__istartswith=title)[:5]
+
+        return queryset
+
+
     def list(self, request):
         """
         Получение списка элементов
         """
-        serializer = self.serializer_class(self.queryset, many=True)
+        elements = self.get_queryset()
+        serializer = self.serializer_class(elements, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
