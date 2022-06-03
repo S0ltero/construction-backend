@@ -171,11 +171,20 @@ class ConstructionViewset(viewsets.GenericViewSet):
     queryset = Construction.objects.all()
     serializer_class = ConstructionDetailSerializer
 
+    def get_queryset(self):
+        queryset = Construction.objects.all()
+        title = self.request.query_params.get("title")
+        if title:
+            queryset = queryset.filter(title__istartswith=title)[:5]
+        
+        return queryset
+
     def list(self, request):
         """
         Получение списка конструкций
         """
-        serializer = self.serializer_class(self.queryset, many=True)
+        queryset = self.get_queryset()
+        serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
