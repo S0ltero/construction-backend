@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from .models import (
-    ParentCategory, Category,
+    ParentCategory, Category, SubCategory,
     Element, ElementDocument,
     Construction, ConstructionDocument,
     Project, ProjectStage, ProjectDocument,
@@ -15,6 +15,7 @@ from .models import (
 from . serializers import (
     ParentCategorySerializer, ParentCategoryDetailSerializer,
     CategorySerializer, CategoryDetailSerializer,
+    SubCategorySerializer, SubCategoryDetailSerializer,
     ElementSerializer, ConstructionDetailSerializer,
     ProjectSerializer, ProjectStageSerializer, ProjectDetailSerializer,
     TemplateSerializer, TemplateStageSerializer, TemplateDetailSerilaizer,
@@ -65,6 +66,31 @@ class CategoryViewSet(viewsets.GenericViewSet):
         """
         category = self.get_object()
         serializer = CategoryDetailSerializer(category)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def create(self, request):
+        """
+        Создание подкатегории
+        """
+        serializer = self.serializer_class(data=request.data)
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SubCategoryViewSet(viewsets.GenericViewSet):
+    queryset = SubCategory.objects.all()
+    serializer_class = SubCategorySerializer
+
+    def retrieve(self, request, pk=None):
+        """
+        Получение подкатегории по pk
+        """
+        category = self.get_object()
+        serializer = SubCategoryDetailSerializer(category)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
