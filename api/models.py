@@ -115,6 +115,13 @@ class Construction(models.Model):
         related_name="constructions",
         null=True
     )
+    subcategory = models.ForeignKey(
+        SubCategory,
+        verbose_name="Подкатегория",
+        on_delete=models.CASCADE,
+        related_name="elements",
+        null=True
+    )
 
     class Meta:
         verbose_name = "Конструкция"
