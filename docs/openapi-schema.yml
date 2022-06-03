@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   description: 'Construction API'
-  version: 0.0.0
+  version: 0.1
 paths:
   /api/auth/token/login/:
     post:
@@ -69,12 +69,12 @@ paths:
               schema:
                 $ref: '#/components/schemas/UserCreate'
           description: ''
-  /api/categories/:
+  /api/parent-categories/:
     get:
-      operationId: GetCategoriesList
-      description: Получение списка категорий
+      operationId: GetParentCategoriesList
+      description: Получение списка родительских категорий
       tags:
-      - categories
+      - parent-categories
       security:
       - tokenAuth: []
       - {}
@@ -85,8 +85,59 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Category'
+                  $ref: '#/components/schemas/ParentCategory'
           description: ''
+    post:
+      operationId: CreateParentCategory
+      description: Создание родительской категории
+      tags:
+      - parent-categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ParentCategory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ParentCategory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ParentCategory'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParentCategory'
+          description: ''
+  /api/parent-categories/{id}/:
+    get:
+      operationId: GetParentCategory
+      description: Получение родительской категории по pk
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `ParentCategory`.
+        required: true
+      tags:
+      - parent-categories
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ParentCategoryDetail'
+          description: ''
+  /api/categories/:
     post:
       operationId: CreateCategory
       description: Создание категории
@@ -123,7 +174,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: Уникальный индентификатор для Категория.
+        description: Уникальный индентификатор для `Category`.
         required: true
       tags:
       - categories
@@ -136,6 +187,57 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CategoryDetail'
+          description: ''
+  /api/subcategories/:
+    post:
+      operationId: CreateSubCategory
+      description: Создание подкатегории
+      tags:
+      - subcategories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubCategory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubCategory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubCategory'
+        required: true
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubCategory'
+          description: ''
+  /api/subcategories/{id}/:
+    get:
+      operationId: GetSubCategory
+      description: Получение подкатегории по pk
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `SubCategory`.
+        required: true
+      tags:
+      - subcategories
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubCategoryDetail'
           description: ''
   /api/clients/:
     get:
@@ -630,57 +732,6 @@ paths:
       responses:
         '204':
           description: No response body
-  /api/subcategories/:
-    post:
-      operationId: CreateSubCategory
-      description: Создание подкатегории
-      tags:
-      - subcategories
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/SubCategory'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/SubCategory'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/SubCategory'
-        required: true
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubCategory'
-          description: ''
-  /api/subcategories/{id}/:
-    get:
-      operationId: GetSubCategory
-      description: Получение подкатегории по pk
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: Уникальный индентификатор для Подкатегория.
-        required: true
-      tags:
-      - subcategories
-      security:
-      - tokenAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SubCategoryDetail'
-          description: ''
   /api/templates/:
     get:
       operationId: GetTemplatesList
@@ -900,17 +951,18 @@ paths:
           description: No response body
 components:
   schemas:
-    Category:
+    ParentCategory:
       type: object
       properties:
         id:
           type: integer
           readOnly: true
-        subcategories:
+        categories:
           type: array
           items:
-            $ref: '#/components/schemas/SubCategory'
+            $ref: '#/components/schemas/Category'
           readOnly: true
+          description: Категории
         title:
           type: string
           description: Название
@@ -924,25 +976,26 @@ components:
           description: Фото
         type:
           allOf:
-          - $ref: '#/components/schemas/CategoryTypeEnum'
+          - $ref: '#/components/schemas/ParentCategoryTypeEnum'
           description: Тип
       required:
       - description
       - id
-      - subcategories
+      - categories
       - title
       - type
-    CategoryDetail:
+    ParentCategoryDetail:
       type: object
       properties:
         id:
           type: integer
           readOnly: true
-        subcategories:
+        categories:
           type: array
           items:
-            $ref: '#/components/schemas/SubCategory'
+            $ref: '#/components/schemas/Category'
           readOnly: true
+          description: Категории
         title:
           type: string
           description: Название
@@ -956,7 +1009,7 @@ components:
           description: Фото
         type:
           allOf:
-          - $ref: '#/components/schemas/CategoryTypeEnum'
+          - $ref: '#/components/schemas/ParentCategoryTypeEnum'
           description: Тип
         elements:
           type: array
@@ -971,14 +1024,150 @@ components:
       required:
       - description
       - id
-      - subcategories
+      - categories
       - title
       - type
-    CategoryTypeEnum:
+    ParentCategoryTypeEnum:
       enum:
       - CONSTRUCTION
       - ELEMENT
       type: string
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Название
+          maxLength: 60
+        description:
+          type: string
+          description: Описание
+        image:
+          type: string
+          format: uri
+          description: Фото
+        parent_category:
+          type: integer
+          description: Родительская категория
+        subcategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubCategory'
+          readOnly: true
+          description: Подкатегории
+      required:
+      - description
+      - id
+      - parent_category
+      - title
+    CategoryDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Название
+          maxLength: 60
+        description:
+          type: string
+          description: Описание
+        image:
+          type: string
+          format: uri
+          description: Фото
+        parent_category:
+          type: integer
+          description: Родительская категория
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Element'
+          readOnly: true
+          description: Элементы
+        constructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Construction'
+          readOnly: true
+          description: Конструкции
+        subcategories:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubCategory'
+          readOnly: true
+          description: Подкатегории
+      required:
+      - description
+      - id
+      - parent_category
+      - title
+    SubCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Название
+          maxLength: 60
+        description:
+          type: string
+          description: Описание
+        image:
+          type: string
+          format: uri
+          description: Фото
+        category:
+          type: integer
+          description: Категория
+      required:
+      - description
+      - id
+      - category
+      - title
+    SubCategoryDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Название
+          maxLength: 60
+        description:
+          type: string
+          description: Описание
+        image:
+          type: string
+          format: uri
+          description: Фото
+        category:
+          type: integer
+          description: Категория
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/Element'
+          readOnly: true
+          description: Элементы
+        constructions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Construction'
+          readOnly: true
+          description: Конструкции
+      required:
+      - description
+      - id
+      - category
+      - title
     Client:
       type: object
       properties:
@@ -1492,66 +1681,6 @@ components:
       - description: NOT_START
         description: Проект не начат
       type: string
-    SubCategory:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        title:
-          type: string
-          description: Название
-          maxLength: 60
-        description:
-          type: string
-          description: Описание
-        image:
-          type: string
-          format: uri
-          description: Фото
-        parent_category:
-          type: integer
-          description: Категория
-      required:
-      - description
-      - id
-      - parent_category
-      - title
-    SubCategoryDetail:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        title:
-          type: string
-          description: Название
-          maxLength: 60
-        description:
-          type: string
-          description: Описание
-        image:
-          type: string
-          format: uri
-          description: Фото
-        parent_category:
-          type: integer
-          description: Категория
-        elements:
-          type: array
-          items:
-            $ref: '#/components/schemas/Element'
-          readOnly: true
-        constructions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Construction'
-          readOnly: true
-      required:
-      - description
-      - id
-      - parent_category
-      - title
     Template:
       type: object
       properties:
