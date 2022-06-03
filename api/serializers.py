@@ -1,14 +1,20 @@
 from rest_framework import serializers
 
 from .models import (
-    ParentCategory, Category, Element,
-    Construction, ConstructionElement,
+    ParentCategory, Category, SubCategory,
+    Element, Construction, ConstructionElement,
     Project, ProjectStage, ProjectConstruction,
     ProjectConstructionElement,
     Template, TemplateStage, TemplateConstruction,
     TemplateConstructionElement,
     Client
 )
+
+
+class SubCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SubCategory
+        fields = "__all__"
 
 
 class CategorySerializer(serializers.ModelSerializer):
