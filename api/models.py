@@ -65,6 +65,13 @@ class Element(models.Model):
         related_name="elements",
         null=True
     )
+    subcategory = models.ForeignKey(
+        SubCategory,
+        verbose_name="Подкатегория",
+        on_delete=models.CASCADE,
+        related_name="elements",
+        null=True
+    )
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
     second_measure = models.CharField(verbose_name="Доп. ед. измерения", max_length=30)
     cost = models.PositiveIntegerField(verbose_name="Себестоимость", default=0)
