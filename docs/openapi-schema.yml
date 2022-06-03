@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: 'Construction API'
+  description: 'Construction API'
   version: 0.0.0
 paths:
   /api/auth/token/login/:
@@ -444,13 +444,10 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Project'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Project'
+              $ref: '#/components/schemas/CreateProject'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/Project'
+              $ref: '#/components/schemas/CreateProject'
         required: true
       security:
       - tokenAuth: []
@@ -460,7 +457,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Project'
+                $ref: '#/components/schemas/CreateProject'
           description: ''
   /api/projects/{id}/:
     get:
@@ -574,7 +571,7 @@ paths:
   /api/projects/{id}/stages/{stage_id}/:
     patch:
       operationId: UpdateProjectStage
-      description: Добавление конструкций к этапу проекта
+      description: Обновление этапа проекта и добавление конструкций
       parameters:
       - in: path
         name: id
@@ -916,19 +913,19 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         description:
           type: string
-          title: Описание
+          description: Описание
         image:
           type: string
           format: uri
-          title: Фото
+          description: Фото
         type:
           allOf:
           - $ref: '#/components/schemas/CategoryTypeEnum'
-          title: Тип
+          description: Тип
       required:
       - description
       - id
@@ -948,19 +945,19 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         description:
           type: string
-          title: Описание
+          description: Описание
         image:
           type: string
           format: uri
-          title: Фото
+          description: Фото
         type:
           allOf:
           - $ref: '#/components/schemas/CategoryTypeEnum'
-          title: Тип
+          description: Тип
         elements:
           type: array
           items:
@@ -990,11 +987,11 @@ components:
           readOnly: true
         name:
           type: string
-          title: Имя
+          description: Имя
           maxLength: 60
         url:
           type: string
-          title: Ссылка
+          description: Ссылка
       required:
       - id
       - name
@@ -1007,11 +1004,11 @@ components:
           readOnly: true
         name:
           type: string
-          title: Имя
+          description: Имя
           maxLength: 60
         url:
           type: string
-          title: Ссылка
+          description: Ссылка
         projects:
           type: array
           items:
@@ -1025,15 +1022,15 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         measure:
           type: string
-          title: Единицы измерения
+          description: Единицы измерения
           maxLength: 30
         category:
           type: integer
-          title: Категория
+          description: Категория
         documents:
           type: array
           items:
@@ -1052,15 +1049,15 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         measure:
           type: string
-          title: Единицы измерения
+          description: Единицы измерения
           maxLength: 30
         category:
           type: integer
-          title: Категория
+          description: Категория
         elements:
           type: array
           items:
@@ -1084,18 +1081,18 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         consumption:
           type: number
           format: double
-          title: Норма расхода
+          description: Норма расхода
         element:
           type: integer
-          title: Элемент
+          description: Элемент
         construction:
           type: integer
-          title: Конструкция
+          description: Конструкция
       required:
       - construction
       - element
@@ -1114,46 +1111,46 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         measure:
           type: string
-          title: Единицы измерения
+          description: Единицы измерения
           maxLength: 30
         second_measure:
           type: string
-          title: Вторая единица измерения
+          description: Доп. ед. измерения
           maxLength: 30
         cost:
           type: integer
           maximum: 2147483647
           minimum: 0
-          title: Цена
+          description: Себестоимость
         price:
           type: integer
           maximum: 2147483647
           minimum: 0
-          title: Сумма
+          description: Цена
         type:
           allOf:
           - $ref: '#/components/schemas/ElementTypeEnum'
-          title: Тип
+          description: Тип
         dimension:
           type: string
-          title: Размер
+          description: Размер
           maxLength: 60
         conversion_rate:
           type: integer
           maximum: 2147483647
           minimum: 0
-          title: Коэффициент конверсии
+          description: Норма конвертации
         category:
           type: integer
-          title: Категория
+          description: Категория
         subcategory:
           type: integer
           nullable: true
-          title: Подкатегория
+          description: Подкатегория
       required:
       - category
       - conversion_rate
@@ -1177,15 +1174,15 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         measure:
           type: string
-          title: Единицы измерения
+          description: Единицы измерения
           maxLength: 30
         category:
           type: integer
-          title: Категория
+          description: Категория
         elements:
           type: array
           items:
@@ -1208,46 +1205,46 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         measure:
           type: string
-          title: Единицы измерения
+          description: Единицы измерения
           maxLength: 30
         second_measure:
           type: string
-          title: Вторая единица измерения
+          description: Доп. ед. измерения
           maxLength: 30
         cost:
           type: integer
           maximum: 2147483647
           minimum: 0
-          title: Цена
+          description: Себестоимость
         price:
           type: integer
           maximum: 2147483647
           minimum: 0
-          title: Сумма
+          description: Цена
         type:
           allOf:
           - $ref: '#/components/schemas/ElementTypeEnum'
-          title: Тип
+          description: Тип
         dimension:
           type: string
-          title: Размер
+          description: Размер
           maxLength: 60
         conversion_rate:
           type: integer
           maximum: 2147483647
           minimum: 0
-          title: Коэффициент конверсии
+          description: Норма конвертации
         category:
           type: integer
-          title: Категория
+          description: Категория
         subcategory:
           type: integer
           nullable: true
-          title: Подкатегория
+          description: Подкатегория
     PatchedProject:
       type: object
       properties:
@@ -1256,22 +1253,22 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         description:
           type: string
-          title: Описание
+          description: Описание
         author:
           type: string
-          title: Автор
+          description: Автор
           maxLength: 60
         status:
           allOf:
           - $ref: '#/components/schemas/StatusEnum'
-          title: Статус
+          description: Статус
         client:
           type: integer
-          title: Клиент
+          description: Клиент
     PatchedProjectStage:
       type: object
       properties:
@@ -1280,16 +1277,16 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         project:
           type: integer
-          title: Проект
+          description: Проект
         order:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          title: Порядковый номер
+          description: Порядковый номер
         constructions:
           type: array
           items:
@@ -1302,18 +1299,18 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         description:
           type: string
-          title: Описание
+          description: Описание
     PatchedUser:
       type: object
       properties:
         email:
           type: string
           format: email
-          title: Адрес электронной почты
+          description: Адрес электронной почты
           maxLength: 254
         id:
           type: integer
@@ -1321,9 +1318,39 @@ components:
         username:
           type: string
           readOnly: true
-          title: Имя пользователя
+          description: Имя пользователя
           description: Обязательное поле. Не более 150 символов. Только буквы, цифры
             и символы @/./+/-/_.
+    CreateProject:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Название
+          maxLength: 60
+        description:
+          type: string
+          description: Описание
+        author:
+          type: string
+          description: Автор
+          maxLength: 60
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: Статус
+        client:
+          type: integer
+          description: Клиент
+        documents:
+          type: array
+          description: Документы
+          items:
+            type: string
+            format: binary
     Project:
       type: object
       properties:
@@ -1332,22 +1359,22 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         description:
           type: string
-          title: Описание
+          description: Описание
         author:
           type: string
-          title: Автор
+          description: Автор
           maxLength: 60
         status:
           allOf:
           - $ref: '#/components/schemas/StatusEnum'
-          title: Статус
+          description: Статус
         client:
           type: integer
-          title: Клиент
+          description: Клиент
       required:
       - author
       - client
@@ -1363,19 +1390,19 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         count:
           type: integer
           maximum: 2147483647
           minimum: 0
-          title: Номер проекта
+          description: Количество
         stage:
           type: integer
-          title: Стадия
+          description: Стадия
         measure:
           type: string
-          title: Единицы измерения
+          description: Единицы измерения
           maxLength: 30
         elements:
           type: array
@@ -1395,18 +1422,18 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         consumption:
           type: number
           format: double
-          title: Норма расхода
+          description: Норма расхода
         element:
           type: integer
-          title: Элемент
+          description: Элемент
         construction:
           type: integer
-          title: Конструкция
+          description: Конструкция
       required:
       - element
       - id
@@ -1419,16 +1446,16 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         project:
           type: integer
-          title: Проект
+          description: Проект
         order:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          title: Порядковый номер
+          description: Порядковый номер
     ProjectStagePatch:
       type: object
       properties:
@@ -1437,16 +1464,16 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         project:
           type: integer
-          title: Проект
+          description: Проект
         order:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          title: Порядковый номер
+          description: Порядковый номер
         constructions:
           type: array
           items:
@@ -1458,11 +1485,11 @@ components:
       - title
     StatusEnum:
       oneOf:
-      - title: FINISH
+      - description: FINISH
         description: Проект закончен
-      - title: WORK
+      - description: WORK
         description: Проект в работе
-      - title: NOT_START
+      - description: NOT_START
         description: Проект не начат
       type: string
     SubCategory:
@@ -1473,18 +1500,18 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         description:
           type: string
-          title: Описание
+          description: Описание
         image:
           type: string
           format: uri
-          title: Фото
+          description: Фото
         parent_category:
           type: integer
-          title: Категория
+          description: Категория
       required:
       - description
       - id
@@ -1498,18 +1525,18 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         description:
           type: string
-          title: Описание
+          description: Описание
         image:
           type: string
           format: uri
-          title: Фото
+          description: Фото
         parent_category:
           type: integer
-          title: Категория
+          description: Категория
         elements:
           type: array
           items:
@@ -1533,11 +1560,11 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         description:
           type: string
-          title: Описание
+          description: Описание
       required:
       - description
       - id
@@ -1550,19 +1577,19 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         count:
           type: integer
           maximum: 2147483647
           minimum: 0
-          title: Номер проекта
+          description: Количество
         stage:
           type: integer
-          title: Стадия
+          description: Стадия
         measure:
           type: string
-          title: Единицы измерения
+          description: Единицы измерения
           maxLength: 30
         elements:
           type: array
@@ -1582,18 +1609,18 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         consumption:
           type: number
           format: double
-          title: Норма расхода
+          description: Норма расхода
         element:
           type: integer
-          title: Элемент
+          description: Элемент
         construction:
           type: integer
-          title: Конструкция
+          description: Конструкция
       required:
       - element
       - id
@@ -1606,16 +1633,16 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         template:
           type: integer
-          title: Шаблон
+          description: Шаблон
         order:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          title: Порядковый номер
+          description: Порядковый номер
       required:
       - id
       - order
@@ -1629,16 +1656,16 @@ components:
           readOnly: true
         title:
           type: string
-          title: Название
+          description: Название
           maxLength: 60
         template:
           type: integer
-          title: Шаблон
+          description: Шаблон
         order:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          title: Порядковый номер
+          description: Порядковый номер
         constructions:
           type: array
           items:
@@ -1662,7 +1689,7 @@ components:
         email:
           type: string
           format: email
-          title: Адрес электронной почты
+          description: Адрес электронной почты
           maxLength: 254
         id:
           type: integer
@@ -1670,7 +1697,7 @@ components:
         username:
           type: string
           readOnly: true
-          title: Имя пользователя
+          description: Имя пользователя
           description: Обязательное поле. Не более 150 символов. Только буквы, цифры
             и символы @/./+/-/_.
       required:
@@ -1682,11 +1709,11 @@ components:
         email:
           type: string
           format: email
-          title: Адрес электронной почты
+          description: Адрес электронной почты
           maxLength: 254
         username:
           type: string
-          title: Имя пользователя
+          description: Имя пользователя
           description: Обязательное поле. Не более 150 символов. Только буквы, цифры
             и символы @/./+/-/_.
           pattern: ^[\w.@+-]+$
