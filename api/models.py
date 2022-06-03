@@ -41,7 +41,7 @@ class SubCategory(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
     image = models.ImageField(verbose_name="Фото", blank=True)
-    category = models.ForeignKey(ParentCategory, verbose_name="Категория", on_delete=models.CASCADE, related_name="subcategories")
+    category = models.ForeignKey(Category, verbose_name="Категория", on_delete=models.CASCADE, related_name="subcategories")
 
     class Meta:
         verbose_name = "Подкатегория"
