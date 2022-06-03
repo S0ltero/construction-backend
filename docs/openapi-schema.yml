@@ -73,6 +73,17 @@ paths:
     get:
       operationId: GetParentCategoriesList
       description: Получение списка родительских категорий
+      parameters:
+      - in: path
+        name: type
+        schema:
+          oneOf:
+            - title: CONSTRUCTION
+              description: Конструкция
+            - title: ELEMENT
+              description: Элемент
+        description: Тип родительской категории
+        required: true
       tags:
       - parent-categories
       security:
@@ -329,6 +340,12 @@ paths:
     get:
       operationId: GetConstructionsList
       description: Получение списка конструкций
+      parameters:
+      - in: path
+        name: title
+        schema:
+          type: string
+        description: Название конструкции
       tags:
       - constructions
       security:
@@ -426,6 +443,12 @@ paths:
     get:
       operationId: GetElementsList
       description: Получение списка элементов
+      parameters:
+      - in: path
+        name: title
+        schema:
+          type: string
+        description: Название элемента
       tags:
       - elements
       security:
