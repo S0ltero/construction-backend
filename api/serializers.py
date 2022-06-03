@@ -89,6 +89,11 @@ class CategoryDetailSerializer(CategorySerializer):
     constructions = ConstructionSerializer(many=True)
 
 
+class SubCategoryDetailSerializer(SubCategorySerializer):
+    elements = ElementSerializer(many=True)
+    constructions = ConstructionSerializer(many=True)
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
