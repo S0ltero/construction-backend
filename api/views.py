@@ -185,7 +185,7 @@ class ConstructionViewset(viewsets.GenericViewSet):
         title = self.request.query_params.get("title")
         if title:
             queryset = queryset.filter(title__istartswith=title)[:5]
-        
+
         return queryset
 
     def list(self, request):
