@@ -106,6 +106,13 @@ class ProjectConstructionElementSerializer(serializers.ModelSerializer):
         fields = "__all__"
         extra_kwargs = {"construction": {"required": False}}
 
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["element"] = ElementSerializer(
+            Element.objects.get(id=data["element"])
+        ).data
+        return data
+
 
 class ProjectConstructionSerializer(serializers.ModelSerializer):
     elements = ProjectConstructionElementSerializer(many=True, read_only=False)
