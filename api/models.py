@@ -195,7 +195,7 @@ class Project(models.Model):
 
 class ProjectDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
-    project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE, related_name="documents")
 
     class Meta:
         verbose_name = "Документ"
