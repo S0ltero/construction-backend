@@ -295,6 +295,23 @@ class ProjectViewset(viewsets.GenericViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+    @action(detail=True, methods=["get"], url_name="update-price", url_path="update-price", serializer_class=ProjectDetailSerializer)
+    def update_price(self, request, pk=None):
+        """
+        Обновление цен проекта
+        """
+        project = self.get_object()
+        stages = project.stages.all()
+        for stage in stages:
+            serializer = ProjectStageSerializer(stage, context={"new_price": True})
+            stage.data = serializer.data
+            stage.save()
+
+        serializer = self.serializer_class(project)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
     @action(detail=True, methods=["post"], url_name="stages", url_path="stages", serializer_class=ProjectStageSerializer, queryset=ProjectStage.objects.all())
     def add_stages(self, request, pk=None):
         """
