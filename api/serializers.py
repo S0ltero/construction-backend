@@ -155,7 +155,32 @@ class ProjectStageSerializer(serializers.ModelSerializer):
         ProjectConstructionElement.objects.bulk_create(bulk_insert_elements)
 
         stage = ProjectStage.objects.get(id=instance.id)
-        return ProjectStageSerializer(instance=stage).data
+        serializer = ProjectStageSerializer(instance=stage)
+
+        data = serializer.data.copy()
+        constructions = data["constructions"]
+
+        for const_index, construction in enumerate(constructions):
+            elements = construction["elements"]
+            for const_elem_index, const_element in enumerate(elements):
+                element_id = const_element["element"]["id"]
+                if stage.used_elements.get(str(element_id)):
+                    elements[const_elem_index]["element"] = stage.used_elements[str(element_id)]["element"]
+                else:
+                    stage.used_elements[str(element_id)] = const_element
+            constructions[const_index]["elements"] = elements
+
+        data["constructions"] = constructions
+
+        stage.data = data
+        stage.save()
+
+        return data
+
+    def to_representation(self, instance):
+        if not instance.data or self.context.get("new_price"):
+            return super().to_representation(instance)
+        return instance.data
 
 
 class ProjectDetailSerializer(ProjectSerializer):
