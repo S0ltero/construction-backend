@@ -294,6 +294,21 @@ class ProjectViewset(viewsets.GenericViewSet):
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, methods=["get"], url_name="update-price", url_path="update-price", serializer_class=ProjectDetailSerializer)
+    def update_price(self, request, pk=None):
+        """
+        Обновление цен проекта
+        """
+        project = self.get_object()
+        stages = project.stages.all()
+        for stage in stages:
+            serializer = ProjectStageSerializer(stage, context={"new_price": True})
+            stage.data = serializer.data
+            stage.save()
+
+        serializer = self.serializer_class(project)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=["post"], url_name="stages", url_path="stages", serializer_class=ProjectStageSerializer, queryset=ProjectStage.objects.all())
     def add_stages(self, request, pk=None):
@@ -307,7 +322,6 @@ class ProjectViewset(viewsets.GenericViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     @action(detail=True, methods=["delete", "patch"], url_name="stages", url_path=r"stages/(?P<stage_id>[^/.]+)", serializer_class=ProjectStageSerializer)
     def edit_stages(self, request, pk=None, stage_id=None):
@@ -385,7 +399,6 @@ class TemplateViewset(viewsets.GenericViewSet):
         template.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-
     @action(detail=True, methods=["post"], url_name="stages", url_path="stages", serializer_class=TemplateStageSerializer, queryset=TemplateStage.objects.all())
     def add_stages(self, request, pk=None):
         """
@@ -398,7 +411,6 @@ class TemplateViewset(viewsets.GenericViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
     @action(detail=True, methods=["delete", "patch"], url_name="stages", url_path=r"stages/(?P<stage_id>[^/.]+)", serializer_class=TemplateStageSerializer)
     def edit_stages(self, request, pk=None, stage_id=None):
