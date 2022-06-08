@@ -1717,6 +1717,10 @@ components:
         description:
           type: string
           description: Описание
+        created_at:
+          type: string
+          format: date
+          description: Дата добавления
       required:
       - description
       - id
