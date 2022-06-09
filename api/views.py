@@ -252,7 +252,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         """
         Получение списка проектов
         """
-        serializer = self.serializer_class(self.queryset, many=True)
+        serializer = self.serializer_class(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
@@ -363,7 +363,7 @@ class TemplateViewset(viewsets.GenericViewSet):
         """
         Получение списка шаблонов
         """
-        serializer = self.serializer_class(self.queryset, many=True)
+        serializer = self.serializer_class(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
@@ -452,7 +452,7 @@ class ClientViewSet(viewsets.GenericViewSet):
         """
         Получение списка клиентов
         """
-        serializer = self.serializer_class(self.queryset, many=True)
+        serializer = self.serializer_class(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
