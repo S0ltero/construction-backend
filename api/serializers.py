@@ -41,6 +41,8 @@ class ElementSerializer(serializers.ModelSerializer):
 
 
 class ConstructionElementSerializer(serializers.ModelSerializer):
+    measure = serializers.CharField(source="element.measure")
+    price = serializers.IntegerField(source="element.price")
     class Meta:
         model = ConstructionElement
         fields = "__all__"
