@@ -127,7 +127,6 @@ class ElementViewSet(viewsets.GenericViewSet):
 
         return queryset
 
-
     def list(self, request):
         """
         Получение списка элементов
