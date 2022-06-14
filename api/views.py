@@ -195,6 +195,12 @@ class ConstructionViewset(viewsets.GenericViewSet):
         else:
             return super().get_serializer_class()
 
+    def retrieve(self, request, pk=None):
+        construction = self.get_object()
+        serializer = self.get_serializer_class()
+        serializer = serializer(construction)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def list(self, request):
         """
         Получение списка конструкций
