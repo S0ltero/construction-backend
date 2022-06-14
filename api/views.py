@@ -16,7 +16,7 @@ from . serializers import (
     ParentCategorySerializer, ParentCategoryDetailSerializer,
     CategorySerializer, CategoryDetailSerializer,
     SubCategorySerializer, SubCategoryDetailSerializer,
-    ElementSerializer, ConstructionDetailSerializer,
+    ElementSerializer, ConstructionDetailSerializer, ConstructionSerializer,
     ProjectSerializer, ProjectStageSerializer, ProjectDetailSerializer,
     TemplateSerializer, TemplateStageSerializer, TemplateDetailSerilaizer,
     ClientSerializer, ClientDetailSerializer
@@ -186,6 +186,14 @@ class ConstructionViewset(viewsets.GenericViewSet):
             queryset = queryset.filter(title__istartswith=title)[:5]
 
         return queryset
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ConstructionSerializer
+        elif self.action == "retrieve":
+            return ConstructionDetailSerializer
+        else:
+            return super().get_serializer_class()
 
     def list(self, request):
         """
