@@ -605,7 +605,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Project'
+                $ref: '#/components/schemas/ProjectDetail'
           description: ''
     patch:
       operationId: UpdateProject
@@ -658,6 +658,29 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/projects/{id}/update-price:
+    get:
+      operationId: UpdateProjectPrices
+      description: Обновление цен в проекте
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Проект.
+        required: true
+      tags:
+      - projects
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDetail'
+          description: ''
   /api/projects/{id}/stages/:
     post:
       operationId: CreateProjectStage
@@ -675,13 +698,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProjectStageCreate'
+              $ref: '#/components/schemas/ProjectStage'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/ProjectStageCreate'
+              $ref: '#/components/schemas/ProjectStage'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ProjectStageCreate'
+              $ref: '#/components/schemas/ProjectStage'
         required: true
       security:
       - tokenAuth: []
@@ -691,7 +714,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectStageCreate'
+                $ref: '#/components/schemas/ProjectStage'
           description: ''
   /api/projects/{id}/stages/{stage_id}/:
     patch:
@@ -715,13 +738,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedProjectStage'
+              $ref: '#/components/schemas/ProjectStageDetail'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedProjectStage'
+              $ref: '#/components/schemas/ProjectStageDetail'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedProjectStage'
+              $ref: '#/components/schemas/ProjectStageDetail'
       security:
       - tokenAuth: []
       - {}
@@ -730,7 +753,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectStagePatch'
+                $ref: '#/components/schemas/ProjectStageDetail'
           description: ''
     delete:
       operationId: DeleteProjectStage
@@ -1240,9 +1263,16 @@ components:
           type: string
           description: Единицы измерения
           maxLength: 30
+        parent_category:
+          type: integer
+          description: Родительская категория
         category:
           type: integer
           description: Категория
+        subcategory:
+          type: integer
+          nullable: true
+          description: Подкатегория
         documents:
           type: array
           items:
@@ -1267,9 +1297,16 @@ components:
           type: string
           description: Единицы измерения
           maxLength: 30
+        parent_category:
+          type: integer
+          description: Родительская категория
         category:
           type: integer
           description: Категория
+        subcategory:
+          type: integer
+          nullable: true
+          description: Подкатегория
         elements:
           type: array
           items:
@@ -1356,6 +1393,9 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Норма конвертации
+        parent_category:
+          type: integer
+          description: Родительская категория
         category:
           type: integer
           description: Категория
@@ -1392,9 +1432,16 @@ components:
           type: string
           description: Единицы измерения
           maxLength: 30
+        parent_category:
+          type: integer
+          description: Родительская категория
         category:
           type: integer
           description: Категория
+        subcategory:
+          type: integer
+          nullable: true
+          description: Подкатегория
         elements:
           type: array
           items:
@@ -1450,6 +1497,9 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Норма конвертации
+        parent_category:
+          type: integer
+          description: Родительская категория
         category:
           type: integer
           description: Категория
@@ -1481,28 +1531,6 @@ components:
         client:
           type: integer
           description: Клиент
-    PatchedProjectStage:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        title:
-          type: string
-          description: Название
-          maxLength: 60
-        project:
-          type: integer
-          description: Проект
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Порядковый номер
-        constructions:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectConstruction'
     PatchedTemplate:
       type: object
       properties:
@@ -1563,6 +1591,12 @@ components:
           items:
             type: string
             format: binary
+      required:
+      - author
+      - client
+      - description
+      - status
+      - title
     Project:
       type: object
       properties:
@@ -1587,6 +1621,47 @@ components:
         client:
           type: integer
           description: Клиент
+      required:
+      - author
+      - client
+      - description
+      - id
+      - status
+      - title
+    ProjectDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Название
+          maxLength: 60
+        description:
+          type: string
+          description: Описание
+        author:
+          type: string
+          description: Автор
+          maxLength: 60
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: Статус
+        client:
+          type: integer
+          description: Клиент
+        documents:
+          type: array
+          description: Документы
+          items:
+            type: string
+            format: binary
+        stages:
+          type: array
+          items:
+            - $ref: '#/components/schemas/ProjectStageDetail'
       required:
       - author
       - client
@@ -1640,6 +1715,9 @@ components:
           type: number
           format: double
           description: Норма расхода
+        count:
+          type: integer
+          description: Количество
         element:
           type: integer
           description: Элемент
@@ -1650,7 +1728,7 @@ components:
       - element
       - id
       - title
-    ProjectStageCreate:
+    ProjectStage:
       type: object
       properties:
         id:
@@ -1668,7 +1746,12 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: Порядковый номер
-    ProjectStagePatch:
+      required:
+      - id
+      - order
+      - project
+      - title
+    ProjectStageDetail:
       type: object
       properties:
         id:
@@ -1690,18 +1773,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProjectConstruction'
-      required:
-      - id
-      - order
-      - project
-      - title
     StatusEnum:
       oneOf:
-      - description: FINISH
+      - title: FINISH
         description: Проект закончен
-      - description: WORK
+      - title: WORK
         description: Проект в работе
-      - description: NOT_START
+      - title: NOT_START
         description: Проект не начат
       type: string
     Template:
@@ -1771,6 +1849,9 @@ components:
           type: number
           format: double
           description: Норма расхода
+        count:
+          type: integer
+          description: Количество
         element:
           type: integer
           description: Элемент
