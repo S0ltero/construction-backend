@@ -358,7 +358,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ConstructionDetail'
+                  $ref: '#/components/schemas/Construction'
           description: ''
     post:
       operationId: CreateConstruction
@@ -369,13 +369,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConstructionDetail'
+              $ref: '#/components/schemas/Construction'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/ConstructionDetail'
+              $ref: '#/components/schemas/Construction'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ConstructionDetail'
+              $ref: '#/components/schemas/Construction'
         required: true
       security:
       - tokenAuth: []
@@ -388,6 +388,28 @@ paths:
                 $ref: '#/components/schemas/ConstructionDetail'
           description: ''
   /api/constructions/{id}/:
+    get:
+      operationId: GetConstruction
+      description: Получение конструкции по `pk`
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `Конструкции`.
+        required: true
+      tags:
+      - constructions
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstructionDetail'
+          description: ''
     patch:
       operationId: UpdateConstruction
       description: Редактирование конструкции и обновление списка элементов конструкции
@@ -396,7 +418,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: Уникальный индентификатор для Контсрукция.
+        description: Уникальный индентификатор для Конструкция.
         required: true
       tags:
       - constructions
@@ -429,7 +451,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: Уникальный индентификатор для Контсрукция.
+        description: Уникальный индентификатор для Конструкция.
         required: true
       tags:
       - constructions
@@ -844,7 +866,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Template'
+                $ref: '#/components/schemas/TemplateDetail'
           description: ''
     patch:
       operationId: UpdateTemplate
@@ -1259,6 +1281,9 @@ components:
           type: string
           description: Название
           maxLength: 60
+        description:
+          type: string
+          description: Описание
         measure:
           type: string
           description: Единицы измерения
@@ -1268,6 +1293,7 @@ components:
           description: Родительская категория
         category:
           type: integer
+          nullable: true
           description: Категория
         subcategory:
           type: integer
@@ -1279,7 +1305,7 @@ components:
             type: string
           readOnly: true
       required:
-      - category
+      - parent_category
       - id
       - measure
       - title
@@ -1302,6 +1328,7 @@ components:
           description: Родительская категория
         category:
           type: integer
+          nullable: true
           description: Категория
         subcategory:
           type: integer
@@ -1317,7 +1344,7 @@ components:
             type: string
           readOnly: true
       required:
-      - category
+      - parent_category
       - documents
       - id
       - measure
@@ -1332,6 +1359,18 @@ components:
           type: string
           description: Название
           maxLength: 60
+        price:
+          type: integer
+          description: Цена
+          readOnly: true
+        cost:
+          type: integer
+          description: Себестоимость
+          readOnly: true
+        measure:
+          type: string
+          description: Единица измерения
+          readOnly: true
         consumption:
           type: number
           format: double
@@ -1398,13 +1437,14 @@ components:
           description: Родительская категория
         category:
           type: integer
+          nullable: true
           description: Категория
         subcategory:
           type: integer
           nullable: true
           description: Подкатегория
       required:
-      - category
+      - parent_category
       - conversion_rate
       - documents
       - id
@@ -1502,6 +1542,7 @@ components:
           description: Родительская категория
         category:
           type: integer
+          nullable: true
           description: Категория
         subcategory:
           type: integer
@@ -1718,6 +1759,18 @@ components:
         count:
           type: integer
           description: Количество
+        price:
+          type: integer
+          description: Цена
+          readOnly: true
+        cost:
+          type: integer
+          description: Себестоимость
+          readOnly: true
+        measure:
+          type: string
+          description: Единица измерения
+          readOnly: true
         element:
           type: integer
           description: Элемент
@@ -1803,6 +1856,31 @@ components:
       - description
       - id
       - title
+    TemplateDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Название
+          maxLength: 60
+        description:
+          type: string
+          description: Описание
+        created_at:
+          type: string
+          format: date
+          description: Дата добавления
+        stages:
+          type: array
+          items:
+            - $ref: '#/components/schemas/ProjectStageDetail'
+      required:
+      - description
+      - id
+      - title
     TemplateConstruction:
       type: object
       properties:
@@ -1849,6 +1927,18 @@ components:
           type: number
           format: double
           description: Норма расхода
+        price:
+          type: integer
+          description: Цена
+          readOnly: true
+        cost:
+          type: integer
+          description: Себестоимость
+          readOnly: true
+        measure:
+          type: string
+          description: Единица измерения
+          readOnly: true
         count:
           type: integer
           description: Количество
