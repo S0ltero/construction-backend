@@ -106,6 +106,7 @@ class ElementDocument(models.Model):
 
 class Construction(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
+    description = models.TextField(verbose_name="Описание", blank=True)
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
     parent_category = models.ForeignKey(ParentCategory, verbose_name="Родительская категория", on_delete=models.CASCADE, related_name="constructions")
     category = models.ForeignKey(
@@ -243,6 +244,7 @@ class ProjectConstructionElement(models.Model):
     element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
     construction = models.ForeignKey(ProjectConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
+    count = models.IntegerField(verbose_name="Количество", default=0)
 
     class Meta:
         verbose_name = "Элемент проекта"
@@ -297,6 +299,7 @@ class TemplateConstructionElement(models.Model):
     element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
     construction = models.ForeignKey(TemplateConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
+    count = models.IntegerField(verbose_name="Количество", default=0)
 
     class Meta:
         verbose_name = "Элемент шаблона"

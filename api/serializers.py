@@ -41,6 +41,10 @@ class ElementSerializer(serializers.ModelSerializer):
 
 
 class ConstructionElementSerializer(serializers.ModelSerializer):
+    measure = serializers.CharField(source="element.measure")
+    price = serializers.IntegerField(source="element.price")
+    cost = serializers.IntegerField(source="element.cost")
+
     class Meta:
         model = ConstructionElement
         fields = "__all__"
@@ -101,17 +105,14 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
 class ProjectConstructionElementSerializer(serializers.ModelSerializer):
+    measure = serializers.CharField(source="element.measure")
+    price = serializers.IntegerField(source="element.price")
+    cost = serializers.IntegerField(source="element.cost")
+
     class Meta:
         model = ProjectConstructionElement
         fields = "__all__"
         extra_kwargs = {"construction": {"required": False}}
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data["element"] = ElementSerializer(
-            Element.objects.get(id=data["element"])
-        ).data
-        return data
 
 
 class ProjectConstructionSerializer(serializers.ModelSerializer):
@@ -195,6 +196,10 @@ class TemplateSerializer(serializers.ModelSerializer):
 
 
 class TemplateConstructionElementSerializer(serializers.ModelSerializer):
+    measure = serializers.CharField(source="element.measure")
+    price = serializers.IntegerField(source="element.price")
+    cost = serializers.IntegerField(source="element.cost")
+
     class Meta:
         model = ProjectConstructionElement
         fields = "__all__"

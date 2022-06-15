@@ -16,7 +16,7 @@ from . serializers import (
     ParentCategorySerializer, ParentCategoryDetailSerializer,
     CategorySerializer, CategoryDetailSerializer,
     SubCategorySerializer, SubCategoryDetailSerializer,
-    ElementSerializer, ConstructionDetailSerializer,
+    ElementSerializer, ConstructionDetailSerializer, ConstructionSerializer,
     ProjectSerializer, ProjectStageSerializer, ProjectDetailSerializer,
     TemplateSerializer, TemplateStageSerializer, TemplateDetailSerilaizer,
     ClientSerializer, ClientDetailSerializer
@@ -127,7 +127,6 @@ class ElementViewSet(viewsets.GenericViewSet):
 
         return queryset
 
-
     def list(self, request):
         """
         Получение списка элементов
@@ -187,6 +186,20 @@ class ConstructionViewset(viewsets.GenericViewSet):
             queryset = queryset.filter(title__istartswith=title)[:5]
 
         return queryset
+
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ConstructionSerializer
+        elif self.action == "retrieve":
+            return ConstructionDetailSerializer
+        else:
+            return super().get_serializer_class()
+
+    def retrieve(self, request, pk=None):
+        construction = self.get_object()
+        serializer = self.get_serializer_class()
+        serializer = serializer(construction)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request):
         """
@@ -252,7 +265,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         """
         Получение списка проектов
         """
-        serializer = self.serializer_class(self.queryset, many=True)
+        serializer = self.serializer_class(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
@@ -363,7 +376,7 @@ class TemplateViewset(viewsets.GenericViewSet):
         """
         Получение списка шаблонов
         """
-        serializer = self.serializer_class(self.queryset, many=True)
+        serializer = self.serializer_class(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
@@ -452,7 +465,7 @@ class ClientViewSet(viewsets.GenericViewSet):
         """
         Получение списка клиентов
         """
-        serializer = self.serializer_class(self.queryset, many=True)
+        serializer = self.serializer_class(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):

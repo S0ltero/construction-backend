@@ -358,7 +358,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ConstructionDetail'
+                  $ref: '#/components/schemas/Construction'
           description: ''
     post:
       operationId: CreateConstruction
@@ -369,13 +369,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ConstructionDetail'
+              $ref: '#/components/schemas/Construction'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/ConstructionDetail'
+              $ref: '#/components/schemas/Construction'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ConstructionDetail'
+              $ref: '#/components/schemas/Construction'
         required: true
       security:
       - tokenAuth: []
@@ -388,6 +388,28 @@ paths:
                 $ref: '#/components/schemas/ConstructionDetail'
           description: ''
   /api/constructions/{id}/:
+    get:
+      operationId: GetConstruction
+      description: Получение конструкции по `pk`
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `Конструкции`.
+        required: true
+      tags:
+      - constructions
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConstructionDetail'
+          description: ''
     patch:
       operationId: UpdateConstruction
       description: Редактирование конструкции и обновление списка элементов конструкции
@@ -396,7 +418,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: Уникальный индентификатор для Контсрукция.
+        description: Уникальный индентификатор для Конструкция.
         required: true
       tags:
       - constructions
@@ -429,7 +451,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: Уникальный индентификатор для Контсрукция.
+        description: Уникальный индентификатор для Конструкция.
         required: true
       tags:
       - constructions
@@ -605,7 +627,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Project'
+                $ref: '#/components/schemas/ProjectDetail'
           description: ''
     patch:
       operationId: UpdateProject
@@ -658,6 +680,29 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/projects/{id}/update-price:
+    get:
+      operationId: UpdateProjectPrices
+      description: Обновление цен в проекте
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для Проект.
+        required: true
+      tags:
+      - projects
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectDetail'
+          description: ''
   /api/projects/{id}/stages/:
     post:
       operationId: CreateProjectStage
@@ -675,13 +720,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProjectStageCreate'
+              $ref: '#/components/schemas/ProjectStage'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/ProjectStageCreate'
+              $ref: '#/components/schemas/ProjectStage'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/ProjectStageCreate'
+              $ref: '#/components/schemas/ProjectStage'
         required: true
       security:
       - tokenAuth: []
@@ -691,7 +736,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectStageCreate'
+                $ref: '#/components/schemas/ProjectStage'
           description: ''
   /api/projects/{id}/stages/{stage_id}/:
     patch:
@@ -715,13 +760,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedProjectStage'
+              $ref: '#/components/schemas/ProjectStageDetail'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedProjectStage'
+              $ref: '#/components/schemas/ProjectStageDetail'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedProjectStage'
+              $ref: '#/components/schemas/ProjectStageDetail'
       security:
       - tokenAuth: []
       - {}
@@ -730,7 +775,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProjectStagePatch'
+                $ref: '#/components/schemas/ProjectStageDetail'
           description: ''
     delete:
       operationId: DeleteProjectStage
@@ -821,7 +866,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Template'
+                $ref: '#/components/schemas/TemplateDetail'
           description: ''
     patch:
       operationId: UpdateTemplate
@@ -1236,20 +1281,31 @@ components:
           type: string
           description: Название
           maxLength: 60
+        description:
+          type: string
+          description: Описание
         measure:
           type: string
           description: Единицы измерения
           maxLength: 30
+        parent_category:
+          type: integer
+          description: Родительская категория
         category:
           type: integer
+          nullable: true
           description: Категория
+        subcategory:
+          type: integer
+          nullable: true
+          description: Подкатегория
         documents:
           type: array
           items:
             type: string
           readOnly: true
       required:
-      - category
+      - parent_category
       - id
       - measure
       - title
@@ -1267,9 +1323,17 @@ components:
           type: string
           description: Единицы измерения
           maxLength: 30
+        parent_category:
+          type: integer
+          description: Родительская категория
         category:
           type: integer
+          nullable: true
           description: Категория
+        subcategory:
+          type: integer
+          nullable: true
+          description: Подкатегория
         elements:
           type: array
           items:
@@ -1280,7 +1344,7 @@ components:
             type: string
           readOnly: true
       required:
-      - category
+      - parent_category
       - documents
       - id
       - measure
@@ -1295,6 +1359,18 @@ components:
           type: string
           description: Название
           maxLength: 60
+        price:
+          type: integer
+          description: Цена
+          readOnly: true
+        cost:
+          type: integer
+          description: Себестоимость
+          readOnly: true
+        measure:
+          type: string
+          description: Единица измерения
+          readOnly: true
         consumption:
           type: number
           format: double
@@ -1356,15 +1432,19 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Норма конвертации
+        parent_category:
+          type: integer
+          description: Родительская категория
         category:
           type: integer
+          nullable: true
           description: Категория
         subcategory:
           type: integer
           nullable: true
           description: Подкатегория
       required:
-      - category
+      - parent_category
       - conversion_rate
       - documents
       - id
@@ -1392,9 +1472,16 @@ components:
           type: string
           description: Единицы измерения
           maxLength: 30
+        parent_category:
+          type: integer
+          description: Родительская категория
         category:
           type: integer
           description: Категория
+        subcategory:
+          type: integer
+          nullable: true
+          description: Подкатегория
         elements:
           type: array
           items:
@@ -1450,8 +1537,12 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Норма конвертации
+        parent_category:
+          type: integer
+          description: Родительская категория
         category:
           type: integer
+          nullable: true
           description: Категория
         subcategory:
           type: integer
@@ -1481,28 +1572,6 @@ components:
         client:
           type: integer
           description: Клиент
-    PatchedProjectStage:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        title:
-          type: string
-          description: Название
-          maxLength: 60
-        project:
-          type: integer
-          description: Проект
-        order:
-          type: integer
-          maximum: 2147483647
-          minimum: -2147483648
-          description: Порядковый номер
-        constructions:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectConstruction'
     PatchedTemplate:
       type: object
       properties:
@@ -1563,6 +1632,12 @@ components:
           items:
             type: string
             format: binary
+      required:
+      - author
+      - client
+      - description
+      - status
+      - title
     Project:
       type: object
       properties:
@@ -1587,6 +1662,47 @@ components:
         client:
           type: integer
           description: Клиент
+      required:
+      - author
+      - client
+      - description
+      - id
+      - status
+      - title
+    ProjectDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Название
+          maxLength: 60
+        description:
+          type: string
+          description: Описание
+        author:
+          type: string
+          description: Автор
+          maxLength: 60
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          description: Статус
+        client:
+          type: integer
+          description: Клиент
+        documents:
+          type: array
+          description: Документы
+          items:
+            type: string
+            format: binary
+        stages:
+          type: array
+          items:
+            - $ref: '#/components/schemas/ProjectStageDetail'
       required:
       - author
       - client
@@ -1640,6 +1756,21 @@ components:
           type: number
           format: double
           description: Норма расхода
+        count:
+          type: integer
+          description: Количество
+        price:
+          type: integer
+          description: Цена
+          readOnly: true
+        cost:
+          type: integer
+          description: Себестоимость
+          readOnly: true
+        measure:
+          type: string
+          description: Единица измерения
+          readOnly: true
         element:
           type: integer
           description: Элемент
@@ -1650,7 +1781,7 @@ components:
       - element
       - id
       - title
-    ProjectStageCreate:
+    ProjectStage:
       type: object
       properties:
         id:
@@ -1668,7 +1799,12 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: Порядковый номер
-    ProjectStagePatch:
+      required:
+      - id
+      - order
+      - project
+      - title
+    ProjectStageDetail:
       type: object
       properties:
         id:
@@ -1690,18 +1826,13 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProjectConstruction'
-      required:
-      - id
-      - order
-      - project
-      - title
     StatusEnum:
       oneOf:
-      - description: FINISH
+      - title: FINISH
         description: Проект закончен
-      - description: WORK
+      - title: WORK
         description: Проект в работе
-      - description: NOT_START
+      - title: NOT_START
         description: Проект не начат
       type: string
     Template:
@@ -1721,6 +1852,31 @@ components:
           type: string
           format: date
           description: Дата добавления
+      required:
+      - description
+      - id
+      - title
+    TemplateDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          description: Название
+          maxLength: 60
+        description:
+          type: string
+          description: Описание
+        created_at:
+          type: string
+          format: date
+          description: Дата добавления
+        stages:
+          type: array
+          items:
+            - $ref: '#/components/schemas/ProjectStageDetail'
       required:
       - description
       - id
@@ -1771,6 +1927,21 @@ components:
           type: number
           format: double
           description: Норма расхода
+        price:
+          type: integer
+          description: Цена
+          readOnly: true
+        cost:
+          type: integer
+          description: Себестоимость
+          readOnly: true
+        measure:
+          type: string
+          description: Единица измерения
+          readOnly: true
+        count:
+          type: integer
+          description: Количество
         element:
           type: integer
           description: Элемент
