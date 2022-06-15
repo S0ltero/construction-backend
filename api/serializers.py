@@ -211,7 +211,7 @@ class TemplateConstructionSerializer(serializers.ModelSerializer):
 
 
 class TemplateStageSerializer(serializers.ModelSerializer):
-    constructions = TemplateConstructionSerializer(many=True, read_only=False)
+    constructions = TemplateConstructionSerializer(many=True, read_only=False, required=False)
 
     class Meta:
         model = TemplateStage
