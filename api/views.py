@@ -372,6 +372,14 @@ class TemplateViewset(viewsets.GenericViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
 
+    def get_queryset(self):
+        queryset = Template.objects.all()
+        title = self.request.query_params.get("title")
+        if title:
+            queryset = queryset.filter(title__istartswith=title)[:5]
+
+        return queryset
+
     def retrieve(self, request, pk=None):
         """
         Получение шаблона по pk
