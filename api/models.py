@@ -220,6 +220,7 @@ class ProjectStage(models.Model):
     class Meta:
         verbose_name = "Стадия проекта"
         verbose_name_plural = "Стадии проекта"
+        unique_together = ("project", "order")
 
     def __str__(self):
         return self.title
