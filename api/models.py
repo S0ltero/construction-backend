@@ -261,6 +261,7 @@ class Template(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
     created_at = models.DateField(verbose_name="Дата создания", auto_now=True)
+    price = models.IntegerField(verbose_name="Стоимость", default=0)
 
     class Meta:
         verbose_name = "Шаблон"
