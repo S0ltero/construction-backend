@@ -186,6 +186,7 @@ class Project(models.Model):
     author = models.CharField(verbose_name="Автор", max_length=60)
     status = models.CharField(verbose_name="Статус", max_length=30, choices=Type.choices)
     created_at = models.DateField(verbose_name="Дата создания", auto_now=True)
+    price = models.IntegerField(verbose_name="Стоимость", default=0)
 
     class Meta:
         verbose_name = "Проект"
