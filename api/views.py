@@ -127,6 +127,14 @@ class ElementViewSet(viewsets.GenericViewSet):
 
         return queryset
 
+    def retrieve(self, request, pk=None):
+        """
+        Получение элемента по pk
+        """
+        element = self.get_object()
+        serializer = self.serializer_class(element)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def list(self, request):
         """
         Получение списка элементов
