@@ -106,6 +106,17 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class ProjectCreateSerializer(serializers.ModelSerializer):
+    template = serializers.PrimaryKeyRelatedField(
+        read_only=False,
+        queryset=Template.objects.all(),
+        required=False
+    )
+
+    class Meta:
+        model = Project
+        fields = "__all__"
+
 
 class ProjectConstructionElementSerializer(serializers.ModelSerializer):
     measure = serializers.CharField(source="element.measure")
