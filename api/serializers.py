@@ -202,7 +202,7 @@ class TemplateConstructionElementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectConstructionElement
-        fields = "__all__"
+        exclude = ("construction",)
         extra_kwargs = {"construction": {"required": False}}
 
 
