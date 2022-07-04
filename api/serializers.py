@@ -157,19 +157,25 @@ class ProjectStageSerializer(serializers.ModelSerializer):
         ProjectConstructionElement.objects.bulk_create(bulk_insert_elements)
 
         stage = ProjectStage.objects.get(id=instance.id)
-        serializer = ProjectStageSerializer(instance=stage)
+        serializer = ProjectStageSerializer(instance=stage, context={"no_data": True})
 
         data = serializer.data.copy()
         constructions = data["constructions"]
 
+        # Process elements price and cost
         for const_index, construction in enumerate(constructions):
             elements = construction["elements"]
             for const_elem_index, const_element in enumerate(elements):
-                element_id = const_element["element"]["id"]
+                element_id = const_element["element"]
                 if stage.used_elements.get(str(element_id)):
-                    elements[const_elem_index]["element"] = stage.used_elements[str(element_id)]["element"]
+                    # Add price and cost to element from already used element
+                    elements[const_elem_index].update(stage.used_elements[str(element_id)])
                 else:
-                    stage.used_elements[str(element_id)] = const_element
+                    # Add price and cost of element to used_elements data
+                    stage.used_elements[str(element_id)] = {
+                        "price": const_element["price"],
+                        "cost": const_element["cost"],
+                    }
             constructions[const_index]["elements"] = elements
 
         data["constructions"] = constructions
