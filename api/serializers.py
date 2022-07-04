@@ -117,6 +117,45 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
         model = Project
         fields = "__all__"
 
+    def create(self, validated_data):
+        template = validated_data.pop("template", None)
+        project = super().create(validated_data)
+
+        bulk_insert_stages = []
+        bulk_insert_constructions = []
+        bulk_insert_elements = []
+
+        if template:
+            data = TemplateDetailSerilaizer(template).data
+            stages = data.pop("stages", [])
+            for stage in stages:
+                del stage["id"]
+                del stage["template"]
+                contstructions = stage.pop("constructions", [])
+                stage = ProjectStage(**stage, project=project)
+                bulk_insert_stages.append(stage)
+
+                for construction in contstructions:
+                    elements = construction.pop("elements", [])
+                    construction = ProjectConstruction(**construction, stage=stage)
+                    bulk_insert_constructions.append(construction)
+
+                    for element in elements:
+                        element_instance = Element.objects.get(pk=element.pop("element"))
+                        bulk_insert_elements.append(ProjectConstructionElement(
+                            title=element["title"],
+                            count=element["count"],
+                            consumption=element["consumption"],
+                            construction=construction,
+                            element=element_instance
+                        ))
+
+            ProjectStage.objects.bulk_create(bulk_insert_stages)
+            ProjectConstruction.objects.bulk_create(bulk_insert_constructions)
+            ProjectConstructionElement.objects.bulk_create(bulk_insert_elements)
+
+        return project
+
 
 class ProjectConstructionElementSerializer(serializers.ModelSerializer):
     measure = serializers.CharField(source="element.measure")
