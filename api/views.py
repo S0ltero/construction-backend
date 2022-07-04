@@ -17,7 +17,7 @@ from . serializers import (
     CategorySerializer, CategoryDetailSerializer,
     SubCategorySerializer, SubCategoryDetailSerializer,
     ElementSerializer, ConstructionDetailSerializer, ConstructionSerializer,
-    ProjectSerializer, ProjectStageSerializer, ProjectDetailSerializer,
+    ProjectSerializer, ProjectStageSerializer, ProjectDetailSerializer, ProjectCreateSerializer,
     TemplateSerializer, TemplateStageSerializer, TemplateDetailSerilaizer,
     ClientSerializer, ClientDetailSerializer
 )
@@ -279,26 +279,39 @@ class ProjectViewset(viewsets.GenericViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ProjectSerializer
+        elif self.action == "retrieve":
+            return ProjectDetailSerializer
+        elif self.action == "create":
+            return ProjectCreateSerializer
+        else:
+            return super().get_serializer_class()
+
     def retrieve(self, request, pk=None):
         """
         Получение проекта по pk
         """
         project = self.get_object()
-        serializer = ProjectDetailSerializer(project)
+        serializer = self.get_serializer_class()
+        serializer = serializer(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request):
         """
         Получение списка проектов
         """
-        serializer = self.serializer_class(self.get_queryset(), many=True)
+        serializer = self.get_serializer_class()
+        serializer = serializer(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
         """
         Создание проекта
         """
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer_class()
+        serializer = serializer(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
             serializer.save()
