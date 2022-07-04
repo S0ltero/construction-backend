@@ -99,6 +99,8 @@ class SubCategoryDetailSerializer(SubCategorySerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    client = serializers.SlugRelatedField(slug_field="name", read_only=True)
+
     class Meta:
         model = Project
         fields = "__all__"
