@@ -180,7 +180,7 @@ class ProjectStageSerializer(serializers.ModelSerializer):
         return data
 
     def to_representation(self, instance):
-        if not instance.data or self.context.get("new_price"):
+        if not instance.data or self.context.get("no_data"):
             return super().to_representation(instance)
         return instance.data
 

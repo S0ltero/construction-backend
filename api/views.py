@@ -350,7 +350,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         project = self.get_object()
         stages = project.stages.all()
         for stage in stages:
-            serializer = ProjectStageSerializer(stage, context={"new_price": True})
+            serializer = ProjectStageSerializer(stage, context={"no_data": True})
             stage.data = serializer.data
             stage.save()
 
