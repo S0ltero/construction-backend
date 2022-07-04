@@ -211,7 +211,7 @@ class TemplateConstructionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TemplateConstruction
-        fields = ("id", "title", "count", "stage", "measure", "elements")
+        fields = ("title", "count", "measure", "elements")
         extra_kwargs = {"stage": {"required": False}}
 
 
