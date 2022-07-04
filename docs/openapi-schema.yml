@@ -254,6 +254,12 @@ paths:
     get:
       operationId: GetClientsList
       description: Получение списка клиентов
+      parameters:
+      - in: path
+        name: name
+        schema:
+          type: string
+        description: Имя клиента
       tags:
       - clients
       security:
@@ -513,6 +519,28 @@ paths:
                 $ref: '#/components/schemas/Element'
           description: ''
   /api/elements/{id}/:
+    get:
+      operationId: GetElement
+      description: Получение элемента по `pk`
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `Элемента`.
+        required: true
+      tags:
+      - elements
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Element'
+          description: ''
     patch:
       operationId: UpdateElement
       description: Редактирование элемента
@@ -521,7 +549,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: Уникальный индентификатор для Элемент.
+        description: Уникальный индентификатор для `Элемента`.
         required: true
       tags:
       - elements
@@ -554,7 +582,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: Уникальный индентификатор для Элемент.
+        description: Уникальный индентификатор для `Элемента`.
         required: true
       tags:
       - elements
@@ -804,6 +832,12 @@ paths:
     get:
       operationId: GetTemplatesList
       description: Получение списка шаблонов
+      parameters:
+      - in: path
+        name: title
+        schema:
+          type: string
+        description: Название шаблона
       tags:
       - templates
       security:
@@ -963,7 +997,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: Уникальный индентификатор для Шаблон.
+        description: Уникальный индентификатор для `Шаблона`.
         required: true
       - in: path
         name: stage_id
@@ -1488,19 +1522,20 @@ components:
             $ref: '#/components/schemas/ConstructionElement'
         documents:
           type: array
+          description: Документы
           items:
             type: string
-          readOnly: true
+            format: binary
+        documents_urls:
+          type: array
+          description: название файлов документов для удаления
+          items:
+            type: string
     PatchedElement:
       type: object
       properties:
         id:
           type: integer
-          readOnly: true
-        documents:
-          type: array
-          items:
-            type: string
           readOnly: true
         title:
           type: string
@@ -1548,6 +1583,17 @@ components:
           type: integer
           nullable: true
           description: Подкатегория
+        documents:
+          type: array
+          description: Документы
+          items:
+            type: string
+            format: binary
+        documents_urls:
+          type: array
+          description: название файлов документов для удаления
+          items:
+            type: string
     PatchedProject:
       type: object
       properties:
@@ -1572,6 +1618,17 @@ components:
         client:
           type: integer
           description: Клиент
+        documents:
+          type: array
+          description: Документы
+          items:
+            type: string
+            format: binary
+        documents_urls:
+          type: array
+          description: название файлов документов для удаления
+          items:
+            type: string
     PatchedTemplate:
       type: object
       properties:
@@ -1623,6 +1680,9 @@ components:
           allOf:
           - $ref: '#/components/schemas/StatusEnum'
           description: Статус
+        template:
+          type: integer
+          description: Шаблон
         client:
           type: integer
           description: Клиент
@@ -1660,8 +1720,12 @@ components:
           - $ref: '#/components/schemas/StatusEnum'
           description: Статус
         client:
-          type: integer
+          type: string
           description: Клиент
+          readOnly: True
+        price:
+          type: integer
+          description: Стоимость
       required:
       - author
       - client
@@ -1693,6 +1757,9 @@ components:
         client:
           type: integer
           description: Клиент
+        price:
+          type: integer
+          description: Стоимость
         documents:
           type: array
           description: Документы
@@ -1725,9 +1792,6 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Количество
-        stage:
-          type: integer
-          description: Стадия
         measure:
           type: string
           description: Единицы измерения
@@ -1774,9 +1838,6 @@ components:
         element:
           type: integer
           description: Элемент
-        construction:
-          type: integer
-          description: Конструкция
       required:
       - element
       - id
@@ -1896,9 +1957,6 @@ components:
           maximum: 2147483647
           minimum: 0
           description: Количество
-        stage:
-          type: integer
-          description: Стадия
         measure:
           type: string
           description: Единицы измерения
@@ -1945,9 +2003,6 @@ components:
         element:
           type: integer
           description: Элемент
-        construction:
-          type: integer
-          description: Конструкция
       required:
       - element
       - id
