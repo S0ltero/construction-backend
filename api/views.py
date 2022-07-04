@@ -389,8 +389,8 @@ class ProjectViewset(viewsets.GenericViewSet):
             serializer = self.serializer_class(stage, data=request.data, partial=True)
 
             if serializer.is_valid(raise_exception=False):
-                serializer.update(stage, serializer.validated_data)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                data = serializer.update(stage, serializer.validated_data)
+                return Response(data, status=status.HTTP_200_OK)
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
