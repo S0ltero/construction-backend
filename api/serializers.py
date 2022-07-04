@@ -104,6 +104,7 @@ class ProjectSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+
 class ProjectConstructionElementSerializer(serializers.ModelSerializer):
     measure = serializers.CharField(source="element.measure")
     price = serializers.IntegerField(source="element.price")
@@ -111,7 +112,7 @@ class ProjectConstructionElementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectConstructionElement
-        fields = "__all__"
+        exclude = ("construction",)
         extra_kwargs = {"construction": {"required": False}}
 
 
