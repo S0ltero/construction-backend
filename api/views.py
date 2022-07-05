@@ -17,7 +17,7 @@ from . serializers import (
     CategorySerializer, CategoryDetailSerializer,
     SubCategorySerializer, SubCategoryDetailSerializer,
     ElementSerializer, ConstructionDetailSerializer, ConstructionSerializer,
-    ProjectSerializer, ProjectStageSerializer, ProjectDetailSerializer,
+    ProjectSerializer, ProjectStageSerializer, ProjectDetailSerializer, ProjectCreateSerializer,
     TemplateSerializer, TemplateStageSerializer, TemplateDetailSerilaizer,
     ClientSerializer, ClientDetailSerializer
 )
@@ -127,6 +127,14 @@ class ElementViewSet(viewsets.GenericViewSet):
 
         return queryset
 
+    def retrieve(self, request, pk=None):
+        """
+        Получение элемента по pk
+        """
+        element = self.get_object()
+        serializer = self.serializer_class(element)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
     def list(self, request):
         """
         Получение списка элементов
@@ -158,9 +166,18 @@ class ElementViewSet(viewsets.GenericViewSet):
         Редактирование элемента
         """
         element = self.get_object()
+        documents_del_urls = request.data.pop("documents_urls", [])
         serializer = self.serializer_class(element, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
+            if documents_del_urls:
+                element.documents.filter(file__in=documents_del_urls).delete()
+
+            bulk_inserts = []
+            for file in request.FILES.getlist("documents"):
+                bulk_inserts.append(ElementDocument(file=file, element=element))
+            ElementDocument.objects.bulk_create(bulk_inserts)
+
             serializer.update(element, serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -232,9 +249,18 @@ class ConstructionViewset(viewsets.GenericViewSet):
         Редактирование конструкции и обновление списка элементов конструкции
         """
         construction = self.get_object()
+        documents_del_urls = request.data.pop("documents_urls", [])
         serializer = self.serializer_class(construction, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
+            if documents_del_urls:
+                construction.documents.filter(file__in=documents_del_urls).delete()
+
+            bulk_inserts = []
+            for file in request.FILES.getlist("documents"):
+                bulk_inserts.append(ConstructionDocument(file=file, construction=construction))
+            ConstructionDocument.objects.bulk_create(bulk_inserts)
+
             serializer.update(construction, serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -253,26 +279,39 @@ class ProjectViewset(viewsets.GenericViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
 
+    def get_serializer_class(self):
+        if self.action == "list":
+            return ProjectSerializer
+        elif self.action == "retrieve":
+            return ProjectDetailSerializer
+        elif self.action == "create":
+            return ProjectCreateSerializer
+        else:
+            return super().get_serializer_class()
+
     def retrieve(self, request, pk=None):
         """
         Получение проекта по pk
         """
         project = self.get_object()
-        serializer = ProjectDetailSerializer(project)
+        serializer = self.get_serializer_class()
+        serializer = serializer(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request):
         """
         Получение списка проектов
         """
-        serializer = self.serializer_class(self.get_queryset(), many=True)
+        serializer = self.get_serializer_class()
+        serializer = serializer(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
         """
         Создание проекта
         """
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.get_serializer_class()
+        serializer = serializer(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
             serializer.save()
@@ -291,9 +330,18 @@ class ProjectViewset(viewsets.GenericViewSet):
         Редактирование проекта
         """
         project = self.get_object()
+        documents_del_urls = request.data.pop("documents_urls", [])
         serializer = self.serializer_class(project, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
+            if documents_del_urls:
+                project.documents.filter(file__in=documents_del_urls).delete()
+
+            bulk_inserts = []
+            for file in request.FILES.getlist("documents"):
+                bulk_inserts.append(ProjectDocument(file=file, project=project))
+            ProjectDocument.objects.bulk_create(bulk_inserts)
+
             serializer.update(project, serializer.validated_data)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -315,7 +363,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         project = self.get_object()
         stages = project.stages.all()
         for stage in stages:
-            serializer = ProjectStageSerializer(stage, context={"new_price": True})
+            serializer = ProjectStageSerializer(stage, context={"no_data": True})
             stage.data = serializer.data
             stage.save()
 
@@ -354,8 +402,8 @@ class ProjectViewset(viewsets.GenericViewSet):
             serializer = self.serializer_class(stage, data=request.data, partial=True)
 
             if serializer.is_valid(raise_exception=False):
-                serializer.update(stage, serializer.validated_data)
-                return Response(serializer.data, status=status.HTTP_200_OK)
+                data = serializer.update(stage, serializer.validated_data)
+                return Response(data, status=status.HTTP_200_OK)
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -363,6 +411,14 @@ class ProjectViewset(viewsets.GenericViewSet):
 class TemplateViewset(viewsets.GenericViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
+
+    def get_queryset(self):
+        queryset = Template.objects.all()
+        title = self.request.query_params.get("title")
+        if title:
+            queryset = queryset.filter(title__istartswith=title)[:5]
+
+        return queryset
 
     def retrieve(self, request, pk=None):
         """
@@ -452,6 +508,14 @@ class TemplateViewset(viewsets.GenericViewSet):
 class ClientViewSet(viewsets.GenericViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
+
+    def get_queryset(self):
+        queryset = Client.objects.all()
+        name = self.request.query_params.get("name")
+        if name:
+            queryset = queryset.filter(name__istartswith=name)[:5]
+
+        return queryset
 
     def retrieve(self, request, pk=None):
         """

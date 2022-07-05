@@ -99,9 +99,62 @@ class SubCategoryDetailSerializer(SubCategorySerializer):
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    client = serializers.SlugRelatedField(slug_field="name", read_only=True)
+
     class Meta:
         model = Project
         fields = "__all__"
+
+
+class ProjectCreateSerializer(serializers.ModelSerializer):
+    template = serializers.PrimaryKeyRelatedField(
+        read_only=False,
+        queryset=Template.objects.all(),
+        required=False
+    )
+
+    class Meta:
+        model = Project
+        fields = "__all__"
+
+    def create(self, validated_data):
+        template = validated_data.pop("template", None)
+        project = super().create(validated_data)
+
+        bulk_insert_stages = []
+        bulk_insert_constructions = []
+        bulk_insert_elements = []
+
+        if template:
+            data = TemplateDetailSerilaizer(template).data
+            stages = data.pop("stages", [])
+            for stage in stages:
+                del stage["id"]
+                del stage["template"]
+                contstructions = stage.pop("constructions", [])
+                stage = ProjectStage(**stage, project=project)
+                bulk_insert_stages.append(stage)
+
+                for construction in contstructions:
+                    elements = construction.pop("elements", [])
+                    construction = ProjectConstruction(**construction, stage=stage)
+                    bulk_insert_constructions.append(construction)
+
+                    for element in elements:
+                        element_instance = Element.objects.get(pk=element.pop("element"))
+                        bulk_insert_elements.append(ProjectConstructionElement(
+                            title=element["title"],
+                            count=element["count"],
+                            consumption=element["consumption"],
+                            construction=construction,
+                            element=element_instance
+                        ))
+
+            ProjectStage.objects.bulk_create(bulk_insert_stages)
+            ProjectConstruction.objects.bulk_create(bulk_insert_constructions)
+            ProjectConstructionElement.objects.bulk_create(bulk_insert_elements)
+
+        return project
 
 
 class ProjectConstructionElementSerializer(serializers.ModelSerializer):
@@ -111,7 +164,7 @@ class ProjectConstructionElementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectConstructionElement
-        fields = "__all__"
+        exclude = ("construction",)
         extra_kwargs = {"construction": {"required": False}}
 
 
@@ -120,7 +173,7 @@ class ProjectConstructionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectConstruction
-        fields = ("id", "title", "count", "stage", "measure", "elements")
+        fields = ("title", "count", "measure", "elements")
         extra_kwargs = {"stage": {"required": False}}
 
 
@@ -156,19 +209,25 @@ class ProjectStageSerializer(serializers.ModelSerializer):
         ProjectConstructionElement.objects.bulk_create(bulk_insert_elements)
 
         stage = ProjectStage.objects.get(id=instance.id)
-        serializer = ProjectStageSerializer(instance=stage)
+        serializer = ProjectStageSerializer(instance=stage, context={"no_data": True})
 
         data = serializer.data.copy()
         constructions = data["constructions"]
 
+        # Process elements price and cost
         for const_index, construction in enumerate(constructions):
             elements = construction["elements"]
             for const_elem_index, const_element in enumerate(elements):
-                element_id = const_element["element"]["id"]
+                element_id = const_element["element"]
                 if stage.used_elements.get(str(element_id)):
-                    elements[const_elem_index]["element"] = stage.used_elements[str(element_id)]["element"]
+                    # Add price and cost to element from already used element
+                    elements[const_elem_index].update(stage.used_elements[str(element_id)])
                 else:
-                    stage.used_elements[str(element_id)] = const_element
+                    # Add price and cost of element to used_elements data
+                    stage.used_elements[str(element_id)] = {
+                        "price": const_element["price"],
+                        "cost": const_element["cost"],
+                    }
             constructions[const_index]["elements"] = elements
 
         data["constructions"] = constructions
@@ -179,7 +238,7 @@ class ProjectStageSerializer(serializers.ModelSerializer):
         return data
 
     def to_representation(self, instance):
-        if not instance.data or self.context.get("new_price"):
+        if not instance.data or self.context.get("no_data"):
             return super().to_representation(instance)
         return instance.data
 
@@ -202,7 +261,7 @@ class TemplateConstructionElementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectConstructionElement
-        fields = "__all__"
+        exclude = ("construction",)
         extra_kwargs = {"construction": {"required": False}}
 
 
@@ -211,7 +270,7 @@ class TemplateConstructionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TemplateConstruction
-        fields = ("id", "title", "count", "stage", "measure", "elements")
+        fields = ("title", "count", "measure", "elements")
         extra_kwargs = {"stage": {"required": False}}
 
 

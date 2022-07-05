@@ -185,6 +185,8 @@ class Project(models.Model):
     description = models.TextField(verbose_name="Описание")
     author = models.CharField(verbose_name="Автор", max_length=60)
     status = models.CharField(verbose_name="Статус", max_length=30, choices=Type.choices)
+    created_at = models.DateField(verbose_name="Дата создания", auto_now=True)
+    price = models.IntegerField(verbose_name="Стоимость", default=0)
 
     class Meta:
         verbose_name = "Проект"
@@ -220,6 +222,7 @@ class ProjectStage(models.Model):
     class Meta:
         verbose_name = "Стадия проекта"
         verbose_name_plural = "Стадии проекта"
+        unique_together = ("project", "order")
 
     def __str__(self):
         return self.title
@@ -258,6 +261,7 @@ class Template(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
     created_at = models.DateField(verbose_name="Дата создания", auto_now=True)
+    price = models.IntegerField(verbose_name="Стоимость", default=0)
 
     class Meta:
         verbose_name = "Шаблон"
