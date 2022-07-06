@@ -254,7 +254,7 @@ class TemplateSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TemplateConstructionElementSerializer(serializers.ModelSerializer):
+class TemplateElementSerializer(serializers.ModelSerializer):
     measure = serializers.CharField(source="element.measure")
     price = serializers.IntegerField(source="element.price")
     cost = serializers.IntegerField(source="element.cost")
@@ -266,7 +266,7 @@ class TemplateConstructionElementSerializer(serializers.ModelSerializer):
 
 
 class TemplateConstructionSerializer(serializers.ModelSerializer):
-    elements = TemplateConstructionElementSerializer(many=True, read_only=False)
+    elements = TemplateElementSerializer(many=True, read_only=False)
 
     class Meta:
         model = TemplateConstruction
