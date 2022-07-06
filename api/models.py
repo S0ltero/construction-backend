@@ -122,6 +122,17 @@ class ElementDocument(models.Model):
         return self.file.url
 
 
+class BaseConstruction(models.Model):
+    title = models.CharField(verbose_name="Название", max_length=60)
+    description = models.TextField(verbose_name="Описание", blank=True)
+    measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
+    cost = models.PositiveIntegerField(verbose_name="Себестоимость", default=0)
+    price = models.PositiveIntegerField(verbose_name="Цена", default=0)
+
+    class Meta:
+        abstract = True
+
+
 class Construction(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание", blank=True)
