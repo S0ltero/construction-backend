@@ -288,6 +288,22 @@ class ProjectElement(models.Model):
         return self.title
 
 
+class ProjectElementDocument(models.Model):
+    file = models.FileField(verbose_name="Файл")
+    element = models.ForeignKey(ProjectElement, verbose_name="Элемент", on_delete=models.CASCADE, related_name="documents")
+
+    class Meta:
+        verbose_name = "Документ"
+        verbose_name_plural = "Документы"
+
+    def __str__(self):
+        return self.file.name
+
+    @property
+    def file_url(self):
+        return self.file.url
+
+
 class Template(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание")
