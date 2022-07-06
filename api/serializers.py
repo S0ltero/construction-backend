@@ -4,7 +4,7 @@ from .models import (
     ParentCategory, Category, SubCategory,
     Element, Construction, ConstructionElement,
     Project, ProjectStage, ProjectConstruction,
-    ProjectConstructionElement,
+    ProjectElement,
     Template, TemplateStage, TemplateConstruction,
     TemplateConstructionElement,
     Client
@@ -142,7 +142,7 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
 
                     for element in elements:
                         element_instance = Element.objects.get(pk=element.pop("element"))
-                        bulk_insert_elements.append(ProjectConstructionElement(
+                        bulk_insert_elements.append(ProjectElement(
                             title=element["title"],
                             count=element["count"],
                             consumption=element["consumption"],
@@ -152,7 +152,7 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
 
             ProjectStage.objects.bulk_create(bulk_insert_stages)
             ProjectConstruction.objects.bulk_create(bulk_insert_constructions)
-            ProjectConstructionElement.objects.bulk_create(bulk_insert_elements)
+            ProjectElement.objects.bulk_create(bulk_insert_elements)
 
         return project
 
@@ -163,7 +163,7 @@ class ProjectConstructionElementSerializer(serializers.ModelSerializer):
     cost = serializers.IntegerField(source="element.cost")
 
     class Meta:
-        model = ProjectConstructionElement
+        model = ProjectElement
         exclude = ("construction",)
         extra_kwargs = {"construction": {"required": False}}
 
@@ -200,13 +200,13 @@ class ProjectStageSerializer(serializers.ModelSerializer):
             bulk_insert_constructions.append(construction)
             for element in elements:
                 bulk_insert_elements.append(
-                    ProjectConstructionElement(
+                    ProjectElement(
                         **element, construction=construction
                     )
                 )
 
         ProjectConstruction.objects.bulk_create(bulk_insert_constructions)
-        ProjectConstructionElement.objects.bulk_create(bulk_insert_elements)
+        ProjectElement.objects.bulk_create(bulk_insert_elements)
 
         stage = ProjectStage.objects.get(id=instance.id)
         serializer = ProjectStageSerializer(instance=stage, context={"no_data": True})
@@ -260,7 +260,7 @@ class TemplateConstructionElementSerializer(serializers.ModelSerializer):
     cost = serializers.IntegerField(source="element.cost")
 
     class Meta:
-        model = ProjectConstructionElement
+        model = ProjectElement
         exclude = ("construction",)
         extra_kwargs = {"construction": {"required": False}}
 

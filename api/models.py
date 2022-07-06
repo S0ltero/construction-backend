@@ -244,7 +244,7 @@ class ProjectConstruction(models.Model):
         return self.title
 
 
-class ProjectConstructionElement(models.Model):
+class ProjectElement(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
     construction = models.ForeignKey(ProjectConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")

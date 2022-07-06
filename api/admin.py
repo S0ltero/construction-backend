@@ -7,7 +7,7 @@ from .models import (
     ParentCategory, Category, SubCategory, Element,
     Construction, ConstructionElement,
     Project, ProjectStage, ProjectConstruction,
-    ProjectConstructionElement,
+    ProjectElement,
     Template, TemplateStage, TemplateConstruction,
     TemplateConstructionElement,
     Client
@@ -70,7 +70,7 @@ class NestedProjectnDocumentsInline(nested_admin.NestedStackedInline):
 
 
 class NestedProjectElementInline(nested_admin.NestedStackedInline):
-    model = ProjectConstructionElement
+    model = ProjectElement
     extra = 0
     classes = ["collapse"]
 
