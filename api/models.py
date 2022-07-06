@@ -230,7 +230,6 @@ class ProjectStage(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE, related_name="stages")
     order = models.IntegerField(verbose_name="Порядковый номер")
-    data = models.JSONField(default=dict, blank=True)
     used_elements = models.JSONField(default=dict, blank=True)
 
     class Meta:
