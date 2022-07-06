@@ -4,8 +4,9 @@ from .models import (
     ParentCategory, Category, SubCategory,
     Element, ElementDocument, Construction, 
     ConstructionElement, ConstructionDocument,
-    Project, ProjectStage, ProjectConstruction,
-    ProjectElement,
+    Project, ProjectStage, 
+    ProjectConstruction, ProjectConstructionDocument,
+    ProjectElement, ProjectElementDocument,
     Template, TemplateStage, TemplateConstruction,
     TemplateElement,
     Client
