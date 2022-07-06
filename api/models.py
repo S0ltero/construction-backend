@@ -243,6 +243,7 @@ class ProjectStage(models.Model):
 
 
 class ProjectConstruction(BaseConstruction):
+    construction = models.ForeignKey(Construction, verbose_name="Конструкция", null=True, on_delete=models.SET_NULL)
     count = models.PositiveIntegerField(verbose_name="Количество")
     stage = models.ForeignKey(ProjectStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
 
