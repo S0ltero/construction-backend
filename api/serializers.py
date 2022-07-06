@@ -157,7 +157,7 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
         return project
 
 
-class ProjectConstructionElementSerializer(serializers.ModelSerializer):
+class ProjectElementSerializer(serializers.ModelSerializer):
     measure = serializers.CharField(source="element.measure")
     price = serializers.IntegerField(source="element.price")
     cost = serializers.IntegerField(source="element.cost")
@@ -169,7 +169,7 @@ class ProjectConstructionElementSerializer(serializers.ModelSerializer):
 
 
 class ProjectConstructionSerializer(serializers.ModelSerializer):
-    elements = ProjectConstructionElementSerializer(many=True, read_only=False)
+    elements = ProjectElementSerializer(many=True, read_only=False)
 
     class Meta:
         model = ProjectConstruction
