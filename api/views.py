@@ -330,11 +330,11 @@ class ProjectViewset(viewsets.GenericViewSet):
         Редактирование проекта
         """
         project = self.get_object()
-        documents_del_urls = request.data.pop("documents_urls", [])
         serializer = self.serializer_class(project, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
-            if documents_del_urls:
+            if request.data.get("document_urls"):
+                documents_del_urls = request.data["documents_urls"]
                 project.documents.filter(file__in=documents_del_urls).delete()
 
             bulk_inserts = []
