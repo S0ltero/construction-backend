@@ -273,6 +273,22 @@ class ProjectConstruction(models.Model):
         return self.title
 
 
+class ProjectConstructionDocument(models.Model):
+    file = models.FileField(verbose_name="Файл")
+    construction = models.ForeignKey(ProjectConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
+
+    class Meta:
+        verbose_name = "Документ"
+        verbose_name_plural = "Документы"
+
+    def __str__(self):
+        return self.file.name
+
+    @property
+    def file_url(self):
+        return self.file.url
+
+
 class ProjectElement(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
