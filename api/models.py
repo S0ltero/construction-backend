@@ -51,6 +51,24 @@ class SubCategory(models.Model):
         return self.title
 
 
+class BaseElement(models.Model):
+    class Type(models.TextChoices):
+        MATERIAL = "MATERIAL", "Материал"
+        JOB = "JOB", "Работа"
+
+    title = models.CharField(verbose_name="Название", max_length=60)
+    measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
+    second_measure = models.CharField(verbose_name="Доп. ед. измерения", max_length=30)
+    cost = models.PositiveIntegerField(verbose_name="Себестоимость", default=0)
+    price = models.PositiveIntegerField(verbose_name="Цена", default=0)
+    type = models.CharField(verbose_name="Тип", choices=Type.choices, max_length=30)
+    dimension = models.CharField(verbose_name="Размер", max_length=60, blank=True)
+    conversion_rate = models.PositiveIntegerField(verbose_name="Норма конвертации")
+
+    class Meta:
+        abstract = True
+
+
 class Element(models.Model):
     class Type(models.TextChoices):
         MATERIAL = "MATERIAL", "Материал"
