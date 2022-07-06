@@ -9,7 +9,7 @@ from .models import (
     Project, ProjectStage, ProjectConstruction,
     ProjectElement,
     Template, TemplateStage, TemplateConstruction,
-    TemplateConstructionElement,
+    TemplateElement,
     Client
 )
 
@@ -90,7 +90,7 @@ class NestedProjectStageInline(nested_admin.NestedStackedInline):
 
 
 class NestedTemplateElementInline(nested_admin.NestedStackedInline):
-    model = TemplateConstructionElement
+    model = TemplateElement
     extra = 0
     classes = ["collapse"]
 

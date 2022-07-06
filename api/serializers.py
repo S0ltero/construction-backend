@@ -6,7 +6,7 @@ from .models import (
     Project, ProjectStage, ProjectConstruction,
     ProjectElement,
     Template, TemplateStage, TemplateConstruction,
-    TemplateConstructionElement,
+    TemplateElement,
     Client
 )
 
@@ -297,13 +297,13 @@ class TemplateStageSerializer(serializers.ModelSerializer):
             bulk_insert_constructions.append(construction)
             for element in elements:
                 bulk_insert_elements.append(
-                    TemplateConstructionElement(
+                    TemplateElement(
                         **element, construction=construction
                     )
                 )
 
         TemplateConstruction.objects.bulk_create(bulk_insert_constructions)
-        TemplateConstructionElement.objects.bulk_create(bulk_insert_elements)
+        TemplateElement.objects.bulk_create(bulk_insert_elements)
 
         stage = TemplateStage.objects.get(id=instance.id)
         return TemplateStageSerializer(instance=stage).data

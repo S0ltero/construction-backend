@@ -300,7 +300,7 @@ class TemplateConstruction(models.Model):
         return self.title
 
 
-class TemplateConstructionElement(models.Model):
+class TemplateElement(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
     construction = models.ForeignKey(TemplateConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
