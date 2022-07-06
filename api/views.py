@@ -166,11 +166,11 @@ class ElementViewSet(viewsets.GenericViewSet):
         Редактирование элемента
         """
         element = self.get_object()
-        documents_del_urls = request.data.pop("documents_urls", [])
         serializer = self.serializer_class(element, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
-            if documents_del_urls:
+            if request.data.get("document_urls"):
+                documents_del_urls = request.data["document_urls"]
                 element.documents.filter(file__in=documents_del_urls).delete()
 
             bulk_inserts = []
@@ -249,11 +249,11 @@ class ConstructionViewset(viewsets.GenericViewSet):
         Редактирование конструкции и обновление списка элементов конструкции
         """
         construction = self.get_object()
-        documents_del_urls = request.data.pop("documents_urls", [])
         serializer = self.serializer_class(construction, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
-            if documents_del_urls:
+            if request.data.get("document_urls"):
+                documents_del_urls = request.data["documents_urls"]
                 construction.documents.filter(file__in=documents_del_urls).delete()
 
             bulk_inserts = []
