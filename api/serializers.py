@@ -172,7 +172,7 @@ class ProjectConstructionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectConstruction
-        fields = ("title", "count", "measure", "elements")
+        fields = ("id", "title", "count", "measure", "elements", "construction")
         extra_kwargs = {"stage": {"required": False}}
 
 
