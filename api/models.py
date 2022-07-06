@@ -272,7 +272,7 @@ class ProjectConstructionDocument(models.Model):
 
 
 class ProjectElement(BaseElement):
-    element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
+    element = models.ForeignKey(Element, verbose_name="Элемент", null=True, on_delete=models.SET_NULL)
     construction = models.ForeignKey(ProjectConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
     count = models.IntegerField(verbose_name="Количество", default=0)
