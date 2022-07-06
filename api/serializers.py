@@ -160,9 +160,6 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
 
 
 class ProjectElementSerializer(serializers.ModelSerializer):
-    measure = serializers.CharField(source="element.measure")
-    price = serializers.IntegerField(source="element.price")
-    cost = serializers.IntegerField(source="element.cost")
 
     class Meta:
         model = ProjectElement
