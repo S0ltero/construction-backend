@@ -242,11 +242,9 @@ class ProjectStage(models.Model):
         return self.title
 
 
-class ProjectConstruction(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=60)
+class ProjectConstruction(BaseConstruction):
     count = models.PositiveIntegerField(verbose_name="Количество")
     stage = models.ForeignKey(ProjectStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
-    measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
 
     class Meta:
         verbose_name = "Конструкция проекта"
