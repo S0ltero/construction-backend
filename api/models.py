@@ -283,6 +283,11 @@ class ProjectElement(BaseElement):
     def __str__(self):
         return self.title
 
+    def update_price(self):
+        self.price = self.element.price
+        self.cost = self.element.cost
+        self.save()
+
 
 class ProjectElementDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
