@@ -191,55 +191,70 @@ class ProjectStageSerializer(serializers.ModelSerializer):
             stage.constructions.all().delete()
 
         bulk_insert_constructions = []
+        bulk_insert_constructions_docs = []
+
         bulk_insert_elements = []
+        bulk_insert_elements_docs = []
 
         for construction in constructions:
             elements = construction.pop("elements", [])
-            construction = ProjectConstruction(**construction, stage=instance)
+
+            template_construction = construction.pop("construction", None)
+            construction = ProjectConstruction(
+                **construction,
+                stage=instance,
+                construction=template_construction
+            )
+
+            # Reassign construction documents to project construction
+            if template_construction:
+                for document in template_construction.documents.all():
+                    bulk_insert_constructions_docs.append(
+                        ProjectConstructionDocument(construction=construction, file=document.file)
+                    )
+
             bulk_insert_constructions.append(construction)
             for element in elements:
-                bulk_insert_elements.append(
-                    ProjectElement(
-                        **element, construction=construction
-                    )
+                template_element = element.pop("element", None)
+                element = ProjectElement(
+                    **element,
+                    construction=construction,
+                    element=template_element
                 )
 
+                # Reassign element documents to project element
+                if template_element:
+                    for document in template_element.documents.all():
+                        bulk_insert_elements_docs.append(
+                            ProjectElementDocument(element=element, file=document.file)
+                        )
+
+                bulk_insert_elements.append(element)
+
         ProjectConstruction.objects.bulk_create(bulk_insert_constructions)
+        ProjectConstructionDocument.objects.bulk_create(bulk_insert_constructions_docs)
+
         ProjectElement.objects.bulk_create(bulk_insert_elements)
-
-        stage = ProjectStage.objects.get(id=instance.id)
-        serializer = ProjectStageSerializer(instance=stage, context={"no_data": True})
-
-        data = serializer.data.copy()
-        constructions = data["constructions"]
+        ProjectElementDocument.objects.bulk_create(bulk_insert_elements_docs)
 
         # Process elements price and cost
-        for const_index, construction in enumerate(constructions):
-            elements = construction["elements"]
-            for const_elem_index, const_element in enumerate(elements):
-                element_id = const_element["element"]
-                if stage.used_elements.get(str(element_id)):
+        for construction in stage.constructions.all():
+            for element in construction.elements.all():
+                template_element_id = str(element.element.id)
+                if stage.used_elements.get(template_element_id):
                     # Add price and cost to element from already used element
-                    elements[const_elem_index].update(stage.used_elements[str(element_id)])
+                    element.price = stage.used_elements[template_element_id]["price"]
+                    element.cost = stage.used_elements[template_element_id]["cost"]
                 else:
                     # Add price and cost of element to used_elements data
-                    stage.used_elements[str(element_id)] = {
-                        "price": const_element["price"],
-                        "cost": const_element["cost"],
+                    stage.used_elements[template_element_id] = {
+                        "price": element.price,
+                        "cost": element.cost,
                     }
-            constructions[const_index]["elements"] = elements
 
-        data["constructions"] = constructions
-
-        stage.data = data
         stage.save()
-
-        return data
-
-    def to_representation(self, instance):
-        if not instance.data or self.context.get("no_data"):
-            return super().to_representation(instance)
-        return instance.data
+        serializer = ProjectStageSerializer(stage)
+        return serializer.data
 
 
 class ProjectDetailSerializer(ProjectSerializer):
