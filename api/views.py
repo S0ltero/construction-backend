@@ -372,6 +372,18 @@ class ProjectViewset(viewsets.GenericViewSet):
         response["Content-Disposition"] = "attachment; filename=foreman.xlsx"
 
         return response
+
+    @action(detail=True, methods=["get"], url_name="excel/purchaser", url_path="excel/purchaser", serializer_class=ProjectDetailSerializer)
+    def excel_purchaser(self, request, pk=None):
+        project = self.get_object()
+        data = ProjectDetailSerializer(project).data
+
+        wb = purchaser(data)
+
+        response = HttpResponse(content=save_virtual_workbook(wb))
+        response["Content-Disposition"] = "attachment; filename=purchaser.xlsx"
+
+        return response
     @action(detail=True, methods=["get"], url_name="update-price", url_path="update-price", serializer_class=ProjectDetailSerializer)
     def update_price(self, request, pk=None):
         """
