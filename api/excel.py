@@ -181,3 +181,112 @@ def purchaser(project):
             count_construction += 1
 
     return wb
+
+
+def estimate(project):
+    def sum_total_price(ws, ws_row, ws_price_cells, word: str):
+        ws.merge_cells(f"A{ws_row}:F{ws_row}")
+        ws[f"A{ws_row}"] = word
+        ws[f"G{ws_row}"] = f"=SUM({';'.join(ws_price_cells)})"
+
+        return ws, ws_row
+
+    stages = project["stages"]
+    ws1_row = 1
+    ws2_row = 1
+
+    ws1_index = 1
+
+    wb = openpyxl.Workbook()
+    ws1 = wb.active
+    ws1.title = "Смета"
+    ws2 = wb.create_sheet("Смета(сокр)")
+
+    ws1_stage_price_cells = []
+    ws2_stage_price_cells = []
+
+    for stage in stages:
+        ws1.merge_cells(f"A{ws1_row}:H{ws1_row}")
+        ws2.merge_cells(f"A{ws2_row}:H{ws2_row}")
+        ws1[f"A{ws1_row}"] = ws2[f"A{ws2_row}"] = f"Этап {stage['order']}. {stage['title']}"
+        ws1[f"A{ws1_row}"].alignment = Alignment(horizontal="center")
+        ws2[f"A{ws2_row}"].alignment = Alignment(horizontal="center")
+        ws1_row += 1
+        ws2_row += 1
+
+        cells = {
+            "B": {"value": "Наименование"}, 
+            "C": {"value": "Кол-во"},
+            "D": {"value": "ед-изм"},
+            "E": {"value": "Цена/ед"},
+            "F": {"value": "Сумма"},
+            "G": {"value": "Итого"}
+        }
+        ws1, ws1_row = insert_cells(ws1, ws1_row, cells)
+        ws2, ws2_row = insert_cells(ws2, ws2_row, cells)
+
+        ws1_construction_price_cells = []
+        ws2_construction_price_cells = []
+
+        constructions = stage["constructions"]
+        for count_construction, construction in enumerate(constructions, start=1):
+            cells = {
+                "A": {"value": f"{count_construction}. Конструкция"},
+                "B": {"value": construction["title"]},
+                "C": {"value": construction["count"]},
+                "D": {"value": construction["measure"]},
+                "F": {"value": f"=SUM(F{ws1_row + 1}:F{ws1_row + len(construction['elements'])})"}
+            }
+            ws1, ws1_row = insert_cells(ws1, ws1_row, cells)
+            cells["F"]["value"] = f"=SUM(F{ws2_row + 1}:F{ws2_row + len(construction['elements'])})"
+            ws2, ws2_row = insert_cells(ws2, ws2_row, cells)
+
+            ws1_construction_price_cells.append(f"F{ws1_row-1}")
+            ws2_construction_price_cells.append(f"F{ws2_row-1}")
+
+            elements_price = 0
+
+            elements = construction["elements"]
+            for element in elements:
+                cells = {
+                    "A": {
+                        "value": f"{count_construction}.{ws1_index}",
+                        "alignment": Alignment(horizontal="right")
+                    },
+                    "B": {
+                        "value": element["title"]
+                    },
+                    "C": {
+                        "value": element["count"],
+                    },
+                    "D": {
+                        "value": element["measure"]
+                    },
+                    "E": {
+                        "value": element["cost"]
+                    },
+                    "F": {
+                        "value": f"=E{ws1_row}*C{ws1_row}"
+                    }
+                }
+                ws1, ws1_row = insert_cells(ws1, ws1_row, cells)
+
+                ws1_index += 1
+
+                elements_price += element['cost'] * element['count']
+
+            ws2[f"F{ws2_row - 1}"] = elements_price
+            count_construction += 1
+
+        ws1, ws1_row = sum_total_price(ws1, ws1_row, ws1_construction_price_cells, "Итого")
+        ws1_stage_price_cells.append(f"G{ws1_row}")
+        ws1_row += 1
+
+        ws2, ws2_row = sum_total_price(ws2, ws2_row, ws2_construction_price_cells, "Итого")
+        ws2_stage_price_cells.append(f"G{ws2_row}")
+        ws2_row += 1
+
+    ws1, ws1_row = sum_total_price(ws1, ws1_row, ws1_stage_price_cells, "Всего")
+    ws2, ws2_row = sum_total_price(ws2, ws2_row, ws2_stage_price_cells, "Всего")
+
+    return wb
