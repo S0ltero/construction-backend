@@ -473,10 +473,11 @@ class TemplateViewset(viewsets.GenericViewSet):
         """
         Добавление этапа шаблона
         """
+        template = self.get_object()
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
-            serializer.save()
+            serializer.save(template=template)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
