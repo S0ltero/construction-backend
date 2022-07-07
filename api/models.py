@@ -332,11 +332,10 @@ class TemplateStage(models.Model):
         return self.title
 
 
-class TemplateConstruction(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=60)
+class TemplateConstruction(BaseConstruction):
+    construction = models.ForeignKey(Construction, verbose_name="Конструкция", null=True, on_delete=models.SET_NULL)
     count = models.PositiveIntegerField(verbose_name="Количество")
     stage = models.ForeignKey(TemplateStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
-    measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
 
     class Meta:
         verbose_name = "Конструкция шаблона"
@@ -347,7 +346,7 @@ class TemplateConstruction(models.Model):
 
 
 class TemplateElement(BaseElement):
-    element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
+    element = models.ForeignKey(Element, verbose_name="Элемент", null=True, on_delete=models.SET_NULL)
     construction = models.ForeignKey(TemplateConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
     count = models.IntegerField(verbose_name="Количество", default=0)

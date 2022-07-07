@@ -175,8 +175,8 @@ class ElementViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(element, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
-            if request.data.get("document_urls"):
-                documents_del_urls = request.data["document_urls"]
+            if request.data.get("documents_urls"):
+                documents_del_urls = request.data["documents_urls"]
                 element.documents.filter(file__in=documents_del_urls).delete()
 
             bulk_inserts = []
@@ -258,7 +258,7 @@ class ConstructionViewset(viewsets.GenericViewSet):
         serializer = self.serializer_class(construction, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
-            if request.data.get("document_urls"):
+            if request.data.get("documents_urls"):
                 documents_del_urls = request.data["documents_urls"]
                 construction.documents.filter(file__in=documents_del_urls).delete()
 
@@ -339,7 +339,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         serializer = self.serializer_class(project, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
-            if request.data.get("document_urls"):
+            if request.data.get("documents_urls"):
                 documents_del_urls = request.data["documents_urls"]
                 project.documents.filter(file__in=documents_del_urls).delete()
 
@@ -418,10 +418,11 @@ class ProjectViewset(viewsets.GenericViewSet):
         """
         Добавление этапа проекта
         """
+        project = self.get_object()
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
-            serializer.save()
+            serializer.save(project=project)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -515,10 +516,11 @@ class TemplateViewset(viewsets.GenericViewSet):
         """
         Добавление этапа шаблона
         """
+        template = self.get_object()
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
-            serializer.save()
+            serializer.save(template=template)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
