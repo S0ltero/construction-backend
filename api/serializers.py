@@ -287,6 +287,7 @@ class TemplateStageSerializer(serializers.ModelSerializer):
     class Meta:
         model = TemplateStage
         fields = ("id", "title", "order", "constructions")
+        extra_kwargs = {"template": {"required": False}}
 
     def update(self, instance, validated_data):
         constructions = validated_data.pop("constructions", [])
