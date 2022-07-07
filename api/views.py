@@ -361,6 +361,17 @@ class ProjectViewset(viewsets.GenericViewSet):
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, methods=["get"], url_name="excel/foreman", url_path="excel/foreman", serializer_class=ProjectDetailSerializer)
+    def excel_foreman(self, request, pk=None):
+        project = self.get_object()
+        data = ProjectDetailSerializer(project).data
+
+        wb = foreman(data)
+
+        response = HttpResponse(content=save_virtual_workbook(wb))
+        response["Content-Disposition"] = "attachment; filename=foreman.xlsx"
+
+        return response
     @action(detail=True, methods=["get"], url_name="update-price", url_path="update-price", serializer_class=ProjectDetailSerializer)
     def update_price(self, request, pk=None):
         """
