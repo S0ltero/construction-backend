@@ -219,11 +219,22 @@ class ProjectStageSerializer(serializers.ModelSerializer):
                 element = ProjectElement(
                     **element,
                     construction=construction,
-                    element=template_element
                 )
 
-                # Reassign element documents to project element
                 if template_element:
+                    element.element = template_element
+
+                    # Add price and cost to element from already used element
+                    if stage.used_elements.get(str(template_element.id)):
+                        element.price = stage.used_elements[str(template_element.id)]["price"]
+                        element.cost = stage.used_elements[str(template_element.id)]["cost"]
+                    else:
+                        stage.used_elements[str(template_element.id)] = {
+                            "price": element.price,
+                            "cost": element.cost,
+                        }
+
+                    # Reassign element documents to project element
                     for document in template_element.documents.all():
                         bulk_insert_elements_docs.append(
                             ProjectElementDocument(element=element, file=document.file)
@@ -236,21 +247,6 @@ class ProjectStageSerializer(serializers.ModelSerializer):
 
         ProjectElement.objects.bulk_create(bulk_insert_elements)
         ProjectElementDocument.objects.bulk_create(bulk_insert_elements_docs)
-
-        # Process elements price and cost
-        for construction in stage.constructions.all():
-            for element in construction.elements.all():
-                template_element_id = str(element.element.id)
-                if stage.used_elements.get(template_element_id):
-                    # Add price and cost to element from already used element
-                    element.price = stage.used_elements[template_element_id]["price"]
-                    element.cost = stage.used_elements[template_element_id]["cost"]
-                else:
-                    # Add price and cost of element to used_elements data
-                    stage.used_elements[template_element_id] = {
-                        "price": element.price,
-                        "cost": element.cost,
-                    }
 
         stage.save()
         serializer = ProjectStageSerializer(stage)
