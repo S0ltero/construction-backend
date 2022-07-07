@@ -268,7 +268,7 @@ class TemplateElementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectElement
-        exclude = ("construction",)
+        exclude = ("id", "construction")
         extra_kwargs = {"construction": {"required": False}}
 
 
