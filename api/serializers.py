@@ -132,24 +132,26 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
             stages = data.pop("stages", [])
             for stage in stages:
                 del stage["id"]
-                del stage["template"]
                 contstructions = stage.pop("constructions", [])
                 stage = ProjectStage(**stage, project=project)
                 bulk_insert_stages.append(stage)
 
                 for construction in contstructions:
+                    template_construction_id = construction.pop("construction")
                     elements = construction.pop("elements", [])
-                    construction = ProjectConstruction(**construction, stage=stage)
+                    construction = ProjectConstruction(
+                        **construction,
+                        construction_id=template_construction_id,
+                        stage=stage
+                    )
                     bulk_insert_constructions.append(construction)
 
                     for element in elements:
-                        element_instance = Element.objects.get(pk=element.pop("element"))
+                        template_element_id = element.pop("element")
                         bulk_insert_elements.append(ProjectElement(
-                            title=element["title"],
-                            count=element["count"],
-                            consumption=element["consumption"],
+                            **element,
                             construction=construction,
-                            element=element_instance
+                            element_id=template_element_id
                         ))
 
             ProjectStage.objects.bulk_create(bulk_insert_stages)
