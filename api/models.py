@@ -51,12 +51,25 @@ class SubCategory(models.Model):
         return self.title
 
 
-class Element(models.Model):
+class BaseElement(models.Model):
     class Type(models.TextChoices):
         MATERIAL = "MATERIAL", "Материал"
         JOB = "JOB", "Работа"
 
     title = models.CharField(verbose_name="Название", max_length=60)
+    measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
+    second_measure = models.CharField(verbose_name="Доп. ед. измерения", max_length=30)
+    cost = models.PositiveIntegerField(verbose_name="Себестоимость", default=0)
+    price = models.PositiveIntegerField(verbose_name="Цена", default=0)
+    type = models.CharField(verbose_name="Тип", choices=Type.choices, max_length=30)
+    dimension = models.CharField(verbose_name="Размер", max_length=60, blank=True)
+    conversion_rate = models.PositiveIntegerField(verbose_name="Норма конвертации")
+
+    class Meta:
+        abstract = True
+
+
+class Element(BaseElement):
     parent_category = models.ForeignKey(ParentCategory, verbose_name="Родительская категория", on_delete=models.CASCADE, related_name="elements")
     category = models.ForeignKey(
         Category,
@@ -72,13 +85,6 @@ class Element(models.Model):
         related_name="elements",
         null=True
     )
-    measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
-    second_measure = models.CharField(verbose_name="Доп. ед. измерения", max_length=30)
-    cost = models.PositiveIntegerField(verbose_name="Себестоимость", default=0)
-    price = models.PositiveIntegerField(verbose_name="Цена", default=0)
-    type = models.CharField(verbose_name="Тип", choices=Type.choices, max_length=30)
-    dimension = models.CharField(verbose_name="Размер", max_length=60, blank=True)
-    conversion_rate = models.PositiveIntegerField(verbose_name="Норма конвертации")
 
     class Meta:
         verbose_name = "Элемент"
@@ -104,12 +110,18 @@ class ElementDocument(models.Model):
         return self.file.url
 
 
-class Construction(models.Model):
+class BaseConstruction(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     description = models.TextField(verbose_name="Описание", blank=True)
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
     cost = models.PositiveIntegerField(verbose_name="Себестоимость", default=0)
     price = models.PositiveIntegerField(verbose_name="Цена", default=0)
+
+    class Meta:
+        abstract = True
+
+
+class Construction(BaseConstruction):
     parent_category = models.ForeignKey(ParentCategory, verbose_name="Родительская категория", on_delete=models.CASCADE, related_name="constructions")
     category = models.ForeignKey(
         Category,
@@ -218,7 +230,6 @@ class ProjectStage(models.Model):
     title = models.CharField(verbose_name="Название", max_length=60)
     project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE, related_name="stages")
     order = models.IntegerField(verbose_name="Порядковый номер")
-    data = models.JSONField(default=dict, blank=True)
     used_elements = models.JSONField(default=dict, blank=True)
 
     class Meta:
@@ -230,11 +241,10 @@ class ProjectStage(models.Model):
         return self.title
 
 
-class ProjectConstruction(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=60)
+class ProjectConstruction(BaseConstruction):
+    construction = models.ForeignKey(Construction, verbose_name="Конструкция", null=True, on_delete=models.SET_NULL)
     count = models.PositiveIntegerField(verbose_name="Количество")
     stage = models.ForeignKey(ProjectStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
-    measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
 
     class Meta:
         verbose_name = "Конструкция проекта"
@@ -244,9 +254,24 @@ class ProjectConstruction(models.Model):
         return self.title
 
 
-class ProjectConstructionElement(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=60)
-    element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
+class ProjectConstructionDocument(models.Model):
+    file = models.FileField(verbose_name="Файл")
+    construction = models.ForeignKey(ProjectConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
+
+    class Meta:
+        verbose_name = "Документ"
+        verbose_name_plural = "Документы"
+
+    def __str__(self):
+        return self.file.name
+
+    @property
+    def file_url(self):
+        return self.file.url
+
+
+class ProjectElement(BaseElement):
+    element = models.ForeignKey(Element, verbose_name="Элемент", null=True, on_delete=models.SET_NULL)
     construction = models.ForeignKey(ProjectConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
     count = models.IntegerField(verbose_name="Количество", default=0)
@@ -257,6 +282,27 @@ class ProjectConstructionElement(models.Model):
 
     def __str__(self):
         return self.title
+
+    def update_price(self):
+        self.price = self.element.price
+        self.cost = self.element.cost
+        self.save()
+
+
+class ProjectElementDocument(models.Model):
+    file = models.FileField(verbose_name="Файл")
+    element = models.ForeignKey(ProjectElement, verbose_name="Элемент", on_delete=models.CASCADE, related_name="documents")
+
+    class Meta:
+        verbose_name = "Документ"
+        verbose_name_plural = "Документы"
+
+    def __str__(self):
+        return self.file.name
+
+    @property
+    def file_url(self):
+        return self.file.url
 
 
 class Template(models.Model):
@@ -300,8 +346,7 @@ class TemplateConstruction(models.Model):
         return self.title
 
 
-class TemplateConstructionElement(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=60)
+class TemplateElement(BaseElement):
     element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
     construction = models.ForeignKey(TemplateConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)

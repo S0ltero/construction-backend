@@ -2,11 +2,13 @@ from rest_framework import serializers
 
 from .models import (
     ParentCategory, Category, SubCategory,
-    Element, Construction, ConstructionElement,
-    Project, ProjectStage, ProjectConstruction,
-    ProjectConstructionElement,
+    Element, ElementDocument, Construction, 
+    ConstructionElement, ConstructionDocument,
+    Project, ProjectStage, 
+    ProjectConstruction, ProjectConstructionDocument,
+    ProjectElement, ProjectElementDocument,
     Template, TemplateStage, TemplateConstruction,
-    TemplateConstructionElement,
+    TemplateElement,
     Client
 )
 
@@ -142,7 +144,7 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
 
                     for element in elements:
                         element_instance = Element.objects.get(pk=element.pop("element"))
-                        bulk_insert_elements.append(ProjectConstructionElement(
+                        bulk_insert_elements.append(ProjectElement(
                             title=element["title"],
                             count=element["count"],
                             consumption=element["consumption"],
@@ -152,28 +154,25 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
 
             ProjectStage.objects.bulk_create(bulk_insert_stages)
             ProjectConstruction.objects.bulk_create(bulk_insert_constructions)
-            ProjectConstructionElement.objects.bulk_create(bulk_insert_elements)
+            ProjectElement.objects.bulk_create(bulk_insert_elements)
 
         return project
 
 
-class ProjectConstructionElementSerializer(serializers.ModelSerializer):
-    measure = serializers.CharField(source="element.measure")
-    price = serializers.IntegerField(source="element.price")
-    cost = serializers.IntegerField(source="element.cost")
+class ProjectElementSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = ProjectConstructionElement
+        model = ProjectElement
         exclude = ("construction",)
         extra_kwargs = {"construction": {"required": False}}
 
 
 class ProjectConstructionSerializer(serializers.ModelSerializer):
-    elements = ProjectConstructionElementSerializer(many=True, read_only=False)
+    elements = ProjectElementSerializer(many=True, read_only=False)
 
     class Meta:
         model = ProjectConstruction
-        fields = ("title", "count", "measure", "elements")
+        fields = ("id", "title", "count", "measure", "elements", "construction")
         extra_kwargs = {"stage": {"required": False}}
 
 
@@ -192,55 +191,66 @@ class ProjectStageSerializer(serializers.ModelSerializer):
             stage.constructions.all().delete()
 
         bulk_insert_constructions = []
+        bulk_insert_constructions_docs = []
+
         bulk_insert_elements = []
+        bulk_insert_elements_docs = []
 
         for construction in constructions:
             elements = construction.pop("elements", [])
-            construction = ProjectConstruction(**construction, stage=instance)
+
+            template_construction = construction.pop("construction", None)
+            construction = ProjectConstruction(
+                **construction,
+                stage=instance,
+                construction=template_construction
+            )
+
+            # Reassign construction documents to project construction
+            if template_construction:
+                for document in template_construction.documents.all():
+                    bulk_insert_constructions_docs.append(
+                        ProjectConstructionDocument(construction=construction, file=document.file)
+                    )
+
             bulk_insert_constructions.append(construction)
             for element in elements:
-                bulk_insert_elements.append(
-                    ProjectConstructionElement(
-                        **element, construction=construction
-                    )
+                template_element = element.pop("element", None)
+                element = ProjectElement(
+                    **element,
+                    construction=construction,
                 )
 
-        ProjectConstruction.objects.bulk_create(bulk_insert_constructions)
-        ProjectConstructionElement.objects.bulk_create(bulk_insert_elements)
+                if template_element:
+                    element.element = template_element
 
-        stage = ProjectStage.objects.get(id=instance.id)
-        serializer = ProjectStageSerializer(instance=stage, context={"no_data": True})
-
-        data = serializer.data.copy()
-        constructions = data["constructions"]
-
-        # Process elements price and cost
-        for const_index, construction in enumerate(constructions):
-            elements = construction["elements"]
-            for const_elem_index, const_element in enumerate(elements):
-                element_id = const_element["element"]
-                if stage.used_elements.get(str(element_id)):
                     # Add price and cost to element from already used element
-                    elements[const_elem_index].update(stage.used_elements[str(element_id)])
-                else:
-                    # Add price and cost of element to used_elements data
-                    stage.used_elements[str(element_id)] = {
-                        "price": const_element["price"],
-                        "cost": const_element["cost"],
-                    }
-            constructions[const_index]["elements"] = elements
+                    if stage.used_elements.get(str(template_element.id)):
+                        element.price = stage.used_elements[str(template_element.id)]["price"]
+                        element.cost = stage.used_elements[str(template_element.id)]["cost"]
+                    else:
+                        stage.used_elements[str(template_element.id)] = {
+                            "price": element.price,
+                            "cost": element.cost,
+                        }
 
-        data["constructions"] = constructions
+                    # Reassign element documents to project element
+                    for document in template_element.documents.all():
+                        bulk_insert_elements_docs.append(
+                            ProjectElementDocument(element=element, file=document.file)
+                        )
 
-        stage.data = data
+                bulk_insert_elements.append(element)
+
+        ProjectConstruction.objects.bulk_create(bulk_insert_constructions)
+        ProjectConstructionDocument.objects.bulk_create(bulk_insert_constructions_docs)
+
+        ProjectElement.objects.bulk_create(bulk_insert_elements)
+        ProjectElementDocument.objects.bulk_create(bulk_insert_elements_docs)
+
         stage.save()
-
-        return data
-
-    def to_representation(self, instance):
-        if not instance.data or self.context.get("no_data"):
-            return super().to_representation(instance)
-        return instance.data
+        serializer = ProjectStageSerializer(stage)
+        return serializer.data
 
 
 class ProjectDetailSerializer(ProjectSerializer):
@@ -254,19 +264,19 @@ class TemplateSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TemplateConstructionElementSerializer(serializers.ModelSerializer):
+class TemplateElementSerializer(serializers.ModelSerializer):
     measure = serializers.CharField(source="element.measure")
     price = serializers.IntegerField(source="element.price")
     cost = serializers.IntegerField(source="element.cost")
 
     class Meta:
-        model = ProjectConstructionElement
+        model = ProjectElement
         exclude = ("construction",)
         extra_kwargs = {"construction": {"required": False}}
 
 
 class TemplateConstructionSerializer(serializers.ModelSerializer):
-    elements = TemplateConstructionElementSerializer(many=True, read_only=False)
+    elements = TemplateElementSerializer(many=True, read_only=False)
 
     class Meta:
         model = TemplateConstruction
@@ -297,13 +307,13 @@ class TemplateStageSerializer(serializers.ModelSerializer):
             bulk_insert_constructions.append(construction)
             for element in elements:
                 bulk_insert_elements.append(
-                    TemplateConstructionElement(
+                    TemplateElement(
                         **element, construction=construction
                     )
                 )
 
         TemplateConstruction.objects.bulk_create(bulk_insert_constructions)
-        TemplateConstructionElement.objects.bulk_create(bulk_insert_elements)
+        TemplateElement.objects.bulk_create(bulk_insert_elements)
 
         stage = TemplateStage.objects.get(id=instance.id)
         return TemplateStageSerializer(instance=stage).data

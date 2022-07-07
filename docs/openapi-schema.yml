@@ -1787,25 +1787,50 @@ components:
           type: string
           description: Название
           maxLength: 60
+        measure:
+          type: string
+          description: Единицы измерения
+          maxLength: 30
+        title:
+          type: string
+          description: Название
+          maxLength: 60
+        description:
+          type: string
+          description: Описание
+        measure:
+          type: string
+          description: Единицы измерения
+          maxLength: 30
+        price:
+          type: integer
+          description: Стоимость
+        cost:
+          type: integer
+          description: Себестоимость
         count:
           type: integer
           maximum: 2147483647
           minimum: 0
           description: Количество
-        measure:
-          type: string
-          description: Единицы измерения
-          maxLength: 30
+        construction:
+          type: integer
+          description: Шаблонная `Конструкция`
         elements:
           type: array
           items:
             $ref: '#/components/schemas/ProjectConstructionElement'
       required:
-      - count
-      - elements
       - id
+      - title
+      - measure
+      - construction
+      - count
+      - price
+      - cost
       - measure
       - title
+      - elements
     ProjectConstructionElement:
       type: object
       properties:
@@ -1816,6 +1841,37 @@ components:
           type: string
           description: Название
           maxLength: 60
+        measure:
+          type: string
+          description: Единицы измерения
+          maxLength: 30
+        second_measure:
+          type: string
+          description: Доп. ед. измерения
+          maxLength: 30
+        cost:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Себестоимость
+        price:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Цена
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ElementTypeEnum'
+          description: Тип
+        dimension:
+          type: string
+          description: Размер
+          maxLength: 60
+        conversion_rate:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Норма конвертации
         consumption:
           type: number
           format: double
@@ -1827,21 +1883,17 @@ components:
           type: integer
           description: Цена
           readOnly: true
-        cost:
-          type: integer
-          description: Себестоимость
-          readOnly: true
-        measure:
-          type: string
-          description: Единица измерения
-          readOnly: true
         element:
           type: integer
-          description: Элемент
+          description: Шаблонный `Элемент`
       required:
-      - element
       - id
       - title
+      - type
+      - measure
+      - second_measure
+      - conversation_rate
+      - element
     ProjectStage:
       type: object
       properties:
