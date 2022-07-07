@@ -67,7 +67,7 @@ class ConstructionDetailSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def update(self, instance, validated_data):
-        elements = validated_data.pop("elements")
+        elements = validated_data.pop("elements", [])
         instance.title = validated_data.get("title", instance.title)
         instance.measure = validated_data.get("measure", instance.measure)
         instance.category = validated_data.get("category", instance.category)
