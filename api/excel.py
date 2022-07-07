@@ -102,3 +102,82 @@ def foreman(project):
             count_construction += 1
 
     return wb
+
+
+def purchaser(project):
+    stages = project["stages"]
+    ws1_row = 1
+    ws2_row = 1
+
+    ws1_index = 1
+    ws2_index = 1
+
+    wb = openpyxl.Workbook()
+    ws1 = wb.active
+    ws1.title = "Список материалов по этапам (Закупщик)"
+    ws2 = wb.create_sheet("Список материалов общий (Закупщик)")
+
+    for stage_index, stage in enumerate(stages):
+        ws1.merge_cells(f"A{ws1_row}:F{ws1_row}")
+        ws1[f"A{ws1_row}"] = f"Этап {stage['order']}. {stage['title']}"
+        ws1[f"A{ws1_row}"].alignment = Alignment(horizontal="center")
+        ws1_row += 1
+
+        cells = {
+            "B": {"value": "Наименование"}, 
+            "C": {"value": "Кол-во"},
+            "D": {"value": "ед-изм"},
+            "E": {"value": "Цена/ед"},
+            "F": {"value": "Сумма"}
+        }
+        ws1, ws1_row = insert_cells(ws1, ws1_row, cells)
+        if stage_index == 0:
+            ws2, ws2_row = insert_cells(ws2, ws2_row, cells)
+
+        constructions = stage["constructions"]
+        for count_construction, construction in enumerate(constructions, start=1):
+            cells = {
+                "A": {"value": f"{count_construction}. Конструкция"},
+                "B": {"value": construction["title"]},
+                "D": {"value": construction["measure"]}
+            }
+            ws1, ws1_row = insert_cells(ws1, ws1_row, cells)
+
+            elements = construction["elements"]
+            for element in elements:
+                cells = {
+                    "A": {
+                        "value": None,
+                        "alignment": Alignment(horizontal="right")
+                    },
+                    "B": {
+                        "value": element["title"]
+                    },
+                    "C": {
+                        "value": element["count"],
+                        "alignment": Alignment(horizontal="right")
+                    },
+                    "D": {
+                        "value": element["measure"]
+                    },
+                    "E": {
+                        "value": element["cost"]
+                    },
+                    "F": {
+                        "value": None
+                    }
+                }
+                if element["type"] == Element.Type.MATERIAL:
+                    cells["A"]["value"] = f"{count_construction}.{ws1_index}"
+                    cells["F"]["value"] = f"=E{ws1_row}*C{ws1_row}"
+                    ws1, ws1_row = insert_cells(ws1, ws1_row, cells)
+                    ws1_index += 1
+
+                cells["A"]["value"] = f"{count_construction}.{ws2_index}"
+                cells["F"]["value"] = f"=E{ws2_row}*C{ws2_row}"
+                ws2, ws2_row = insert_cells(ws2, ws2_row, cells)
+                ws2_index += 1
+
+            count_construction += 1
+
+    return wb
