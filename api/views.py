@@ -376,10 +376,11 @@ class ProjectViewset(viewsets.GenericViewSet):
         """
         Добавление этапа проекта
         """
+        project = self.get_object()
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
-            serializer.save()
+            serializer.save(project=project)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
