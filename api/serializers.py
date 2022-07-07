@@ -184,6 +184,7 @@ class ProjectStageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProjectStage
         fields = ("id", "title", "project", "order", "constructions")
+        extra_kwargs = {"project": {"required": False}}
 
     def update(self, instance, validated_data):
         constructions = validated_data.pop("constructions", [])
