@@ -169,8 +169,8 @@ class ElementViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(element, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
-            if request.data.get("document_urls"):
-                documents_del_urls = request.data["document_urls"]
+            if request.data.get("documents_urls"):
+                documents_del_urls = request.data["documents_urls"]
                 element.documents.filter(file__in=documents_del_urls).delete()
 
             bulk_inserts = []
@@ -252,7 +252,7 @@ class ConstructionViewset(viewsets.GenericViewSet):
         serializer = self.serializer_class(construction, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
-            if request.data.get("document_urls"):
+            if request.data.get("documents_urls"):
                 documents_del_urls = request.data["documents_urls"]
                 construction.documents.filter(file__in=documents_del_urls).delete()
 
@@ -333,7 +333,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         serializer = self.serializer_class(project, data=request.data, partial=True)
 
         if serializer.is_valid(raise_exception=False):
-            if request.data.get("document_urls"):
+            if request.data.get("documents_urls"):
                 documents_del_urls = request.data["documents_urls"]
                 project.documents.filter(file__in=documents_del_urls).delete()
 
