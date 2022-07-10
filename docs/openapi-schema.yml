@@ -731,6 +731,78 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectDetail'
           description: ''
+  /api/projects/{id}/excel/foreman:
+    get:
+      operationId: GetProjectExcelForeman
+      description: Получение excel таблицы для `Бригадира`
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `Проекта`.
+        required: true
+      tags:
+      - projects
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: A Excel file
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: file
+                format: binary
+  /api/projects/{id}/excel/estimate:
+    get:
+      operationId: GetProjectExcelEstimate
+      description: Получение excel таблицы для `Заказчика`
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `Проекта`.
+        required: true
+      tags:
+      - projects
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: A Excel file
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: file
+                format: binary
+  /api/projects/{id}/excel/purchaser:
+    get:
+      operationId: GetProjectExcelPurchaser
+      description: Получение excel таблицы для `Закупщика`
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `Проекта`.
+        required: true
+      tags:
+      - projects
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: A Excel file
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: file
+                format: binary
   /api/projects/{id}/stages/:
     post:
       operationId: CreateProjectStage
@@ -1879,10 +1951,6 @@ components:
         count:
           type: integer
           description: Количество
-        price:
-          type: integer
-          description: Цена
-          readOnly: true
         element:
           type: integer
           description: Шаблонный `Элемент`
@@ -1893,6 +1961,11 @@ components:
       - measure
       - second_measure
       - conversation_rate
+      - dimension
+      - consumption
+      - count
+      - price
+      - cost
       - element
     ProjectStage:
       type: object
@@ -1930,6 +2003,7 @@ components:
         project:
           type: integer
           description: Проект
+          readOnly: true
         order:
           type: integer
           maximum: 2147483647
@@ -2004,25 +2078,50 @@ components:
           type: string
           description: Название
           maxLength: 60
+        measure:
+          type: string
+          description: Единицы измерения
+          maxLength: 30
+        title:
+          type: string
+          description: Название
+          maxLength: 60
+        description:
+          type: string
+          description: Описание
+        measure:
+          type: string
+          description: Единицы измерения
+          maxLength: 30
+        price:
+          type: integer
+          description: Стоимость
+        cost:
+          type: integer
+          description: Себестоимость
         count:
           type: integer
           maximum: 2147483647
           minimum: 0
           description: Количество
-        measure:
-          type: string
-          description: Единицы измерения
-          maxLength: 30
+        construction:
+          type: integer
+          description: Шаблонная `Конструкция`
         elements:
           type: array
           items:
             $ref: '#/components/schemas/TemplateConstructionElement'
       required:
-      - count
-      - elements
       - id
+      - title
+      - measure
+      - construction
+      - count
+      - price
+      - cost
       - measure
       - title
+      - elements
     TemplateConstructionElement:
       type: object
       properties:
@@ -2033,32 +2132,60 @@ components:
           type: string
           description: Название
           maxLength: 60
+        measure:
+          type: string
+          description: Единицы измерения
+          maxLength: 30
+        second_measure:
+          type: string
+          description: Доп. ед. измерения
+          maxLength: 30
+        cost:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Себестоимость
+        price:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Цена
+        type:
+          allOf:
+          - $ref: '#/components/schemas/ElementTypeEnum'
+          description: Тип
+        dimension:
+          type: string
+          description: Размер
+          maxLength: 60
+        conversion_rate:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          description: Норма конвертации
         consumption:
           type: number
           format: double
           description: Норма расхода
-        price:
-          type: integer
-          description: Цена
-          readOnly: true
-        cost:
-          type: integer
-          description: Себестоимость
-          readOnly: true
-        measure:
-          type: string
-          description: Единица измерения
-          readOnly: true
         count:
           type: integer
           description: Количество
         element:
           type: integer
-          description: Элемент
+          description: Шаблонный `Элемент`
       required:
-      - element
       - id
       - title
+      - type
+      - measure
+      - second_measure
+      - conversation_rate
+      - dimension
+      - consumption
+      - count
+      - price
+      - cost
+      - element
     TemplateStageCreate:
       type: object
       properties:
@@ -2095,6 +2222,7 @@ components:
         template:
           type: integer
           description: Шаблон
+          readOnly: true
         order:
           type: integer
           maximum: 2147483647
