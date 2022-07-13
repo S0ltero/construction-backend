@@ -43,6 +43,7 @@ WSGI_APPLICATION = "main.wsgi.application"
 APPEND_SLASH = True
 LANGUAGE_CODE = "ru-RU"
 LOGIN_REDIRECT_URL = "/"
+LOGIN_URL = "/admin/login/"
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
