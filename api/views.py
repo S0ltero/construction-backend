@@ -2,6 +2,7 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework import permissions
 
 from django.http import HttpResponse
 
@@ -33,6 +34,7 @@ from .excel import foreman, purchaser, estimate
 class ParentCategoryViewSet(viewsets.GenericViewSet):
     queryset = ParentCategory.objects.all()
     serializer_class = ParentCategorySerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         queryset = ParentCategory.objects.all()
@@ -74,6 +76,7 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
 class CategoryViewSet(viewsets.GenericViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def retrieve(self, request, pk=None):
         """
@@ -99,6 +102,7 @@ class CategoryViewSet(viewsets.GenericViewSet):
 class SubCategoryViewSet(viewsets.GenericViewSet):
     queryset = SubCategory.objects.all()
     serializer_class = SubCategorySerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def retrieve(self, request, pk=None):
         """
@@ -124,6 +128,7 @@ class SubCategoryViewSet(viewsets.GenericViewSet):
 class ElementViewSet(viewsets.GenericViewSet):
     queryset = Element.objects.all()
     serializer_class = ElementSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         queryset = Element.objects.all()
@@ -201,6 +206,7 @@ class ElementViewSet(viewsets.GenericViewSet):
 class ConstructionViewset(viewsets.GenericViewSet):
     queryset = Construction.objects.all()
     serializer_class = ConstructionDetailSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         queryset = Construction.objects.all()
@@ -284,6 +290,7 @@ class ConstructionViewset(viewsets.GenericViewSet):
 class ProjectViewset(viewsets.GenericViewSet):
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -454,6 +461,7 @@ class ProjectViewset(viewsets.GenericViewSet):
 class TemplateViewset(viewsets.GenericViewSet):
     queryset = Template.objects.all()
     serializer_class = TemplateSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         queryset = Template.objects.all()
@@ -552,6 +560,7 @@ class TemplateViewset(viewsets.GenericViewSet):
 class ClientViewSet(viewsets.GenericViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
     def get_queryset(self):
         queryset = Client.objects.all()
