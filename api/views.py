@@ -5,6 +5,8 @@ from rest_framework.decorators import action
 from rest_framework import permissions
 
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 
 from openpyxl.writer.excel import save_virtual_workbook
 
@@ -28,6 +30,18 @@ from . serializers import (
 )
 
 from .excel import foreman, purchaser, estimate
+
+
+@login_required
+def internal_media(request, file):
+    if request.user.is_authenticated:
+        response = HttpResponse()
+        response["Content-Disposition"] = "attachment; filename=" + file
+        # nginx uses this path to serve the file
+        response["X-Accel-Redirect"] = "/internal/" + file # path to file
+        return response
+    else:
+        return PermissionDenied()
 
 
 # Create your views here.
