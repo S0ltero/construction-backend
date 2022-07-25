@@ -10,7 +10,7 @@ class ParentCategory(models.Model):
         CONSTRUCTION = "CONSTRUCTION", "Конструкция"
         ELEMENT = "ELEMENT", "Элемент"
 
-    title = models.CharField(verbose_name="Название", max_length=60)
+    title = models.CharField(verbose_name="Название", max_length=160)
     description = models.TextField(verbose_name="Описание")
     image = models.ImageField(verbose_name="Фото", blank=True)
     type = models.CharField(verbose_name="Тип", choices=Type.choices, max_length=30)
@@ -24,7 +24,7 @@ class ParentCategory(models.Model):
 
 
 class Category(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=60)
+    title = models.CharField(verbose_name="Название", max_length=160)
     description = models.TextField(verbose_name="Описание")
     image = models.ImageField(verbose_name="Фото", blank=True)
     parent_category = models.ForeignKey(
@@ -66,7 +66,7 @@ class BaseElement(models.Model):
         MATERIAL = "MATERIAL", "Материал"
         JOB = "JOB", "Работа"
 
-    title = models.CharField(verbose_name="Название", max_length=60)
+    title = models.CharField(verbose_name="Название", max_length=160)
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
     second_measure = models.CharField(verbose_name="Доп. ед. измерения", max_length=30)
     cost = models.PositiveIntegerField(verbose_name="Себестоимость", default=0)
@@ -121,7 +121,7 @@ class ElementDocument(models.Model):
 
 
 class BaseConstruction(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=60)
+    title = models.CharField(verbose_name="Название", max_length=160)
     description = models.TextField(verbose_name="Описание", blank=True)
     measure = models.CharField(verbose_name="Единицы измерения", max_length=30)
     cost = models.PositiveIntegerField(verbose_name="Себестоимость", default=0)
@@ -173,7 +173,7 @@ class ConstructionDocument(models.Model):
 
 
 class ConstructionElement(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=60)
+    title = models.CharField(verbose_name="Название", max_length=160)
     element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
     construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
@@ -204,10 +204,10 @@ class Project(models.Model):
         WORK = "WORK", "В работе"
         NOT_START = "NOT_START", "Не начат"
 
-    title = models.CharField(verbose_name="Название", max_length=60)
+    title = models.CharField(verbose_name="Название", max_length=160)
     client = models.ForeignKey(Client, verbose_name="Клиент", on_delete=models.CASCADE, related_name="projects")
     description = models.TextField(verbose_name="Описание")
-    author = models.CharField(verbose_name="Автор", max_length=60)
+    author = models.CharField(verbose_name="Автор", max_length=100)
     status = models.CharField(verbose_name="Статус", max_length=30, choices=Type.choices)
     created_at = models.DateField(verbose_name="Дата создания", auto_now=True)
     price = models.IntegerField(verbose_name="Стоимость", default=0)
@@ -237,7 +237,7 @@ class ProjectDocument(models.Model):
 
 
 class ProjectStage(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=60)
+    title = models.CharField(verbose_name="Название", max_length=160)
     project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE, related_name="stages")
     order = models.IntegerField(verbose_name="Порядковый номер")
     used_elements = models.JSONField(default=dict, blank=True)
@@ -316,7 +316,7 @@ class ProjectElementDocument(models.Model):
 
 
 class Template(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=60)
+    title = models.CharField(verbose_name="Название", max_length=160)
     description = models.TextField(verbose_name="Описание")
     created_at = models.DateField(verbose_name="Дата создания", auto_now=True)
     price = models.IntegerField(verbose_name="Стоимость", default=0)
@@ -330,7 +330,7 @@ class Template(models.Model):
 
 
 class TemplateStage(models.Model):
-    title = models.CharField(verbose_name="Название", max_length=60)
+    title = models.CharField(verbose_name="Название", max_length=160)
     template = models.ForeignKey(Template, verbose_name="Шаблон", on_delete=models.CASCADE, related_name="stages")
     order = models.IntegerField(verbose_name="Порядковый номер")
 
