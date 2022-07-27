@@ -129,6 +129,14 @@ class CategoryViewSet(viewsets.GenericViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, pk=None):
+        """
+        Удаление категории по pk
+        """
+        category = self.get_object()
+        category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class SubCategoryViewSet(viewsets.GenericViewSet):
     queryset = SubCategory.objects.all()
