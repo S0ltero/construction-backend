@@ -2,14 +2,11 @@ from rest_framework import serializers
 
 from .models import (
     ParentCategory, Category, SubCategory,
-    Element, ElementDocument, Construction, 
-    ConstructionElement, ConstructionDocument,
-    Project, ProjectStage, 
-    ProjectConstruction, ProjectConstructionDocument,
-    ProjectElement, ProjectElementDocument,
-    Template, TemplateStage, TemplateConstruction,
-    TemplateElement,
-    Client
+    Element, Construction, ConstructionElement,
+    Project, ProjectStage, ProjectConstruction,
+    ProjectConstructionDocument, ProjectElement,
+    ProjectElementDocument, Template, TemplateStage,
+    TemplateConstruction, TemplateElement, Client
 )
 
 
