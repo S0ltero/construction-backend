@@ -14,5 +14,5 @@ urlpatterns = [
     path("api/auth/", include("djoser.urls")),
     path("api/auth/", include("djoser.urls.authtoken")),
     path("docs/", TemplateView.as_view(template_name="elements.html")),
-    re_path(r"^media/(?P<file>.*)$", internal_media, name="internal_media")
+    re_path(r"^media/(?P<file>.*)/(?P<token>.*)$", internal_media, name="internal_media")
 ]
