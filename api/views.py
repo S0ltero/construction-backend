@@ -103,6 +103,14 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def delete(self, request, pk=None):
+        """
+        Удаление родительской категории
+        """
+        parent_category = self.get_object()
+        parent_category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class CategoryViewSet(viewsets.GenericViewSet):
     queryset = Category.objects.all()
