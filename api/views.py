@@ -86,6 +86,23 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def partial_update(self, request, pk=None):
+        """
+        Частичное обновление родительской категории
+        """
+        parent_category = self.get_object()
+        serializer = self.serializer_class(
+            instance=parent_category,
+            data=request.data,
+            partial=True
+        )
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.update(parent_category, serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class CategoryViewSet(viewsets.GenericViewSet):
     queryset = Category.objects.all()
