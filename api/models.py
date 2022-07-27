@@ -84,7 +84,7 @@ class BaseElement(models.Model):
     price = models.PositiveIntegerField(verbose_name="Цена", default=0)
     type = models.CharField(verbose_name="Тип", choices=Type.choices, max_length=30)
     dimension = models.CharField(verbose_name="Размер", max_length=60, blank=True)
-    conversion_rate = models.PositiveIntegerField(verbose_name="Норма конвертации")
+    conversion_rate = models.FloatField(verbose_name="Норма конвертации")
 
     class Meta:
         abstract = True
