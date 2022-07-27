@@ -9,6 +9,7 @@ class ParentCategory(models.Model):
     class Type(models.TextChoices):
         CONSTRUCTION = "CONSTRUCTION", "Конструкция"
         ELEMENT = "ELEMENT", "Элемент"
+        NO = "NO", "Нет"
 
     title = models.CharField(verbose_name="Название", max_length=160)
     description = models.TextField(verbose_name="Описание")
