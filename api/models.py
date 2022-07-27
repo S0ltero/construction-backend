@@ -103,6 +103,7 @@ class Element(BaseElement):
         verbose_name="Категория",
         on_delete=models.SET_NULL,
         related_name="elements",
+        blank=True,
         null=True
     )
     subcategory = models.ForeignKey(
@@ -110,6 +111,7 @@ class Element(BaseElement):
         verbose_name="Подкатегория",
         on_delete=models.SET_NULL,
         related_name="elements",
+        blank=True,
         null=True
     )
 
