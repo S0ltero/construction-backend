@@ -94,9 +94,9 @@ class Element(BaseElement):
     parent_category = models.ForeignKey(
         ParentCategory,
         verbose_name="Родительская категория",
-        on_delete=models.SET_NULL,
+        on_delete=models.SET_DEFAULT,
         related_name="elements",
-        null=True,
+        default=ParentCategory.get_default_pk
     )
     category = models.ForeignKey(
         Category,
