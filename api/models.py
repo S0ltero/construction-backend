@@ -23,6 +23,16 @@ class ParentCategory(models.Model):
     def __str__(self):
         return self.title
 
+    @classmethod
+    def get_default_pk(cls):
+        category, created = cls.objects.get_or_create(
+            title="Без категории", defaults={
+                "description": "Без категории",
+                "type": cls.Type.NO
+            }
+        )
+        return category.id
+
 
 class Category(models.Model):
     title = models.CharField(verbose_name="Название", max_length=160)
