@@ -112,6 +112,23 @@ class CategoryViewSet(viewsets.GenericViewSet):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def partial_update(self, request, pk=None):
+        """
+        Частичное обновление категории
+        """
+        category = self.get_object()
+        serializer = self.serializer_class(
+            instance=category,
+            data=request.data,
+            partial=True
+        )
+
+        if serializer.is_valid(raise_exception=False):
+            serializer.update(category, serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class SubCategoryViewSet(viewsets.GenericViewSet):
     queryset = SubCategory.objects.all()
