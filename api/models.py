@@ -155,15 +155,17 @@ class Construction(BaseConstruction):
     category = models.ForeignKey(
         Category,
         verbose_name="Категория",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="constructions",
+        blank=True,
         null=True
     )
     subcategory = models.ForeignKey(
         SubCategory,
         verbose_name="Подкатегория",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="constructions",
+        blank=True,
         null=True
     )
 
