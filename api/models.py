@@ -151,7 +151,13 @@ class BaseConstruction(models.Model):
 
 
 class Construction(BaseConstruction):
-    parent_category = models.ForeignKey(ParentCategory, verbose_name="Родительская категория", on_delete=models.CASCADE, related_name="constructions")
+    parent_category = models.ForeignKey(
+        ParentCategory,
+        verbose_name="Родительская категория",
+        on_delete=models.SET_DEFAULT,
+        related_name="constructions",
+        default=ParentCategory.get_default_pk
+    )
     category = models.ForeignKey(
         Category,
         verbose_name="Категория",
