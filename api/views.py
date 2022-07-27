@@ -466,7 +466,14 @@ class ProjectViewset(viewsets.GenericViewSet):
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=True, methods=["get"], url_name="excel/foreman", url_path="excel/foreman", serializer_class=ProjectDetailSerializer)
+    @action(
+        detail=True,
+        methods=["get"],
+        url_name="excel/foreman",
+        url_path="excel/foreman",
+        serializer_class=ProjectDetailSerializer,
+        permission_classes=()
+    )
     def excel_foreman(self, request, pk=None):
         project = self.get_object()
         data = ProjectDetailSerializer(project).data
@@ -478,7 +485,14 @@ class ProjectViewset(viewsets.GenericViewSet):
 
         return response
 
-    @action(detail=True, methods=["get"], url_name="excel/purchaser", url_path="excel/purchaser", serializer_class=ProjectDetailSerializer)
+    @action(
+        detail=True,
+        methods=["get"],
+        url_name="excel/purchaser",
+        url_path="excel/purchaser",
+        serializer_class=ProjectDetailSerializer,
+        permission_classes=()
+    )
     def excel_purchaser(self, request, pk=None):
         project = self.get_object()
         data = ProjectDetailSerializer(project).data
@@ -490,7 +504,14 @@ class ProjectViewset(viewsets.GenericViewSet):
 
         return response
 
-    @action(detail=True, methods=["get"], url_name="excel/estimate", url_path="excel/estimate", serializer_class=ProjectDetailSerializer)
+    @action(
+        detail=True,
+        methods=["get"],
+        url_name="excel/estimate",
+        url_path="excel/estimate",
+        serializer_class=ProjectDetailSerializer,
+        permission_classes=()
+    )
     def excel_estimate(self, request, pk=None):
         project = self.get_object()
         data = ProjectDetailSerializer(project).data
