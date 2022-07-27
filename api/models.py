@@ -80,18 +80,24 @@ class BaseElement(models.Model):
 
 
 class Element(BaseElement):
-    parent_category = models.ForeignKey(ParentCategory, verbose_name="Родительская категория", on_delete=models.CASCADE, related_name="elements")
+    parent_category = models.ForeignKey(
+        ParentCategory,
+        verbose_name="Родительская категория",
+        on_delete=models.SET_NULL,
+        related_name="elements",
+        null=True,
+    )
     category = models.ForeignKey(
         Category,
         verbose_name="Категория",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="elements",
         null=True
     )
     subcategory = models.ForeignKey(
         SubCategory,
         verbose_name="Подкатегория",
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
         related_name="elements",
         null=True
     )

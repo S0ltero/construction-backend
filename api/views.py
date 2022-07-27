@@ -60,7 +60,7 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
 
     def retrieve(self, request, pk=None):
         """
-        Получение категории по pk
+        Получение родительской категории по pk
         """
         category = self.get_object()
         serializer = ParentCategoryDetailSerializer(category)
@@ -68,7 +68,7 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
 
     def list(self, request):
         """
-        Получение списка категорий
+        Получение списка родительский категорий
         """
         queryset = self.get_queryset()
         serializer = self.serializer_class(queryset, many=True)
@@ -76,7 +76,7 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
 
     def create(self, request):
         """
-        Создание категории
+        Создание родительской категории
         """
         serializer = self.serializer_class(data=request.data)
 
@@ -94,7 +94,7 @@ class CategoryViewSet(viewsets.GenericViewSet):
 
     def retrieve(self, request, pk=None):
         """
-        Получение подкатегории по pk
+        Получение категории по pk
         """
         category = self.get_object()
         serializer = CategoryDetailSerializer(category)
@@ -102,7 +102,7 @@ class CategoryViewSet(viewsets.GenericViewSet):
 
     def create(self, request):
         """
-        Создание подкатегории
+        Создание категории
         """
         serializer = self.serializer_class(data=request.data)
 
