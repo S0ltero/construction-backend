@@ -45,6 +45,7 @@ class ElementSerializer(serializers.ModelSerializer):
 class ConstructionElementSerializer(serializers.ModelSerializer):
     measure = serializers.CharField(source="element.measure")
     second_measure = serializers.CharField(source="element.second_measure")
+    type = serializers.CharField(source="element.type")
     price = serializers.IntegerField(source="element.price")
     cost = serializers.IntegerField(source="element.cost")
 
