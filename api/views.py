@@ -539,7 +539,13 @@ class ProjectViewset(viewsets.GenericViewSet):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=["post"], url_name="stages", url_path="stages", serializer_class=ProjectStageSerializer, queryset=ProjectStage.objects.all())
+    @action(
+        detail=True,
+        methods=["post"],
+        url_name="stages",
+        url_path="stages",
+        serializer_class=ProjectStageSerializer
+    )
     def add_stages(self, request, pk=None):
         """
         Добавление этапа проекта
