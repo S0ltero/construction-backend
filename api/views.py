@@ -1,12 +1,12 @@
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view, renderer_classes
+from rest_framework.renderers import JSONRenderer
+from rest_framework.authtoken.models import Token
 from rest_framework import permissions
 
 from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 
 from openpyxl.writer.excel import save_virtual_workbook
 
@@ -32,16 +32,26 @@ from . serializers import (
 from .excel import foreman, purchaser, estimate
 
 
-@login_required
-def internal_media(request, file):
+@api_view(("GET",))
+@renderer_classes((JSONRenderer,))
+def internal_media(request, file, token):
+    has_access = False
     if request.user.is_authenticated:
+        has_access = True
+    try:
+        Token.objects.get(key=token)
+        has_access = True
+    except Token.DoesNotExist:
+        pass
+
+    if has_access:
         response = HttpResponse()
         response["Content-Disposition"] = "attachment; filename=" + file
         # nginx uses this path to serve the file
         response["X-Accel-Redirect"] = "/internal/" + file # path to file
         return response
     else:
-        return PermissionDenied()
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
 
 class ParentCategoryViewSet(viewsets.GenericViewSet):
