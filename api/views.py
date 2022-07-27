@@ -63,7 +63,7 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
         queryset = ParentCategory.objects.all()
         type = self.request.query_params.get("type")
         if type:
-            queryset = queryset.filter(type=type)
+            queryset = queryset.filter(type__in=[type, "NO"])
 
         return queryset
 
