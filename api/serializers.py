@@ -48,6 +48,7 @@ class ConstructionElementSerializer(serializers.ModelSerializer):
     type = serializers.CharField(source="element.type")
     price = serializers.IntegerField(source="element.price")
     cost = serializers.IntegerField(source="element.cost")
+    dimenstion = serializers.CharField(source="element.dimension")
 
     class Meta:
         model = ConstructionElement
