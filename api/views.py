@@ -44,7 +44,6 @@ def internal_media(request, file):
         return PermissionDenied()
 
 
-# Create your views here.
 class ParentCategoryViewSet(viewsets.GenericViewSet):
     queryset = ParentCategory.objects.all()
     serializer_class = ParentCategorySerializer
