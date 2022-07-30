@@ -280,7 +280,7 @@ class ProjectStage(models.Model):
 
 class ProjectConstruction(BaseConstruction):
     construction = models.ForeignKey(Construction, verbose_name="Конструкция", null=True, on_delete=models.SET_NULL)
-    count = models.PositiveIntegerField(verbose_name="Количество")
+    count = models.FloatField(verbose_name="Количество")
     stage = models.ForeignKey(ProjectStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
 
     class Meta:
@@ -311,7 +311,7 @@ class ProjectElement(BaseElement):
     element = models.ForeignKey(Element, verbose_name="Элемент", null=True, on_delete=models.SET_NULL)
     construction = models.ForeignKey(ProjectConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
-    count = models.IntegerField(verbose_name="Количество", default=0)
+    count = models.FloatField(verbose_name="Количество", default=0)
 
     class Meta:
         verbose_name = "Элемент проекта"
@@ -371,7 +371,7 @@ class TemplateStage(models.Model):
 
 class TemplateConstruction(BaseConstruction):
     construction = models.ForeignKey(Construction, verbose_name="Конструкция", null=True, on_delete=models.SET_NULL)
-    count = models.PositiveIntegerField(verbose_name="Количество")
+    count = models.FloatField(verbose_name="Количество")
     stage = models.ForeignKey(TemplateStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
 
     class Meta:
@@ -386,7 +386,7 @@ class TemplateElement(BaseElement):
     element = models.ForeignKey(Element, verbose_name="Элемент", null=True, on_delete=models.SET_NULL)
     construction = models.ForeignKey(TemplateConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
-    count = models.IntegerField(verbose_name="Количество", default=0)
+    count = models.FloatField(verbose_name="Количество", default=0)
 
     class Meta:
         verbose_name = "Элемент шаблона"
