@@ -32,6 +32,7 @@ class ParentCategorySerializer(serializers.ModelSerializer):
 
 
 class ElementSerializer(serializers.ModelSerializer):
+    original_title = serializers.CharField(source="title")
     documents = serializers.SlugRelatedField(slug_field="file_url", many=True, read_only=True)
 
     class Meta:
@@ -40,6 +41,7 @@ class ElementSerializer(serializers.ModelSerializer):
 
 
 class ConstructionElementSerializer(serializers.ModelSerializer):
+    original_title = serializers.CharField(source="element.title")
     measure = serializers.CharField(source="element.measure")
     second_measure = serializers.CharField(source="element.second_measure")
     type = serializers.CharField(source="element.type")
@@ -163,6 +165,7 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
 
 
 class ProjectElementSerializer(serializers.ModelSerializer):
+    original_title = serializers.CharField(source="title")
 
     class Meta:
         model = ProjectElement
@@ -269,6 +272,7 @@ class TemplateSerializer(serializers.ModelSerializer):
 
 
 class TemplateElementSerializer(serializers.ModelSerializer):
+    original_title = serializers.CharField(source="title")
 
     class Meta:
         model = ProjectElement
