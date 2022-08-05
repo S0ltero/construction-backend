@@ -41,14 +41,14 @@ class ElementSerializer(serializers.ModelSerializer):
 
 
 class ConstructionElementSerializer(serializers.ModelSerializer):
-    original_title = serializers.CharField(source="element.title")
-    measure = serializers.CharField(source="element.measure")
-    second_measure = serializers.CharField(source="element.second_measure")
-    type = serializers.CharField(source="element.type")
-    price = serializers.IntegerField(source="element.price")
-    cost = serializers.IntegerField(source="element.cost")
-    dimenstion = serializers.CharField(source="element.dimension")
-    conversion_rate = serializers.IntegerField(source="element.conversion_rate")
+    original_title = serializers.CharField(source="element.title", read_only=True)
+    measure = serializers.CharField(source="element.measure", read_only=True)
+    second_measure = serializers.CharField(source="element.second_measure", read_only=True)
+    type = serializers.CharField(source="element.type", read_only=True)
+    price = serializers.IntegerField(source="element.price", read_only=True)
+    cost = serializers.IntegerField(source="element.cost", read_only=True)
+    dimenstion = serializers.CharField(source="element.dimension", read_only=True)
+    conversion_rate = serializers.IntegerField(source="element.conversion_rate", read_only=True)
 
     class Meta:
         model = ConstructionElement
