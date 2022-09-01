@@ -165,7 +165,7 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
 
 
 class ProjectElementSerializer(serializers.ModelSerializer):
-    original_title = serializers.CharField(source="title")
+    original_title = serializers.CharField(source="element.title")
 
     class Meta:
         model = ProjectElement
@@ -272,7 +272,7 @@ class TemplateSerializer(serializers.ModelSerializer):
 
 
 class TemplateElementSerializer(serializers.ModelSerializer):
-    original_title = serializers.CharField(source="title")
+    original_title = serializers.CharField(source="element.title")
 
     class Meta:
         model = ProjectElement
