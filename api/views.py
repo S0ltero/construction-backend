@@ -697,6 +697,14 @@ class TemplateViewset(viewsets.GenericViewSet):
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
+    def clone(self, request, pk=None):
+        template = self.get_object()
+        template.id = None
+        template.save()
+
+        return Response(status=status.HTTP_201_CREATED)
+
 
 class ClientViewSet(viewsets.GenericViewSet):
     queryset = Client.objects.all()
