@@ -309,6 +309,15 @@ class ElementViewSet(viewsets.GenericViewSet):
 
         return Response(data, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
+    def clone(self, request, pk=None):
+        element = self.get_object()
+        element.id = None
+        element.save()
+
+        return Response(status=status.HTTP_201_CREATED)
+
+
 class ConstructionViewset(viewsets.GenericViewSet):
     queryset = Construction.objects.all()
     serializer_class = ConstructionDetailSerializer
