@@ -300,6 +300,14 @@ class ElementViewSet(viewsets.GenericViewSet):
         element.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=False, methods=["get"], url_name="filter", url_path="filter")
+    def filter(self, request):
+        elements = self.get_queryset().annotate(subcategory_title=F("subcategory__title")).values()
+
+        # Bringing the queryset to the desired form
+        data = [{"title": i[0], "elements": list(result)} for i, result in groupby(elements, key=lambda item:(item['subcategory_title'], item['subcategory_id']))]
+
+        return Response(data, status=status.HTTP_200_OK)
 
 class ConstructionViewset(viewsets.GenericViewSet):
     queryset = Construction.objects.all()
