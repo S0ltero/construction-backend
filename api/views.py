@@ -590,6 +590,14 @@ class ProjectViewset(viewsets.GenericViewSet):
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
+    def clone(self, request, pk=None):
+        project = self.get_object()
+        project.id = None
+        project.save()
+
+        return Response(status=status.HTTP_201_CREATED)
+
 
 class TemplateViewset(viewsets.GenericViewSet):
     queryset = Template.objects.all()
