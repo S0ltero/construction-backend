@@ -384,6 +384,14 @@ class ConstructionViewset(viewsets.GenericViewSet):
         construction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
+    def clone(self, request, pk=None):
+        construction = self.get_object()
+        construction.id = None
+        construction.save()
+
+        return Response(status=status.HTTP_201_CREATED)
+
 
 class ProjectViewset(viewsets.GenericViewSet):
     queryset = Project.objects.all()
