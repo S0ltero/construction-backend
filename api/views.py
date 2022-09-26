@@ -14,7 +14,7 @@ from .models import (
     ParentCategory, Category, SubCategory,
     Element, ElementDocument,
     Construction, ConstructionDocument,
-    Project, ProjectStage, ProjectDocument,
+    Project, ProjectDocument,
     Template, TemplateStage,
     Client,
 )
@@ -300,6 +300,23 @@ class ElementViewSet(viewsets.GenericViewSet):
         element.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+    @action(detail=False, methods=["get"], url_name="filter", url_path="filter")
+    def filter(self, request):
+        elements = self.get_queryset().annotate(subcategory_title=F("subcategory__title")).values()
+
+        # Bringing the queryset to the desired form
+        data = [{"title": i[0], "elements": list(result)} for i, result in groupby(elements, key=lambda item:(item['subcategory_title'], item['subcategory_id']))]
+
+        return Response(data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
+    def clone(self, request, pk=None):
+        element = self.get_object()
+        element.id = None
+        element.save()
+
+        return Response(status=status.HTTP_201_CREATED)
+
 
 class ConstructionViewset(viewsets.GenericViewSet):
     queryset = Construction.objects.all()
@@ -383,6 +400,14 @@ class ConstructionViewset(viewsets.GenericViewSet):
         construction = self.get_object()
         construction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
+    def clone(self, request, pk=None):
+        construction = self.get_object()
+        construction.id = None
+        construction.save()
+
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class ProjectViewset(viewsets.GenericViewSet):
@@ -582,6 +607,14 @@ class ProjectViewset(viewsets.GenericViewSet):
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
+    def clone(self, request, pk=None):
+        project = self.get_object()
+        project.id = None
+        project.save()
+
+        return Response(status=status.HTTP_201_CREATED)
+
 
 class TemplateViewset(viewsets.GenericViewSet):
     queryset = Template.objects.all()
@@ -680,6 +713,14 @@ class TemplateViewset(viewsets.GenericViewSet):
                 return Response(serializer.data, status=status.HTTP_200_OK)
 
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
+    def clone(self, request, pk=None):
+        template = self.get_object()
+        template.id = None
+        template.save()
+
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class ClientViewSet(viewsets.GenericViewSet):

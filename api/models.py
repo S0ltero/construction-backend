@@ -85,6 +85,8 @@ class BaseElement(models.Model):
     type = models.CharField(verbose_name="Тип", choices=Type.choices, max_length=30)
     dimension = models.CharField(verbose_name="Размер", max_length=60, blank=True)
     conversion_rate = models.FloatField(verbose_name="Норма конвертации")
+    weight = models.FloatField(verbose_name="Вес")
+    volume = models.FloatField(verbose_name="Объём")
 
     class Meta:
         abstract = True
