@@ -769,9 +769,37 @@ class TemplateViewset(viewsets.GenericViewSet):
 
     @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
     def clone(self, request, pk=None):
-        template = self.get_object()
-        template.id = None
-        template.save()
+        template: Template = self.get_object()
+        template_kwargs = get_object_fields(template)
+        new_template = Template(**template_kwargs)
+        new_template.save()
+
+        bulk_create_stages = []
+        bulk_create_constructions = []
+        bulk_create_elements = []
+
+        for stage in template.stages.all():
+            stage_kwargs = get_object_fields(stage)
+            stage_kwargs["template"] = new_template
+            new_stage = TemplateStage(**stage_kwargs)
+            bulk_create_stages.append(new_stage)
+
+            construction: TemplateConstruction
+            for construction in stage.constructions.all():
+                construction_kwargs = get_object_fields(construction)
+                construction_kwargs["stage"] = new_stage
+                new_construction = TemplateConstruction(**construction_kwargs)
+                bulk_create_constructions.append(new_construction)
+
+                element: TemplateElement
+                for element in construction.elements.all():
+                    element_kwargs = get_object_fields(element)
+                    element_kwargs["construction"] = new_construction
+                    bulk_create_elements.append(TemplateElement(**element_kwargs))
+
+        TemplateStage.objects.bulk_create(bulk_create_stages)
+        TemplateConstruction.objects.bulk_create(bulk_create_constructions)
+        TemplateElement.objects.bulk_create(bulk_create_elements)
 
         return Response(status=status.HTTP_201_CREATED)
 
