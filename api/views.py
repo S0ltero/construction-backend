@@ -1,3 +1,5 @@
+from itertools import groupby
+
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
@@ -7,6 +9,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework import permissions
 
 from django.http import HttpResponse
+from django.db.models import F
 
 from openpyxl.writer.excel import save_virtual_workbook
 
@@ -302,10 +305,13 @@ class ElementViewSet(viewsets.GenericViewSet):
 
     @action(detail=False, methods=["get"], url_name="filter", url_path="filter")
     def filter(self, request):
-        elements = self.get_queryset().annotate(subcategory_title=F("subcategory__title")).values()
+        elements = self.get_queryset()
+        elements = elements.annotate(subcategory_title=F("subcategory__title")).values()
 
-        # Bringing the queryset to the desired form
-        data = [{"title": i[0], "elements": list(result)} for i, result in groupby(elements, key=lambda item:(item['subcategory_title'], item['subcategory_id']))]
+        data = [
+            {"title": key, "elements": list(result)} for key, result in
+            groupby(elements, key=lambda item: item["subcategory_title"])
+        ]
 
         return Response(data, status=status.HTTP_200_OK)
 
