@@ -634,9 +634,37 @@ class ProjectViewset(viewsets.GenericViewSet):
 
     @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
     def clone(self, request, pk=None):
-        project = self.get_object()
-        project.id = None
+        project: Project = self.get_object()
+        project_kwargs = get_object_fields(project)
+        project = Project(**project_kwargs)
         project.save()
+
+        bulk_create_stages = []
+        bulk_create_constructions = []
+        bulk_create_elements = []
+
+        for stage in project.stages.all():
+            stage_kwargs = get_object_fields(stage)
+            stage_kwargs["template"] = project
+            new_stage = ProjectStage(**stage_kwargs)
+            bulk_create_stages.append(new_stage)
+
+            construction: ProjectConstruction
+            for construction in stage.constructions.all():
+                construction_kwargs = get_object_fields(construction)
+                construction_kwargs["stage"] = new_stage
+                new_construction = ProjectConstruction(**construction_kwargs)
+                bulk_create_constructions.append(new_construction)
+
+                element: ProjectElement
+                for element in construction.elements.all():
+                    element_kwargs = get_object_fields(element)
+                    element_kwargs["construction"] = new_construction
+                    bulk_create_elements.append(ProjectElement(**element_kwargs))
+
+        ProjectStage.objects.bulk_create(bulk_create_stages)
+        ProjectConstruction.objects.bulk_create(bulk_create_constructions)
+        ProjectElement.objects.bulk_create(bulk_create_elements)
 
         return Response(status=status.HTTP_201_CREATED)
 
