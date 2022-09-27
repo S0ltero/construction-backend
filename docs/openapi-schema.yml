@@ -467,6 +467,25 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/constructions/{id}/clone/:
+    post:
+      operationId: CloneConstruction
+      description: Клонирование конструкции по `pk`
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `Конструкции`.
+        required: true
+      tags:
+      - constructions
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
   /api/elements/:
     get:
       operationId: GetElementsList
@@ -834,6 +853,25 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectDetail'
           description: ''
+  /api/projects/{id}/clone/:
+    post:
+      operationId: CloneProject
+      description: Клонирование проекта по `pk`
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `Проекта`.
+        required: true
+      tags:
+      - projects
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
   /api/projects/{id}/excel/foreman:
     get:
       operationId: GetProjectExcelForeman
@@ -1127,6 +1165,25 @@ paths:
       - {}
       responses:
         '204':
+          description: No response body
+  /api/templates/{id}/clone/:
+    post:
+      operationId: CloneTemplate
+      description: Клонирование шаблона по `pk`
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `Шаблона`.
+        required: true
+      tags:
+      - templates
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
           description: No response body
   /api/templates/{id}/stages/:
     post:
