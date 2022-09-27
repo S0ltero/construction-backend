@@ -37,6 +37,13 @@ from . serializers import (
 from .excel import foreman, purchaser, estimate
 
 
+def get_object_fields(obj) -> dict:
+    kwargs = {}
+    for field in obj._meta.fields[1:]:
+        kwargs[field.name] = getattr(obj, field.name)
+    return kwargs
+
+
 @api_view(("GET",))
 @renderer_classes((JSONRenderer,))
 def internal_media(request, file, token):
