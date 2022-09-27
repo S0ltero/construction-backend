@@ -418,9 +418,19 @@ class ConstructionViewset(viewsets.GenericViewSet):
 
     @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
     def clone(self, request, pk=None):
-        construction = self.get_object()
-        construction.id = None
-        construction.save()
+        construction: Construction = self.get_object()
+        template_kwargs = get_object_fields(construction)
+        new_construction = Construction(**template_kwargs)
+        new_construction.save()
+
+        bulk_create_elements = []
+
+        for element in construction.elements.all():
+            element_kwargs = get_object_fields(element)
+            element_kwargs["construction"] = new_construction
+            bulk_create_elements.append(ConstructionElement(**element_kwargs))
+
+        ConstructionElement.objects.bulk_create(bulk_create_elements)
 
         return Response(status=status.HTTP_201_CREATED)
 
