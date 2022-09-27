@@ -592,6 +592,109 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/elements/filter/:
+    get:
+      operationId: GetFilteredElements
+      description: Получение списка элементов сгруппированных по подкатегориям
+      parameters:
+      - in: path
+        name: title
+        schema:
+          type: string
+        description: Название элемента
+      tags:
+      - elements
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  - type: object
+                    properties:
+                      title:
+                        type: string
+                      items:
+                        type: array
+                        items:
+                          - type: object
+                            properties:
+                              id:
+                                type: integer
+                                readOnly: true
+                              title:
+                                type: string
+                                description: Название
+                                maxLength: 60
+                              measure:
+                                type: string
+                                description: Единицы измерения
+                                maxLength: 30
+                              second_measure:
+                                type: string
+                                description: Доп. ед. измерения
+                                maxLength: 30
+                              cost:
+                                type: integer
+                                maximum: 2147483647
+                                minimum: 0
+                                description: Себестоимость
+                              price:
+                                type: integer
+                                maximum: 2147483647
+                                minimum: 0
+                                description: Цена
+                              type:
+                                allOf:
+                                - $ref: '#/components/schemas/ElementTypeEnum'
+                                description: Тип
+                              dimension:
+                                type: string
+                                description: Размер
+                                maxLength: 60
+                              conversion_rate:
+                                type: integer
+                                maximum: 2147483647
+                                minimum: 0
+                                description: Норма конвертации
+                              parent_category_id:
+                                type: integer
+                                description: Родительская категория
+                              category_id:
+                                type: integer
+                                nullable: true
+                                description: Категория
+                              subcategory_id:
+                                type: integer
+                                nullable: true
+                                description: ID подкатегории
+                              subcategory_title:
+                                type: integer
+                                nullable: true
+                                description: Название подкатегории
+  /api/elements/{id}/clone/:
+    post:
+      operationId: CloneElement
+      description: Клонирование элемента по `pk`
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: Уникальный индентификатор для `Элемента`.
+        required: true
+      tags:
+      - elements
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '201':
+          description: No response body
   /api/projects/:
     get:
       operationId: GetProjectsList
