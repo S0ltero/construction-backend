@@ -330,7 +330,9 @@ class ElementViewSet(viewsets.GenericViewSet):
         element.id = None
         element.save()
 
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = self.serializer_class(element)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ConstructionViewset(viewsets.GenericViewSet):
