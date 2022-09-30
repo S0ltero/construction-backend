@@ -670,7 +670,9 @@ class ProjectViewset(viewsets.GenericViewSet):
         ProjectConstruction.objects.bulk_create(bulk_create_constructions)
         ProjectElement.objects.bulk_create(bulk_create_elements)
 
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = self.serializer_class(project)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class TemplateViewset(viewsets.GenericViewSet):
