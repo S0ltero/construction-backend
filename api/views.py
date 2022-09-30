@@ -434,7 +434,9 @@ class ConstructionViewset(viewsets.GenericViewSet):
 
         ConstructionElement.objects.bulk_create(bulk_create_elements)
 
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = self.serializer_class(construction)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ProjectViewset(viewsets.GenericViewSet):
