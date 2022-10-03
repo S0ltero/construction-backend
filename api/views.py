@@ -12,6 +12,7 @@ from django.http import HttpResponse
 from django.db.models import F
 
 from openpyxl.writer.excel import save_virtual_workbook
+from openpyxl import load_workbook
 
 from .models import (
     ParentCategory, Category, SubCategory,
@@ -34,7 +35,7 @@ from . serializers import (
     ClientSerializer, ClientDetailSerializer
 )
 
-from .excel import foreman, purchaser, estimate, export
+from .excel import foreman, purchaser, estimate, export, q_import
 
 
 def get_object_fields(obj) -> dict:
@@ -353,6 +354,21 @@ class ElementViewSet(viewsets.GenericViewSet):
         response["Content-Disposition"] = "attachment; filename=elements.xlsx"
 
         return response
+
+    @action(
+        detail=False,
+        methods=["post"],
+        url_name="import",
+        url_path="import",
+    )
+    def q_import(self, request):
+        file = request.FILES.get("file")
+        wb = load_workbook(file)
+        bulk_create = q_import(wb)
+
+        Element.objects.bulk_create(bulk_create)
+
+        return Response(status=status.HTTP_201_CREATED)
 
 
 class ConstructionViewset(viewsets.GenericViewSet):
