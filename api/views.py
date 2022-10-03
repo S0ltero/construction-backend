@@ -534,7 +534,10 @@ class ProjectViewset(viewsets.GenericViewSet):
 
         wb = foreman(data)
 
-        response = HttpResponse(content=save_virtual_workbook(wb))
+        response = HttpResponse(
+            content=save_virtual_workbook(wb),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
         response["Content-Disposition"] = "attachment; filename=foreman.xlsx"
 
         return response
@@ -553,7 +556,10 @@ class ProjectViewset(viewsets.GenericViewSet):
 
         wb = purchaser(data)
 
-        response = HttpResponse(content=save_virtual_workbook(wb))
+        response = HttpResponse(
+            content=save_virtual_workbook(wb),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
         response["Content-Disposition"] = "attachment; filename=purchaser.xlsx"
 
         return response
@@ -572,7 +578,10 @@ class ProjectViewset(viewsets.GenericViewSet):
 
         wb = estimate(data)
 
-        response = HttpResponse(content=save_virtual_workbook(wb))
+        response = HttpResponse(
+            content=save_virtual_workbook(wb),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
         response["Content-Disposition"] = "attachment; filename=estimate.xlsx"
 
         return response
