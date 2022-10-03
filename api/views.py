@@ -330,7 +330,9 @@ class ElementViewSet(viewsets.GenericViewSet):
         element.id = None
         element.save()
 
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = self.serializer_class(element)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ConstructionViewset(viewsets.GenericViewSet):
@@ -432,7 +434,9 @@ class ConstructionViewset(viewsets.GenericViewSet):
 
         ConstructionElement.objects.bulk_create(bulk_create_elements)
 
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = self.serializer_class(construction)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ProjectViewset(viewsets.GenericViewSet):
@@ -666,7 +670,9 @@ class ProjectViewset(viewsets.GenericViewSet):
         ProjectConstruction.objects.bulk_create(bulk_create_constructions)
         ProjectElement.objects.bulk_create(bulk_create_elements)
 
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = self.serializer_class(project)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class TemplateViewset(viewsets.GenericViewSet):
@@ -801,7 +807,9 @@ class TemplateViewset(viewsets.GenericViewSet):
         TemplateConstruction.objects.bulk_create(bulk_create_constructions)
         TemplateElement.objects.bulk_create(bulk_create_elements)
 
-        return Response(status=status.HTTP_201_CREATED)
+        serializer = self.serializer_class(template)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ClientViewSet(viewsets.GenericViewSet):
