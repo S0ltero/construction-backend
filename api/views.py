@@ -34,7 +34,7 @@ from . serializers import (
     ClientSerializer, ClientDetailSerializer
 )
 
-from .excel import foreman, purchaser, estimate
+from .excel import foreman, purchaser, estimate, export
 
 
 def get_object_fields(obj) -> dict:
@@ -333,6 +333,26 @@ class ElementViewSet(viewsets.GenericViewSet):
         serializer = self.serializer_class(element)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(
+        detail=False,
+        methods=["post"],
+        url_name="export",
+        url_path="export",
+    )
+    def export(self, request):
+        qs = self.get_queryset()
+        elements = qs.order_by("subcategory__title")
+
+        wb = export(elements)
+
+        response = HttpResponse(
+            content=save_virtual_workbook(wb),
+            content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        response["Content-Disposition"] = "attachment; filename=elements.xlsx"
+
+        return response
 
 
 class ConstructionViewset(viewsets.GenericViewSet):
