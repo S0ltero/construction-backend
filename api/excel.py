@@ -290,3 +290,61 @@ def estimate(project):
     ws2, ws2_row = sum_total_price(ws2, ws2_row, ws2_stage_price_cells, "Всего")
 
     return wb
+
+def export(elements: List[Element]):
+    wb = openpyxl.Workbook()
+    ws1 = wb.active
+    ws1_row = 4
+
+    current_category = None
+
+    ws1.merge_cells("D1:E1")
+    ws1["D1"] = "Коммерческие единицы"
+    ws1.merge_cells("F1:G1")
+    ws1["F1"] = "Строительные единицы"
+    ws1.merge_cells("H1:I1")
+    ws1["H1"] = "Себестоимость коммерческие единицы"
+    ws1.merge_cells("J1:K1")
+    ws1["J1"] = "Себестоимость строительные единицы"
+
+    ws1["C2"] = "Наименование"
+    ws1["D2"] = "Ст-ть"
+    ws1["E2"] = "ед"
+    ws1["F2"] = "Ст-ть"
+    ws1["G2"] = "ед"
+    ws1["H2"] = "Ст-ть"
+    ws1["I2"] = "ед"
+    ws1["J2"] = "Ст-ть"
+    ws1["K2"] = "ед"
+
+    for element in elements:
+        if not hasattr(element, "subcategory"):
+            continue
+
+        if not current_category or current_category != element.subcategory.title:
+            if current_category:
+                # Add blank rows
+                ws1_row += 2
+
+            current_category = element.subcategory.title
+
+            ws1.merge_cells(f"C{ws1_row}:K{ws1_row}")
+            ws1[f"C{ws1_row}"].fill = PatternFill(fgColor="FCE89C", fill_type = "solid")
+            ws1[f"C{ws1_row}"] = element.subcategory.title
+
+        ws1_row += 1
+
+        cells = {
+            "C": {"value": element.title},
+            "D": {"value": element.price * element.conversion_rate},
+            "E": {"value": element.measure},
+            "F": {"value": element.price},
+            "G": {"value": element.second_measure},
+            "H": {"value": element.cost * element.conversion_rate},
+            "I": {"value": element.measure},
+            "J": {"value": element.cost},
+            "K": {"value": element.second_measure},
+        }
+        ws1, _ = insert_cells(ws1, ws1_row, cells)
+
+    return wb
