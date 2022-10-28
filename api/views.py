@@ -855,7 +855,7 @@ class TemplateViewset(viewsets.GenericViewSet):
         TemplateConstruction.objects.bulk_create(bulk_create_constructions)
         TemplateElement.objects.bulk_create(bulk_create_elements)
 
-        serializer = self.serializer_class(template)
+        serializer = self.serializer_class(new_template)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
