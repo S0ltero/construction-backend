@@ -688,8 +688,8 @@ class ProjectViewset(viewsets.GenericViewSet):
     def clone(self, request, pk=None):
         project: Project = self.get_object()
         project_kwargs = get_object_fields(project)
-        project = Project(**project_kwargs)
-        project.save()
+        new_project = Project(**project_kwargs)
+        new_project.save()
 
         bulk_create_stages = []
         bulk_create_constructions = []
@@ -697,7 +697,7 @@ class ProjectViewset(viewsets.GenericViewSet):
 
         for stage in project.stages.all():
             stage_kwargs = get_object_fields(stage)
-            stage_kwargs["template"] = project
+            stage_kwargs["project"] = new_project
             new_stage = ProjectStage(**stage_kwargs)
             bulk_create_stages.append(new_stage)
 
@@ -718,7 +718,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         ProjectConstruction.objects.bulk_create(bulk_create_constructions)
         ProjectElement.objects.bulk_create(bulk_create_elements)
 
-        serializer = self.serializer_class(project)
+        serializer = self.serializer_class(new_project)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
