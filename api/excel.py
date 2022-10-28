@@ -1,9 +1,14 @@
+from typing import List
+
 import openpyxl
 from openpyxl.worksheet.worksheet import Worksheet
-from openpyxl.styles import Alignment
+from openpyxl.cell import Cell
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, PatternFill
 
 from .models import Element
-
+from django.db import models
+from django.core.exceptions import ValidationError
 
 def insert_cells(ws: Worksheet, ws_row: int, cells: dict):
     """Insert cell value on row of `ws_row`, getted by column letter from `cells`"""
