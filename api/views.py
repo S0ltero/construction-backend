@@ -48,6 +48,12 @@ def get_object_fields(obj) -> dict:
 @api_view(("GET",))
 @renderer_classes((JSONRenderer,))
 def internal_media(request, file, token):
+    """Handler of internal media
+
+    Implementing is very bad, need to rework.
+
+    Current implementation use because frontend developer don't wanted use ajax technology ¯\_(ツ)_/¯
+    """
     has_access = False
     if request.user.is_authenticated:
         has_access = True
@@ -81,25 +87,19 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
         return queryset
 
     def retrieve(self, request, pk=None):
-        """
-        Получение родительской категории по pk
-        """
+        """Get parent category with `pk`"""
         category = self.get_object()
         serializer = ParentCategoryDetailSerializer(category)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request):
-        """
-        Получение списка родительский категорий
-        """
+        """Get list of parent categories"""
         queryset = self.get_queryset()
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        """
-        Создание родительской категории
-        """
+        """Create parent categories by `request.data`"""
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -109,9 +109,7 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        """
-        Частичное обновление родительской категории
-        """
+        """Partial update parent category with `pk`"""
         parent_category = self.get_object()
         serializer = self.serializer_class(
             instance=parent_category,
@@ -126,9 +124,7 @@ class ParentCategoryViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None):
-        """
-        Удаление родительской категории
-        """
+        """Delete parent category with `pk`"""
         parent_category = self.get_object()
         parent_category.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -140,17 +136,13 @@ class CategoryViewSet(viewsets.GenericViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def retrieve(self, request, pk=None):
-        """
-        Получение категории по pk
-        """
+        """Get category with `pk`"""
         category = self.get_object()
         serializer = CategoryDetailSerializer(category)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        """
-        Создание категории
-        """
+        """Create category by `request.data`"""
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -160,9 +152,7 @@ class CategoryViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        """
-        Частичное обновление категории
-        """
+        """Partial update category with `pk`"""
         category = self.get_object()
         serializer = self.serializer_class(
             instance=category,
@@ -177,9 +167,7 @@ class CategoryViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None):
-        """
-        Удаление категории по pk
-        """
+        """Delete category with `pk`"""
         category = self.get_object()
         category.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -191,17 +179,13 @@ class SubCategoryViewSet(viewsets.GenericViewSet):
     permission_classes = (permissions.IsAuthenticated,)
 
     def retrieve(self, request, pk=None):
-        """
-        Получение подкатегории по pk
-        """
+        """Get subcategory with `pk`"""
         category = self.get_object()
         serializer = SubCategoryDetailSerializer(category)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        """
-        Создание подкатегории
-        """
+        """Create subcategory by `request.data`"""
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -211,9 +195,7 @@ class SubCategoryViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        """
-        Частичное обновление подкатегории
-        """
+        """Partial update subcategory with `pk`"""
         subcategory = self.get_object()
         serializer = self.serializer_class(
             instance=subcategory,
@@ -228,9 +210,7 @@ class SubCategoryViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk=None):
-        """
-        Удаление подкатегории по pk
-        """
+        """Delete subcategory with `pk`"""
         subcategory = self.get_object()
         subcategory.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -250,25 +230,19 @@ class ElementViewSet(viewsets.GenericViewSet):
         return queryset
 
     def retrieve(self, request, pk=None):
-        """
-        Получение элемента по pk
-        """
+        """Get element with `pk`"""
         element = self.get_object()
         serializer = self.serializer_class(element)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request):
-        """
-        Получение списка элементов
-        """
+        """Get list of elements with `pk`"""
         elements = self.get_queryset()
         serializer = self.serializer_class(elements, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        """
-        Создание элемента
-        """
+        """Create element by `request.data`"""
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -284,9 +258,7 @@ class ElementViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        """
-        Редактирование элемента
-        """
+        """Partial update element with `pk`"""
         element = self.get_object()
         serializer = self.serializer_class(element, data=request.data, partial=True)
 
@@ -306,15 +278,14 @@ class ElementViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        """
-        Удаление элемента
-        """
+        """Delete element with `pk`"""
         element = self.get_object()
         element.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=False, methods=["get"], url_name="filter", url_path="filter")
     def filter(self, request):
+        """Filter and group elements by subcategories"""
         elements = self.get_queryset()
         elements = elements.annotate(subcategory_title=F("subcategory__title")).values()
 
@@ -327,6 +298,7 @@ class ElementViewSet(viewsets.GenericViewSet):
 
     @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
     def clone(self, request, pk=None):
+        """Clone element with `pk`"""
         element = self.get_object()
         element.id = None
         element.save()
@@ -342,6 +314,7 @@ class ElementViewSet(viewsets.GenericViewSet):
         url_path="export",
     )
     def export(self, request):
+        """Export all elements to excel table format"""
         qs = self.get_queryset()
         elements = qs.order_by("subcategory__title")
 
@@ -362,6 +335,7 @@ class ElementViewSet(viewsets.GenericViewSet):
         url_path="import",
     )
     def q_import(self, request):
+        """Import elements from excel table"""
         file = request.FILES.get("file")
         wb = load_workbook(file)
         bulk_create, errors = q_import(wb)
@@ -396,23 +370,20 @@ class ConstructionViewset(viewsets.GenericViewSet):
             return super().get_serializer_class()
 
     def retrieve(self, request, pk=None):
+        """Get construction with `pk`"""
         construction = self.get_object()
         serializer = self.get_serializer_class()
         serializer = serializer(construction)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request):
-        """
-        Получение списка конструкций
-        """
+        """Get list of constructions"""
         queryset = self.get_queryset()
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        """
-        Создание конструкции
-        """
+        """Create construction by `request.data`"""
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -428,9 +399,7 @@ class ConstructionViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        """
-        Редактирование конструкции и обновление списка элементов конструкции
-        """
+        """Partial update construction and create or delete construction documents"""
         construction = self.get_object()
         serializer = self.serializer_class(construction, data=request.data, partial=True)
 
@@ -450,15 +419,14 @@ class ConstructionViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        """
-        Удаление конструкции
-        """
+        """Delete construction with `pk`"""
         construction = self.get_object()
         construction.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
     def clone(self, request, pk=None):
+        """Clone construction with `pk`, with his nested structures"""
         construction: Construction = self.get_object()
         template_kwargs = get_object_fields(construction)
         new_construction = Construction(**template_kwargs)
@@ -494,26 +462,20 @@ class ProjectViewset(viewsets.GenericViewSet):
             return super().get_serializer_class()
 
     def retrieve(self, request, pk=None):
-        """
-        Получение проекта по pk
-        """
+        """Get project with `pk`"""
         project = self.get_object()
         serializer = self.get_serializer_class()
         serializer = serializer(project)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request):
-        """
-        Получение списка проектов
-        """
+        """Get projects list"""
         serializer = self.get_serializer_class()
         serializer = serializer(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        """
-        Создание проекта
-        """
+        """Create project by `request.data`"""
         serializer = self.get_serializer_class()
         serializer = serializer(data=request.data)
 
@@ -530,9 +492,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        """
-        Редактирование проекта
-        """
+        """Partial update project with `pk`"""
         project = self.get_object()
         serializer = self.serializer_class(project, data=request.data, partial=True)
 
@@ -552,9 +512,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        """
-        Удаление проекта
-        """
+        """Delete project with `pk`"""
         project = self.get_object()
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -568,6 +526,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         permission_classes=()
     )
     def excel_foreman(self, request, pk=None):
+        """Export project with nested structures to excel table for foreman"""
         project = self.get_object()
         data = ProjectDetailSerializer(project).data
 
@@ -590,6 +549,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         permission_classes=()
     )
     def excel_purchaser(self, request, pk=None):
+        """Export project with nested structures to excel table for purchaser"""
         project = self.get_object()
         data = ProjectDetailSerializer(project).data
 
@@ -612,6 +572,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         permission_classes=()
     )
     def excel_estimate(self, request, pk=None):
+        """Export project with nested structures to excel table for estimate"""
         project = self.get_object()
         data = ProjectDetailSerializer(project).data
 
@@ -633,9 +594,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         serializer_class=ProjectDetailSerializer
     )
     def update_price(self, request, pk=None):
-        """
-        Обновление цен проекта
-        """
+        """Update price for project with `pk`"""
         project = self.get_object()
         stages = project.stages.all()
         for stage in stages:
@@ -655,9 +614,7 @@ class ProjectViewset(viewsets.GenericViewSet):
         serializer_class=ProjectStageSerializer
     )
     def add_stages(self, request, pk=None):
-        """
-        Добавление этапа проекта
-        """
+        """Add stage to project with `pk`"""
         project = self.get_object()
         serializer = self.serializer_class(data=request.data)
 
@@ -698,6 +655,7 @@ class ProjectViewset(viewsets.GenericViewSet):
 
     @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
     def clone(self, request, pk=None):
+        """Clone project with `pk`, with his nested structures"""
         project: Project = self.get_object()
         project_kwargs = get_object_fields(project)
         new_project = Project(**project_kwargs)
@@ -749,24 +707,18 @@ class TemplateViewset(viewsets.GenericViewSet):
         return queryset
 
     def retrieve(self, request, pk=None):
-        """
-        Получение шаблона по pk
-        """
+        """Get template with `pk`"""
         template = self.get_object()
         serializer = TemplateDetailSerilaizer(template)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request):
-        """
-        Получение списка шаблонов
-        """
+        """Get list of templates"""
         serializer = self.serializer_class(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        """
-        Добавление шаблона
-        """
+        """Create template by `request.data`"""
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -776,9 +728,7 @@ class TemplateViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def partial_update(self, request, pk=None):
-        """
-        Редактирование шаблона
-        """
+        """Partial update template with `pk`"""
         template = self.get_object()
         serializer = self.serializer_class(template, data=request.data, partial=True)
 
@@ -789,9 +739,7 @@ class TemplateViewset(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        """
-        Удаление шаблона
-        """
+        """Delete template with `pk`"""
         template = self.get_object()
         template.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -805,9 +753,7 @@ class TemplateViewset(viewsets.GenericViewSet):
         queryset=TemplateStage.objects.all()
     )
     def add_stages(self, request, pk=None):
-        """
-        Добавление этапа шаблона
-        """
+        """Add stage to template with `pk`"""
         template = self.get_object()
         serializer = self.serializer_class(data=request.data)
 
@@ -826,9 +772,9 @@ class TemplateViewset(viewsets.GenericViewSet):
     )
     def edit_stages(self, request, pk=None, stage_id=None):
         """
-        DELETE: Удаление этапа шаблона
+        DELETE: Delete stage with `stage_id` of template with `pk`
 
-        PATCH: Добавление конструкций к этапу шаблона
+        PATCH: Update stage with `stage_id` of template with `pk`
         """
         if request.method == "DELETE":
             template = self.get_object()
@@ -848,6 +794,7 @@ class TemplateViewset(viewsets.GenericViewSet):
 
     @action(detail=True, methods=["post"], url_name="clone", url_path="clone")
     def clone(self, request, pk=None):
+        """Clone template with `pk`, with his nested structures"""
         template: Template = self.get_object()
         template_kwargs = get_object_fields(template)
         new_template = Template(**template_kwargs)
@@ -899,24 +846,18 @@ class ClientViewSet(viewsets.GenericViewSet):
         return queryset
 
     def retrieve(self, request, pk=None):
-        """
-        Получение клиента по pk
-        """
+        """Get client with `pk`"""
         client = self.get_object()
         serializer = ClientDetailSerializer(client)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request):
-        """
-        Получение списка клиентов
-        """
+        """Get clients list"""
         serializer = self.serializer_class(self.get_queryset(), many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def create(self, request):
-        """
-        Добавление клиента
-        """
+        """Create client by `request.data`"""
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid(raise_exception=False):
@@ -926,9 +867,7 @@ class ClientViewSet(viewsets.GenericViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request, pk=None):
-        """
-        Удаление клиента
-        """
+        """Delete client with `pk`"""
         client = self.get_object()
         client.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
