@@ -152,6 +152,7 @@ class ProjectCreateSerializer(serializers.ModelSerializer):
                     bulk_insert_constructions.append(construction)
 
                     for element in elements:
+                        element.pop("original_title")
                         template_element_id = element.pop("element")
                         bulk_insert_elements.append(ProjectElement(
                             **element,
