@@ -127,7 +127,12 @@ class Element(BaseElement):
 
 class ElementDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
-    element = models.ForeignKey(Element, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
+    element = models.ForeignKey(
+        Element,
+        verbose_name="Конструкция",
+        on_delete=models.CASCADE,
+        related_name="documents",
+    )
 
     class Meta:
         verbose_name = "Документ"
@@ -187,7 +192,12 @@ class Construction(BaseConstruction):
 
 class ConstructionDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
-    construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
+    construction = models.ForeignKey(
+        Construction,
+        verbose_name="Конструкция",
+        on_delete=models.CASCADE,
+        related_name="documents"
+    )
 
     class Meta:
         verbose_name = "Документ"
@@ -203,9 +213,18 @@ class ConstructionDocument(models.Model):
 
 class ConstructionElement(models.Model):
     title = models.CharField(verbose_name="Название", max_length=160)
-    element = models.ForeignKey(Element, verbose_name="Элемент", on_delete=models.CASCADE)
-    construction = models.ForeignKey(Construction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
+    element = models.ForeignKey(
+        Element,
+        verbose_name="Элемент",
+        on_delete=models.CASCADE
+    )
+    construction = models.ForeignKey(
+        Construction,
+        verbose_name="Конструкция",
+        on_delete=models.CASCADE,
+        related_name="elements",
+    )
 
     class Meta:
         verbose_name = "Элемент конструкции"
@@ -234,12 +253,17 @@ class Project(models.Model):
         NOT_START = "NOT_START", "Не начат"
 
     title = models.CharField(verbose_name="Название", max_length=160)
-    client = models.ForeignKey(Client, verbose_name="Клиент", on_delete=models.CASCADE, related_name="projects")
     description = models.TextField(verbose_name="Описание")
     author = models.CharField(verbose_name="Автор", max_length=100)
     status = models.CharField(verbose_name="Статус", max_length=30, choices=Type.choices)
     created_at = models.DateField(verbose_name="Дата создания", auto_now=True)
     price = models.IntegerField(verbose_name="Стоимость", default=0)
+    client = models.ForeignKey(
+        Client,
+        verbose_name="Клиент",
+        on_delete=models.CASCADE,
+        related_name="projects"
+    )
 
     class Meta:
         verbose_name = "Проект"
@@ -251,7 +275,12 @@ class Project(models.Model):
 
 class ProjectDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
-    project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE, related_name="documents")
+    project = models.ForeignKey(
+        Project,
+        verbose_name="Проект",
+        on_delete=models.CASCADE,
+        related_name="documents",
+    )
 
     class Meta:
         verbose_name = "Документ"
@@ -266,8 +295,13 @@ class ProjectDocument(models.Model):
 
 
 class ProjectStage(models.Model):
+    project = models.ForeignKey(
+        Project,
+        verbose_name="Проект",
+        on_delete=models.CASCADE,
+        related_name="stages",
+    )
     title = models.CharField(verbose_name="Название", max_length=160)
-    project = models.ForeignKey(Project, verbose_name="Проект", on_delete=models.CASCADE, related_name="stages")
     order = models.IntegerField(verbose_name="Порядковый номер")
     used_elements = models.JSONField(default=dict, blank=True)
 
@@ -281,9 +315,19 @@ class ProjectStage(models.Model):
 
 
 class ProjectConstruction(BaseConstruction):
-    construction = models.ForeignKey(Construction, verbose_name="Конструкция", null=True, on_delete=models.SET_NULL)
+    construction = models.ForeignKey(
+        Construction,
+        verbose_name="Конструкция",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
     count = models.FloatField(verbose_name="Количество")
-    stage = models.ForeignKey(ProjectStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
+    stage = models.ForeignKey(
+        ProjectStage,
+        verbose_name="Стадия",
+        on_delete=models.CASCADE,
+        related_name="constructions",
+    )
 
     class Meta:
         verbose_name = "Конструкция проекта"
@@ -295,7 +339,12 @@ class ProjectConstruction(BaseConstruction):
 
 class ProjectConstructionDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
-    construction = models.ForeignKey(ProjectConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="documents")
+    construction = models.ForeignKey(
+        ProjectConstruction,
+        verbose_name="Конструкция",
+        on_delete=models.CASCADE,
+        related_name="documents",
+    )
 
     class Meta:
         verbose_name = "Документ"
@@ -310,8 +359,18 @@ class ProjectConstructionDocument(models.Model):
 
 
 class ProjectElement(BaseElement):
-    element = models.ForeignKey(Element, verbose_name="Элемент", null=True, on_delete=models.SET_NULL)
-    construction = models.ForeignKey(ProjectConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
+    element = models.ForeignKey(
+        Element,
+        verbose_name="Элемент",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    construction = models.ForeignKey(
+        ProjectConstruction,
+        verbose_name="Конструкция",
+        on_delete=models.CASCADE,
+        related_name="elements",
+    )
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
     count = models.FloatField(verbose_name="Количество", default=0)
 
@@ -330,7 +389,12 @@ class ProjectElement(BaseElement):
 
 class ProjectElementDocument(models.Model):
     file = models.FileField(verbose_name="Файл")
-    element = models.ForeignKey(ProjectElement, verbose_name="Элемент", on_delete=models.CASCADE, related_name="documents")
+    element = models.ForeignKey(
+        ProjectElement,
+        verbose_name="Элемент",
+        on_delete=models.CASCADE,
+        related_name="documents",
+    )
 
     class Meta:
         verbose_name = "Документ"
@@ -360,7 +424,12 @@ class Template(models.Model):
 
 class TemplateStage(models.Model):
     title = models.CharField(verbose_name="Название", max_length=160)
-    template = models.ForeignKey(Template, verbose_name="Шаблон", on_delete=models.CASCADE, related_name="stages")
+    template = models.ForeignKey(
+        Template,
+        verbose_name="Шаблон",
+        on_delete=models.CASCADE,
+        related_name="stages",
+    )
     order = models.IntegerField(verbose_name="Порядковый номер")
 
     class Meta:
@@ -372,9 +441,19 @@ class TemplateStage(models.Model):
 
 
 class TemplateConstruction(BaseConstruction):
-    construction = models.ForeignKey(Construction, verbose_name="Конструкция", null=True, on_delete=models.SET_NULL)
+    construction = models.ForeignKey(
+        Construction,
+        verbose_name="Конструкция",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    stage = models.ForeignKey(
+        TemplateStage,
+        verbose_name="Стадия",
+        on_delete=models.CASCADE,
+        related_name="constructions",
+    )
     count = models.FloatField(verbose_name="Количество")
-    stage = models.ForeignKey(TemplateStage, verbose_name="Стадия", on_delete=models.CASCADE, related_name="constructions")
 
     class Meta:
         verbose_name = "Конструкция шаблона"
@@ -385,8 +464,18 @@ class TemplateConstruction(BaseConstruction):
 
 
 class TemplateElement(BaseElement):
-    element = models.ForeignKey(Element, verbose_name="Элемент", null=True, on_delete=models.SET_NULL)
-    construction = models.ForeignKey(TemplateConstruction, verbose_name="Конструкция", on_delete=models.CASCADE, related_name="elements")
+    element = models.ForeignKey(
+        Element,
+        verbose_name="Элемент",
+        on_delete=models.SET_NULL,
+        null=True,
+    )
+    construction = models.ForeignKey(
+        TemplateConstruction,
+        verbose_name="Конструкция",
+        on_delete=models.CASCADE,
+        related_name="elements",
+    )
     consumption = models.FloatField(verbose_name="Норма расхода", default=0)
     count = models.FloatField(verbose_name="Количество", default=0)
 
