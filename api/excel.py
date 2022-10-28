@@ -352,15 +352,68 @@ def export(elements: List[Element]):
 def q_import(wb: Workbook):
     ws1 = wb.active
     elements = []
-    data = {field.column: "" for field in Element._meta.fields if field.column != "id"}
+    column_map = {
+        "A": "title",
+        "B": "measure",
+        "C": "second_measure",
+        "D": "cost",
+        "E": "price",
+        "F": "type",
+        "G": "dimension",
+        "H": "conversion_rate",
+        "I": "weight",
+        "J": "volume",
+        "K": "parent_category",
+        "L": "category",
+        "M": "subcategory"
+    }
 
-    for row in ws1.iter_rows(values_only=True, min_row=2):
-        if all(v is None for v in row):
+    errors = []
+    error_messages = {
+        "not_exists": "Объекта с id %(value)s не существует!"
+    }
+
+    required_fields = [
+        f.name for f in Element._meta.get_fields()
+        if not getattr(f, 'blank', False) is True and
+        not isinstance(f, models.ForeignObjectRel)
+    ]
+
+    row: List[Cell]
+    for row in ws1.iter_rows(min_row=2):
+        data = {}
+
+        if all(v.value is None for v in row):
+            # Skip empty rows
             continue
-        for key, value in zip(data.keys(), row):
-            if not value:
+
+        for cell in row:
+            field_name = column_map[cell.column_letter]
+            field = Element._meta.get_field(field_name)
+
+            if field.name not in required_fields and not cell.value:
                 continue
-            data[key] = value
+
+            try:
+                if field.is_relation and not field.related_model.objects.filter(id=cell.value).exists():
+                    # Check if related model exists with cell.value as id
+                    raise ValidationError(
+                        error_messages["not_exists"],
+                        code="invalid_related",
+                        params={"value": int(cell.value)}
+                    )
+
+                field.clean(cell.value, field.model)
+            except ValidationError as e:
+                error = f"{cell.coordinate} - {e.messages[0]}"
+                errors.append(error)
+                continue
+
+            data[field.attname] = cell.value
+
         elements.append(Element(**data))
 
-    return elements
+    if errors:
+        return None, errors
+
+    return elements, None
