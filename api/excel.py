@@ -187,7 +187,7 @@ def estimate(project):
     def sum_total_price(ws, ws_row, ws_price_cells, word: str):
         ws.merge_cells(f"A{ws_row}:F{ws_row}")
         ws[f"A{ws_row}"] = word
-        ws[f"G{ws_row}"] = f"=SUM({';'.join(ws_price_cells)})"
+        ws[f"H{ws_row}"] = f"=SUM({';'.join(ws_price_cells)})"
 
         return ws, ws_row
 
@@ -215,14 +215,17 @@ def estimate(project):
         ws2_row += 1
 
         cells = {
-            "B": {"value": "Наименование"}, 
-            "C": {"value": "Кол-во"},
-            "D": {"value": "ед-изм"},
-            "E": {"value": "Цена/ед"},
-            "F": {"value": "Сумма"},
-            "G": {"value": "Итого"}
+            "B": {"value": "Наименование"},
+            "C": {"value": "Описание"},
+            "D": {"value": "Кол-во"},
+            "E": {"value": "ед-изм"},
+            "F": {"value": "Цена/ед"},
+            "G": {"value": "Сумма"},
+            "H": {"value": "Итого"}
         }
-        ws1, ws1_row = insert_cells(ws1, ws1_row, cells)
+        cells_full = {**cells, "H": {"value": "Итого"}}
+
+        ws1, ws1_row = insert_cells(ws1, ws1_row, cells_full)
         ws2, ws2_row = insert_cells(ws2, ws2_row, cells)
 
         ws1_construction_price_cells = []
@@ -235,13 +238,21 @@ def estimate(project):
                 "B": {"value": construction["title"]},
                 "C": {"value": construction["count"]},
                 "D": {"value": construction["measure"]},
-                "F": {"value": f"=SUM(F{ws1_row + 1}:F{ws1_row + len(construction['elements'])})"}
+                "F": {"value": None}
             }
-            ws1, ws1_row = insert_cells(ws1, ws1_row, cells)
+            cells_full = {**cells, 
+                "C": {"value": None},
+                "D": {"value": construction["count"]},
+                "E": {"value": construction["measure"]},
+                "F": {"value": None},
+                "G": {"value": f"=SUM(G{ws1_row + 1}:G{ws1_row + len(construction['elements'])})"}
+            }
+
+            ws1, ws1_row = insert_cells(ws1, ws1_row, cells_full)
             cells["F"]["value"] = f"=SUM(F{ws2_row + 1}:F{ws2_row + len(construction['elements'])})"
             ws2, ws2_row = insert_cells(ws2, ws2_row, cells)
 
-            ws1_construction_price_cells.append(f"F{ws1_row-1}")
+            ws1_construction_price_cells.append(f"G{ws1_row-1}")
             ws2_construction_price_cells.append(f"F{ws2_row-1}")
 
             elements_price = 0
@@ -257,16 +268,19 @@ def estimate(project):
                         "value": element["title"]
                     },
                     "C": {
-                        "value": element["count"],
+                        "value": element["original_title"],
                     },
                     "D": {
-                        "value": element["measure"]
+                        "value": element["count"],
                     },
                     "E": {
-                        "value": element["cost"]
+                        "value": element["measure"]
                     },
                     "F": {
-                        "value": f"=E{ws1_row}*C{ws1_row}"
+                        "value": element["cost"]
+                    },
+                    "G": {
+                        "value": f"=D{ws1_row}*F{ws1_row}"
                     }
                 }
                 ws1, ws1_row = insert_cells(ws1, ws1_row, cells)
@@ -279,11 +293,11 @@ def estimate(project):
             count_construction += 1
 
         ws1, ws1_row = sum_total_price(ws1, ws1_row, ws1_construction_price_cells, "Итого")
-        ws1_stage_price_cells.append(f"G{ws1_row}")
+        ws1_stage_price_cells.append(f"H{ws1_row}")
         ws1_row += 1
 
         ws2, ws2_row = sum_total_price(ws2, ws2_row, ws2_construction_price_cells, "Итого")
-        ws2_stage_price_cells.append(f"G{ws2_row}")
+        ws2_stage_price_cells.append(f"H{ws2_row}")
         ws2_row += 1
 
     ws1, ws1_row = sum_total_price(ws1, ws1_row, ws1_stage_price_cells, "Всего")
