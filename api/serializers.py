@@ -49,6 +49,8 @@ class ConstructionElementSerializer(serializers.ModelSerializer):
     cost = serializers.IntegerField(source="element.cost", read_only=True)
     dimenstion = serializers.CharField(source="element.dimension", read_only=True)
     conversion_rate = serializers.IntegerField(source="element.conversion_rate", read_only=True)
+    weight = serializers.FloatField(source="element.weight", read_only=True)
+    volume = serializers.FloatField(source="element.volume", read_only=True)
 
     class Meta:
         model = ConstructionElement
