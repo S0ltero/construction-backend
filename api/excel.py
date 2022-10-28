@@ -124,11 +124,17 @@ def purchaser(project):
         ws1_row += 1
 
         cells = {
-            "B": {"value": "Наименование"}, 
-            "C": {"value": "Кол-во"},
-            "D": {"value": "ед-изм"},
-            "E": {"value": "Цена/ед"},
-            "F": {"value": "Сумма"}
+            "B": {"value": "Наименование"},
+            "C": {"value": "Описание"},
+            "D": {"value": "Кол-во"},
+            "E": {"value": "ед-изм"},
+            "F": {"value": "Кол-во"},
+            "G": {"value": "доп ед-изм"},
+            "H": {"value": "Цена/ед"},
+            "I": {"value": "Сумма"},
+            "J": {"value": "Вес"},
+            "K": {"value": "Объем"},
+            "L": {"value": "Размер"}
         }
         ws1, ws1_row = insert_cells(ws1, ws1_row, cells)
         if stage_index == 0:
@@ -154,27 +160,45 @@ def purchaser(project):
                         "value": element["title"]
                     },
                     "C": {
+                        "value": element["original_title"]
+                    },
+                    "D": {
                         "value": element["count"],
                         "alignment": Alignment(horizontal="right")
                     },
-                    "D": {
+                    "E": {
                         "value": element["measure"]
                     },
-                    "E": {
+                    "F": {
+                        "value": element["count"] * element["conversion_rate"],
+                    },
+                    "G": {
+                        "value": element["second_measure"]
+                    },
+                    "H": {
                         "value": element["cost"]
                     },
-                    "F": {
+                    "I": {
                         "value": None
+                    },
+                    "J": {
+                        "value": element["weight"]
+                    },
+                    "K": {
+                        "value": element["volume"]
+                    },
+                    "L": {
+                        "value": element["dimension"]
                     }
                 }
                 if element["type"] == Element.Type.MATERIAL:
                     cells["A"]["value"] = f"{count_construction}.{ws1_index}"
-                    cells["F"]["value"] = f"=E{ws1_row}*C{ws1_row}"
+                    cells["I"]["value"] = f"=D{ws1_row}*H{ws1_row}"
                     ws1, ws1_row = insert_cells(ws1, ws1_row, cells)
                     ws1_index += 1
 
                 cells["A"]["value"] = f"{count_construction}.{ws2_index}"
-                cells["F"]["value"] = f"=E{ws2_row}*C{ws2_row}"
+                cells["I"]["value"] = f"=D{ws2_row}*H{ws2_row}"
                 ws2, ws2_row = insert_cells(ws2, ws2_row, cells)
                 ws2_index += 1
 
