@@ -364,12 +364,15 @@ class ElementViewSet(viewsets.GenericViewSet):
     def q_import(self, request):
         file = request.FILES.get("file")
         wb = load_workbook(file)
-        bulk_create = q_import(wb)
+        bulk_create, errors = q_import(wb)
 
-        Element.objects.bulk_create(bulk_create)
+        if errors:
+            return Response({"errors": errors}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(status=status.HTTP_201_CREATED)
+        elements = Element.objects.bulk_create(bulk_create)
+        serializer = self.serializer_class(elements, many=True)
 
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 class ConstructionViewset(viewsets.GenericViewSet):
     queryset = Construction.objects.all()
