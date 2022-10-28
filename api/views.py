@@ -473,7 +473,7 @@ class ConstructionViewset(viewsets.GenericViewSet):
 
         ConstructionElement.objects.bulk_create(bulk_create_elements)
 
-        serializer = self.serializer_class(construction)
+        serializer = self.serializer_class(new_construction)
 
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
