@@ -609,8 +609,54 @@ paths:
       - tokenAuth: []
       - {}
       responses:
-        '204':
+        '201':
           description: No response body
+  /api/elements/import/:
+    post:
+      operationId: ImportElements
+      description: Импорт элементов из `xlsx` файла
+      tags:
+      - elements
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      security:
+      - tokenAuth: []
+      - {}
+  /api/elements/export/:
+    post:
+      operationId: ExportElements
+      description: Экспорт элементов в `xlsx` файл
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ids:
+                  type: array
+                  description: "Список id элементов"
+                  items:
+                    type: integer
+      tags:
+      - elements
+      security:
+      - tokenAuth: []
+      - {}
+      responses:
+        '200':
+          description: Файл в формате `xlsx`
+          content:
+            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet:
+              schema:
+                type: file
+                format: binary
   /api/elements/filter/:
     get:
       operationId: GetFilteredElements
