@@ -32,7 +32,7 @@ class ParentCategorySerializer(serializers.ModelSerializer):
 
 
 class ElementSerializer(serializers.ModelSerializer):
-    original_title = serializers.CharField(source="title")
+    original_title = serializers.CharField(source="title", read_only=True)
     documents = serializers.SlugRelatedField(slug_field="file_url", many=True, read_only=True)
 
     class Meta:
